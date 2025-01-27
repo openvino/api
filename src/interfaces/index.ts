@@ -1,1 +1,1 @@
-export * from "./IClusterFile";
+export * from "./ICluster";

@@ -1,9 +1,9 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { appendFileSync, renameSync } from "node:fs";
 import FormData from "form-data";
 import { CLUSTER } from "../config";
 import fs from "fs";
-import { IClusterFile } from "../interfaces";
+import { IClusterFile, IpfsClusterCidStatusResponse } from "../interfaces";
 
 export const uploadFileToIpfs = async (
 	file: Express.Multer.File
@@ -32,9 +32,21 @@ export const uploadFileToIpfs = async (
 	}
 };
 
-export const pinnedFiles = async (): Promise<any> => {
+export const pinnedFiles = async (): Promise<string> => {
 	try {
-		const response = await axios.get(`${CLUSTER}/pins`);
+		const response: AxiosResponse = await axios.get(`${CLUSTER}/pins`);
+
+		return response.data;
+	} catch (error: any) {
+		return error.message;
+	}
+};
+export const pinStatus = async (
+	cid: string
+): Promise<IpfsClusterCidStatusResponse> => {
+	try {
+		const response: AxiosResponse = await axios.get(`${CLUSTER}/pins/${cid}`);
+
 		return response.data;
 	} catch (error: any) {
 		return error.message;

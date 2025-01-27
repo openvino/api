@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
-import { pinnedFiles, uploadFileToIpfs } from "../services";
-import { IClusterFile } from "../interfaces";
-import { get } from "http";
+import { pinnedFiles, pinStatus, uploadFileToIpfs } from "../services";
+import { IClusterFile, IpfsClusterCidStatusResponse } from "../interfaces";
 
 export const addFile = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -37,6 +36,23 @@ export const getPinnedFiles = async (
 		const files = jsonStrings.map((line) => JSON.parse(line));
 
 		res.status(200).json(files);
+	} catch (error) {
+		console.error("Error processing pinned files:", error);
+
+		res.status(500).json({
+			message: "Error fetching pinned files",
+		});
+	}
+};
+export const getPinStatus = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
+	try {
+		const cid: string = req.params.cid;
+		const pinStatusData: IpfsClusterCidStatusResponse = await pinStatus(cid);
+
+		res.status(200).json(pinStatusData);
 	} catch (error) {
 		console.error("Error processing pinned files:", error);
 
