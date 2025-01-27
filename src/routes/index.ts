@@ -7,9 +7,7 @@ const router: Router = Router();
 
 router.post("/ipfs/add", auth, handleUploadSingleFile, addFile);
 
-router.get("/pins", getPinnedFiles);
-
-// router.get("/id", getEndpointId);
+router.get("/ipfs/pins", getPinnedFiles);
 
 router.get("/", (req, res) => {
 	res.send("Openvino API is Up!");

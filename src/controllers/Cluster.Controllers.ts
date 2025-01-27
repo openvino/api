@@ -14,7 +14,7 @@ export const addFile = async (req: Request, res: Response): Promise<void> => {
 
 		res.status(200).json({
 			message: data.error || "File uploaded successfully",
-			cid: data,
+			cid: data.cid,
 			fileName: data.name,
 			size: data.size || "Unknown size",
 			allocations: data.allocations,
