@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { API_KEY } from "../config";
 
 const auth = (req: Request, res: Response, next: NextFunction) => {
-	const apiKey = req.headers["x-api-key"];
+	const apiKey = req.headers["X-Api-Key"];
 
 	if (apiKey === API_KEY) {
 		next();
