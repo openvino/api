@@ -4,14 +4,19 @@ import FormData from "form-data";
 import { CLUSTER } from "../config";
 import fs from "fs";
 import { IClusterFile, IpfsClusterCidStatusResponse } from "../interfaces";
+import { v4 as uuidv4 } from 'uuid'
 
 export const uploadFileToIpfs = async (
-	file: Express.Multer.File
-): Promise<IClusterFile> => {
-	try {
-		const newPath = renameImage(file);
+	data: Express.Multer.File | string, // Acepta tanto archivos como strings (JSON)
 
+): Promise<IClusterFile> => {
+	let newPath: string | undefined; // Declarar newPath aquí
+
+	try {
 		const formData = new FormData();
+		const uniqueName = `${uuidv4()}-${(data as Express.Multer.File).originalname}`;
+		newPath = `uploads/${uniqueName}`; // Asignar newPath aquí
+		renameSync((data as Express.Multer.File).path, newPath);
 		formData.append("file", fs.createReadStream(newPath));
 
 		const headers = {
@@ -21,16 +26,42 @@ export const uploadFileToIpfs = async (
 		const response = await axios.post(`${CLUSTER}/add`, formData, { headers });
 		const logData = createLogEntry(response.data);
 		writeLogToFile(logData);
+
+
 		deleteCache(newPath)
 			.then(() => console.log("OK"))
 			.catch((error) => console.error("Error cleaning cache:", error));
+
+
 		return response.data;
 	} catch (error: any) {
-		console.error("Error uploading to IPFS:", error.message);
+		console.error("Error uploading to IPFS:", error);
 		clusterFile.error = error.message;
 		return clusterFile;
 	}
 };
+
+
+export const uploadJsonToIpfs = async (jsonData: string): Promise<IClusterFile> => {
+    try {
+        const formData = new FormData();
+        const buffer = Buffer.from(jsonData, "utf-8"); // Convertimos el JSON a buffer
+
+        formData.append("file", buffer, { filename: "data.json", contentType: "application/json" });
+
+        const response = await axios.post(`${CLUSTER}/add`, formData, {
+            headers: {
+                ...formData.getHeaders(), // Asegurar que axios envíe los headers correctos para `multipart/form-data`
+            },
+        });
+
+        return response.data;
+    } catch (error: any) {
+        console.error(" Error uploading JSON to IPFS:", error);
+        return { error: error.message } as IClusterFile;
+    }
+};
+
 
 export const pinnedFiles = async (): Promise<string> => {
 	try {
@@ -85,9 +116,8 @@ const createLogEntry = (data: IClusterFile, isError = false): string => {
 	if (isError) {
 		return `[${timestamp}] ERROR: ${data.error}\n`;
 	}
-	return `[${timestamp}] CID: ${data.cid}, Name: ${data.name}, Size: ${
-		data.size
-	}, Allocations: ${JSON.stringify(data.allocations)}\n`;
+	return `[${timestamp}] CID: ${data.cid}, Name: ${data.name}, Size: ${data.size
+		}, Allocations: ${JSON.stringify(data.allocations)}\n`;
 };
 
 const writeLogToFile = (logEntry: string): void => {
