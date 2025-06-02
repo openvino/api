@@ -8,6 +8,7 @@ import {
 import { handleUploadSingleFile } from "../middlewares";
 import auth from "../middlewares/auth";
 import { sendEmail } from "../controllers/Email.controller";
+import { verifyContract } from "../controllers/VerifyContract.Controller";
 
 const router: Router = Router();
 
@@ -16,13 +17,14 @@ router.post("/ipfs/addJson", auth, addJsonFile);
 
 router.get("/ipfs/pins", getPinnedFiles);
 router.get("/ipfs/pins/:cid", getPinStatus);
-router.get("/ipfs/:cid")
+router.get("/ipfs/:cid");
 
+router.post("/email/send", auth, sendEmail);
 
-router.post('/email/send',auth,sendEmail)
+router.post("/verify-contract", verifyContract);
 
 router.get("/", (req, res) => {
-	res.send("Openvino API is Up!");
+	res.send("OpenVino API is Up!");
 });
 
 export default router;
