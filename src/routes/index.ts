@@ -9,6 +9,7 @@ import { handleUploadSingleFile } from "../middlewares";
 import auth from "../middlewares/auth";
 import { sendEmail } from "../controllers/Email.controller";
 import { verifyContract } from "../controllers/VerifyContract.Controller";
+import checkVerifyStatus from "../controllers/CheckVerifyStatus";
 
 const router: Router = Router();
 
@@ -22,6 +23,7 @@ router.get("/ipfs/:cid");
 router.post("/email/send", auth, sendEmail);
 
 router.post("/verify-contract", verifyContract);
+router.get("/checkverifystatus", checkVerifyStatus);
 
 router.get("/", (req, res) => {
 	res.send("OpenVino API is Up!");

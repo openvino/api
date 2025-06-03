@@ -6,6 +6,8 @@ export const verifyContract = async (
 	req: Request,
 	res: Response
 ): Promise<void> => {
+	console.log("verifyContract");
+
 	try {
 		const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
 		const BASESCAN_API_KEY = process.env.BASESCAN_API_KEY;
@@ -46,8 +48,8 @@ export const verifyContract = async (
 
 		let apiBase: string;
 		let apiKey: string;
-
-		switch (network.toLowerCase()) {
+		console.log(network);
+		switch (network) {
 			case "mainnet":
 				apiBase = "https://api.etherscan.io/api";
 				apiKey = ETHERSCAN_API_KEY;
@@ -61,7 +63,9 @@ export const verifyContract = async (
 				apiBase = "https://api.basescan.org/api";
 				apiKey = BASESCAN_API_KEY;
 				break;
-			case "base-sepolia":
+			case "baseSepolia":
+				console.log("baseSepolia hola");
+
 				apiBase = "https://api-sepolia.basescan.org/api";
 				apiKey = BASESCAN_API_KEY;
 				break;
@@ -71,6 +75,7 @@ export const verifyContract = async (
 				});
 				return;
 		}
+		console.log(apiBase, apiKey);
 
 		const postData = {
 			apikey: apiKey,
@@ -85,10 +90,12 @@ export const verifyContract = async (
 			runs,
 			constructorArguements: constructorArgs,
 		};
+		// console.log(postData);
 
 		const response = await axios.post(apiBase, qs.stringify(postData), {
 			headers: { "Content-Type": "application/x-www-form-urlencoded" },
 		});
+		// console.log(response.data);
 
 		const data = response.data as {
 			status: string;
