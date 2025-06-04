@@ -39,7 +39,7 @@ export const verifyContract = async (
 			runs?: string;
 		};
 
-		if (!address || !contractName || !sourceCode || !compilerVersion) {
+		if (!address || !contractName || !compilerVersion) {
 			res.status(400).json({
 				error:
 					"Missing fields: address, contractName, sourceCode or compilerVersion",
@@ -89,10 +89,12 @@ export const verifyContract = async (
 			runs,
 			constructorArguments: constructorArgs,
 		};
+		console.log("postData", postData);
 
 		const response = await axios.post(apiBase, qs.stringify(postData), {
 			headers: { "Content-Type": "application/x-www-form-urlencoded" },
 		});
+		console.log("response", response.data);
 
 		const data = response.data as {
 			status: string;
@@ -107,7 +109,8 @@ export const verifyContract = async (
 				guid: data.result,
 			});
 		} else {
-			res.status(400).json({
+			console.log(data);
+			res.json({
 				status: data.status,
 				message: data.message,
 				result: data.result,
