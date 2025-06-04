@@ -8,14 +8,14 @@ server.use(cors());
 
 server.use(
 	express.json({
-		limit: "10mb",
+		limit: "50mb",
 	})
 );
 
 server.use(
 	express.urlencoded({
 		extended: true,
-		limit: "10mb",
+		limit: "50mb",
 		parameterLimit: 50_000,
 	})
 );
