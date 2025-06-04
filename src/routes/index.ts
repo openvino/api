@@ -22,8 +22,8 @@ router.get("/ipfs/:cid");
 
 router.post("/email/send", auth, sendEmail);
 
-router.post("/verify-contract", verifyContract);
-router.get("/checkverifystatus", checkVerifyStatus);
+router.post("/verify-contract", auth, verifyContract);
+router.get("/checkverifystatus", auth, checkVerifyStatus);
 
 router.get("/", (req, res) => {
 	res.send("OpenVino API is Up!");
