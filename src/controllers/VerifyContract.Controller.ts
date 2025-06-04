@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import axios from "axios";
 import qs from "qs";
+import { sourceCode } from "../utils";
 
 export const verifyContract = async (
 	req: Request,
@@ -22,7 +23,7 @@ export const verifyContract = async (
 			network = "sepolia",
 			address,
 			contractName,
-			sourceCode,
+			// sourceCode,
 			compilerVersion,
 			constructorArgs = "",
 			optimizationUsed = "1",
@@ -31,7 +32,7 @@ export const verifyContract = async (
 			network?: string;
 			address: string;
 			contractName: string;
-			sourceCode: string;
+			// sourceCode: string;
 			compilerVersion: string;
 			constructorArgs?: string;
 			optimizationUsed?: "0" | "1";
