@@ -23,7 +23,6 @@ export const verifyContract = async (
 			network = "sepolia",
 			address,
 			contractName,
-			// sourceCode,
 			compilerVersion,
 			constructorArgs = "",
 			optimizationUsed = "1",
@@ -32,7 +31,6 @@ export const verifyContract = async (
 			network?: string;
 			address: string;
 			contractName: string;
-			// sourceCode: string;
 			compilerVersion: string;
 			constructorArgs?: string;
 			optimizationUsed?: "0" | "1";
