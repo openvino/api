@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
-import { syncViniswapPairHistory } from "../services/viniswapOnChainService";
+import { formatUnits } from "ethers";
+import { getBlockscoutConfigForNetwork, getProviderForNetwork } from "../config";
+import { fetchViniswapPairHistory } from "../services/viniswapOnChainService";
 import {
-	ViniswapSyncOptions,
-	ViniswapSyncProgress,
+	ViniswapHistoryOptions,
+	ViniswapHistoryProgress,
 	ViniswapSwapEvent,
 	ViniswapMintEvent,
 	ViniswapBurnEvent,
-	ViniswapSyncEvent,
+	ViniswapPairSyncEvent,
 	ViniswapTransferEvent,
 } from "../interfaces";
 
@@ -52,14 +54,24 @@ const parseBoolean = (value: unknown): boolean => {
 	return false;
 };
 
-const parseOptionalBoolean = (value: unknown): boolean | undefined => {
-	if (value === undefined || value === null || value === "") {
-		return undefined;
+const DEFAULT_DECIMALS = 18;
+
+const formatAmountToEth = (
+	value: string | number | bigint | null | undefined,
+	decimals = DEFAULT_DECIMALS
+): string | null => {
+	if (value === undefined || value === null) {
+		return null;
 	}
-	return parseBoolean(value);
+
+	try {
+		return formatUnits(value, decimals);
+	} catch {
+		return null;
+	}
 };
 
-export const syncViniswapPairController = async (
+export const getViniswapPairHistoryController = async (
 	req: Request,
 	res: Response
 ): Promise<void> => {
@@ -74,34 +86,57 @@ export const syncViniswapPairController = async (
 		const {
 			startBlock,
 			endBlock,
-			batchSize,
 			verbose,
 			batchDelayMs,
 			maxRetries,
-			useBlockscout,
 			blockscoutPageSize,
 			blockscoutDelayMs,
+			network: rawNetwork,
 		} = req.body ?? {};
 
-		let options: ViniswapSyncOptions;
+		let options: ViniswapHistoryOptions;
 
 		try {
-				options = {
-					startBlock: parseRequiredNumber(startBlock, "startBlock"),
-					endBlock: parseOptionalNumber(endBlock),
-					batchSize: parseOptionalNumber(batchSize),
-					batchDelayMs: parseOptionalNumber(batchDelayMs),
-					maxRetries: parseOptionalNumber(maxRetries),
-					useBlockscout: parseOptionalBoolean(useBlockscout),
-					blockscoutPageSize: parseOptionalNumber(blockscoutPageSize),
-					blockscoutDelayMs: parseOptionalNumber(blockscoutDelayMs),
-				};
+			options = {
+				startBlock: parseRequiredNumber(startBlock, "startBlock"),
+				endBlock: parseOptionalNumber(endBlock),
+				batchDelayMs: parseOptionalNumber(batchDelayMs),
+				maxRetries: parseOptionalNumber(maxRetries),
+				blockscoutPageSize: parseOptionalNumber(blockscoutPageSize),
+				blockscoutDelayMs: parseOptionalNumber(blockscoutDelayMs),
+			};
 		} catch (validationError) {
 			res.status(400).json({
 				message:
 					validationError instanceof Error
 						? validationError.message
 						: "Invalid numeric parameter",
+			});
+			return;
+		}
+
+		const network =
+			typeof rawNetwork === "string" && rawNetwork.trim()
+				? rawNetwork
+				: undefined;
+
+		let provider;
+		try {
+			provider = getProviderForNetwork(network);
+		} catch (providerError) {
+			res.status(400).json({
+				message:
+					providerError instanceof Error
+						? providerError.message
+						: "Invalid network configuration",
+			});
+			return;
+		}
+
+		const blockscoutConfig = getBlockscoutConfigForNetwork(network);
+		if (!blockscoutConfig.url) {
+			res.status(500).json({
+				message: `Blockscout API URL not configured for network "${network ?? "default"}"`,
 			});
 			return;
 		}
@@ -120,9 +155,14 @@ export const syncViniswapPairController = async (
 			lastProgressMessage = "";
 		};
 
-		const logProgress = (progress: ViniswapSyncProgress): void => {
-			const message = `[ViniswapPairSync] ${progress.eventType.toUpperCase()} ${progress.fromBlock} -> ${progress.toBlock} (${progress.entriesFound} eventos)`;
+		const logProgress = (progress: ViniswapHistoryProgress): void => {
+			const message = `[ViniswapPairHistory] ${progress.eventType.toUpperCase()} ${progress.fromBlock} -> ${progress.toBlock} (${progress.entriesFound} eventos)`;
 			updateProgressLine(message);
+		};
+
+		let tokenDecimals = {
+			token0: DEFAULT_DECIMALS,
+			token1: DEFAULT_DECIMALS,
 		};
 
 		const logReserves = (
@@ -133,12 +173,16 @@ export const syncViniswapPairController = async (
 				console.log(`${label}: reservas no disponibles`);
 				return;
 			}
-			console.log(
-				`${label}: reserve0=${reserves.reserve0} reserve1=${reserves.reserve1}` +
-					(reserves.blockTimestampLast !== undefined
-						? ` ts=${reserves.blockTimestampLast}`
-						: "")
-			);
+			const reserve0Eth = formatAmountToEth(reserves.reserve0, tokenDecimals.token0);
+			const reserve1Eth = formatAmountToEth(reserves.reserve1, tokenDecimals.token1);
+			const parts = [
+				`${label}: reserve0=${reserves.reserve0} reserve1=${reserves.reserve1}`,
+				`reserve0Eth=${reserve0Eth ?? "n/a"} reserve1Eth=${reserve1Eth ?? "n/a"}`,
+			];
+			if (reserves.blockTimestampLast !== undefined) {
+				parts.push(`ts=${reserves.blockTimestampLast}`);
+			}
+			console.log(parts.join(" | "));
 		};
 
 		const emitTimestamp = (
@@ -166,7 +210,7 @@ export const syncViniswapPairController = async (
 				| ViniswapSwapEvent
 				| ViniswapMintEvent
 				| ViniswapBurnEvent
-				| ViniswapSyncEvent
+				| ViniswapPairSyncEvent
 				| ViniswapTransferEvent
 		): void => {
 			clearProgressLine();
@@ -174,7 +218,7 @@ export const syncViniswapPairController = async (
 				case "swap": {
 					const swap = event as ViniswapSwapEvent;
 					console.log(
-						`[ViniswapPairSync] SWAP block=${swap.blockNumber} tx=${swap.transactionHash} sender=${swap.sender} -> ${swap.to}${emitTimestamp(swap)}`
+						`[ViniswapPairHistory] SWAP block=${swap.blockNumber} tx=${swap.transactionHash} sender=${swap.sender} -> ${swap.to}${emitTimestamp(swap)}`
 					);
 					console.log(
 						`  amounts: in0=${swap.amount0In} in1=${swap.amount1In} out0=${swap.amount0Out} out1=${swap.amount1Out}`
@@ -185,7 +229,7 @@ export const syncViniswapPairController = async (
 				case "mint": {
 					const mint = event as ViniswapMintEvent;
 					console.log(
-						`[ViniswapPairSync] MINT block=${mint.blockNumber} tx=${mint.transactionHash} sender=${mint.sender}${emitTimestamp(mint)}`
+						`[ViniswapPairHistory] MINT block=${mint.blockNumber} tx=${mint.transactionHash} sender=${mint.sender}${emitTimestamp(mint)}`
 					);
 					console.log(
 						`  liquidity: amount0=${mint.amount0} amount1=${mint.amount1}`
@@ -196,7 +240,7 @@ export const syncViniswapPairController = async (
 				case "burn": {
 					const burn = event as ViniswapBurnEvent;
 					console.log(
-						`[ViniswapPairSync] BURN block=${burn.blockNumber} tx=${burn.transactionHash} sender=${burn.sender} -> ${burn.to}${emitTimestamp(burn)}`
+						`[ViniswapPairHistory] BURN block=${burn.blockNumber} tx=${burn.transactionHash} sender=${burn.sender} -> ${burn.to}${emitTimestamp(burn)}`
 					);
 					console.log(
 						`  liquidity: amount0=${burn.amount0} amount1=${burn.amount1}`
@@ -205,9 +249,9 @@ export const syncViniswapPairController = async (
 					break;
 				}
 				case "sync": {
-					const syncEvent = event as ViniswapSyncEvent;
+					const syncEvent = event as ViniswapPairSyncEvent;
 					console.log(
-						`[ViniswapPairSync] SYNC block=${syncEvent.blockNumber} tx=${syncEvent.transactionHash}${emitTimestamp(syncEvent)}`
+						`[ViniswapPairHistory] SYNC block=${syncEvent.blockNumber} tx=${syncEvent.transactionHash}${emitTimestamp(syncEvent)}`
 					);
 					logReserves("  reservas sincronizadas", {
 						reserve0: syncEvent.reserve0,
@@ -219,7 +263,7 @@ export const syncViniswapPairController = async (
 				case "transfer": {
 					const transfer = event as ViniswapTransferEvent;
 					console.log(
-						`[ViniswapPairSync] TRANSFER block=${transfer.blockNumber} tx=${transfer.transactionHash} from=${transfer.from} -> ${transfer.to}${emitTimestamp(transfer)}`
+						`[ViniswapPairHistory] TRANSFER block=${transfer.blockNumber} tx=${transfer.transactionHash} from=${transfer.from} -> ${transfer.to}${emitTimestamp(transfer)}`
 					);
 					console.log(`  value=${transfer.value}`);
 					logReserves("  reservas después", transfer.reservesAfter);
@@ -228,21 +272,34 @@ export const syncViniswapPairController = async (
 			}
 		};
 
-		const result = await syncViniswapPairHistory(pairAddress, options, {
-			onProgress: isVerbose ? logProgress : undefined,
-			onEvent: isVerbose ? logEvent : undefined,
-		});
+		const result = await fetchViniswapPairHistory(
+			pairAddress,
+			options,
+			{
+				onProgress: isVerbose ? logProgress : undefined,
+				onEvent: isVerbose ? logEvent : undefined,
+			},
+			{
+				provider,
+				blockscout: blockscoutConfig,
+			}
+		);
+
+		tokenDecimals = {
+			token0: result.token0.decimals ?? DEFAULT_DECIMALS,
+			token1: result.token1.decimals ?? DEFAULT_DECIMALS,
+		};
 
 		if (isVerbose) {
 			clearProgressLine();
 		}
 
 		console.log(
-			`[ViniswapPairSync] Completed ${pairAddress} blocks ${result.fromBlock} -> ${result.toBlock}`
+			`[ViniswapPairHistory] Completed ${pairAddress} blocks ${result.fromBlock} -> ${result.toBlock}`
 		);
 		if (isVerbose) {
 			console.log(
-				`[ViniswapPairSync] Resumen eventos: swaps=${result.events.swaps.length} mints=${result.events.mints.length} burns=${result.events.burns.length} syncs=${result.events.syncs.length} transfers=${result.events.transfers.length}`
+				`[ViniswapPairHistory] Resumen eventos: swaps=${result.events.swaps.length} mints=${result.events.mints.length} burns=${result.events.burns.length} syncs=${result.events.syncs.length} transfers=${result.events.transfers.length}`
 			);
 		}
 
@@ -253,11 +310,19 @@ export const syncViniswapPairController = async (
 				...result.token0,
 				reserveKey: "reserve0" as const,
 				amount: reserves?.reserve0 ?? null,
+				amountEth: formatAmountToEth(
+					reserves?.reserve0 ?? null,
+					tokenDecimals.token0
+				),
 			},
 			token1: {
 				...result.token1,
 				reserveKey: "reserve1" as const,
 				amount: reserves?.reserve1 ?? null,
+				amountEth: formatAmountToEth(
+					reserves?.reserve1 ?? null,
+					tokenDecimals.token1
+				),
 			},
 		});
 
@@ -281,6 +346,7 @@ export const syncViniswapPairController = async (
 		res.status(200).json({
 			pair: {
 				address: result.pairAddress,
+				network: network ?? "default",
 				token0: {
 					...result.token0,
 					reserveLabel: "reserve0",
@@ -300,6 +366,17 @@ export const syncViniswapPairController = async (
 					},
 				},
 				currentReserves: result.currentReserves,
+				currentReservesEth: {
+					reserve0: formatAmountToEth(
+						result.currentReserves.reserve0,
+						tokenDecimals.token0
+					),
+					reserve1: formatAmountToEth(
+						result.currentReserves.reserve1,
+						tokenDecimals.token1
+					),
+					blockTimestampLast: result.currentReserves.blockTimestampLast,
+				},
 				totalSupply: result.totalSupply,
 			},
 			range: {

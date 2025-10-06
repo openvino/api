@@ -59,18 +59,16 @@ export interface TransferEvent extends BaseEvent {
 
 export type SyncEventType = "swap" | "mint" | "burn" | "sync" | "transfer";
 
-export interface ViniswapSyncOptions {
+export interface ViniswapHistoryOptions {
 	startBlock: number;
 	endBlock?: number;
-	batchSize?: number;
 	batchDelayMs?: number;
 	maxRetries?: number;
-	useBlockscout?: boolean;
 	blockscoutPageSize?: number;
 	blockscoutDelayMs?: number;
 }
 
-export interface ViniswapSyncResult {
+export interface ViniswapHistoryResult {
 	pairAddress: string;
 	fromBlock: number;
 	toBlock: number;
@@ -98,15 +96,15 @@ export interface ViniswapSyncResult {
 	};
 }
 
-export interface ViniswapSyncProgress {
+export interface ViniswapHistoryProgress {
 	eventType: SyncEventType;
 	fromBlock: number;
 	toBlock: number;
 	entriesFound: number;
 }
 
-export interface ViniswapSyncCallbacks {
-	onProgress?: (progress: ViniswapSyncProgress) => void;
+export interface ViniswapHistoryCallbacks {
+	onProgress?: (progress: ViniswapHistoryProgress) => void;
 	onEvent?: (
 		eventType: SyncEventType,
 		event: SwapEvent | MintEvent | BurnEvent | SyncEvent | TransferEvent
@@ -116,5 +114,5 @@ export interface ViniswapSyncCallbacks {
 export type ViniswapSwapEvent = SwapEvent;
 export type ViniswapMintEvent = MintEvent;
 export type ViniswapBurnEvent = BurnEvent;
-export type ViniswapSyncEvent = SyncEvent;
+export type ViniswapPairSyncEvent = SyncEvent;
 export type ViniswapTransferEvent = TransferEvent;

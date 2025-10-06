@@ -1,5 +1,4 @@
-import { Contract, Interface, Log, getAddress } from "ethers";
-import { provider } from "../config";
+import { Contract, Interface, Log, JsonRpcProvider, getAddress } from "ethers";
 import { VINISWAP_PAIR_ABI, ERC20_ABI } from "../abi";
 import { fetchLogsFromBlockscout } from "./blockscoutClient";
 import {
@@ -11,10 +10,10 @@ import {
 	SyncEvent,
 	TransferEvent,
 	SyncEventType,
-	ViniswapSyncOptions,
-	ViniswapSyncResult,
-	ViniswapSyncProgress,
-	ViniswapSyncCallbacks,
+	ViniswapHistoryOptions,
+	ViniswapHistoryResult,
+	ViniswapHistoryProgress,
+	ViniswapHistoryCallbacks,
 	BaseEvent,
 } from "../interfaces";
 import {
@@ -26,6 +25,11 @@ import {
 } from "../utils";
 
 const pairInterface = new Interface(VINISWAP_PAIR_ABI);
+
+export interface ViniswapHistoryContext {
+	provider: JsonRpcProvider;
+	blockscout?: { url?: string; apiKey?: string };
+}
 
 const getEventTopic = (eventName: string): string => {
 	const fragment = pairInterface.getEvent(eventName);
@@ -42,7 +46,8 @@ const SYNC_TOPIC = getEventTopic("Sync");
 const TRANSFER_TOPIC = getEventTopic("Transfer");
 
 const fetchTokenMetadata = async (
-	tokenAddress: string
+	tokenAddress: string,
+	provider: JsonRpcProvider
 ): Promise<TokenMetadata> => {
 	const tokenContract = new Contract(tokenAddress, ERC20_ABI, provider);
 
@@ -104,55 +109,55 @@ const paginateBlocks = async <T extends BaseEvent>(
 	fromBlock: number,
 	toBlock: number,
 	batchSize: number,
-	parser: (log: Log) => Promise<T>,
-	eventType: SyncEventType,
-	callbacks: ViniswapSyncCallbacks | undefined,
-	options: {
-		batchDelayMs: number;
-		maxRetries: number;
-		useBlockscout: boolean;
-		blockscout: { pageSize: number; delayMs: number };
+		parser: (log: Log) => Promise<T>,
+		eventType: SyncEventType,
+		callbacks: ViniswapHistoryCallbacks | undefined,
+		options: {
+			batchDelayMs: number;
+			maxRetries: number;
+			blockscout: { pageSize: number; delayMs: number };
+		},
+		context: {
+			provider: JsonRpcProvider;
+			blockscout?: { url?: string; apiKey?: string };
 	},
 	fetchReserves?: (blockNumber: number) => Promise<ReserveSnapshot | undefined>
 ): Promise<T[]> => {
 	const results: T[] = [];
+	if (!context.blockscout?.url) {
+		throw new Error("Blockscout configuration is required for pagination");
+	}
 
 	for (let current = fromBlock; current <= toBlock; current += batchSize) {
 		const batchEnd = Math.min(current + batchSize - 1, toBlock);
 		let logs: Log[] = [];
-		if (options.useBlockscout) {
-			logs = await fetchLogsFromBlockscout({
-				address: pairAddress,
-				topic0: topic,
-				fromBlock: current,
-				toBlock: batchEnd,
-				pageSize: options.blockscout.pageSize,
-				delayMs: options.blockscout.delayMs,
-			});
-		} else {
-			let attempt = 0;
-			while (true) {
-				try {
-					logs = await provider.getLogs({
+		let attempt = 0;
+		while (true) {
+			try {
+				logs = await fetchLogsFromBlockscout(
+					{
 						address: pairAddress,
-						topics: [topic],
+						topic0: topic,
 						fromBlock: current,
 						toBlock: batchEnd,
-					});
-					break;
-				} catch (error) {
-					attempt += 1;
+						pageSize: options.blockscout.pageSize,
+						delayMs: options.blockscout.delayMs,
+					},
+					context.blockscout
+				);
+				break;
+			} catch (error) {
+				attempt += 1;
 
-					if (!shouldRetryRequest(error) || attempt > options.maxRetries) {
-						throw error;
-					}
-
-					const backoff = options.batchDelayMs * attempt;
-					console.warn(
-						`[ViniswapPairSync] retrying ${eventType} ${current} -> ${batchEnd} (attempt ${attempt}/${options.maxRetries}) in ${backoff}ms`
-					);
-					await sleep(backoff);
+				if (attempt > options.maxRetries || !shouldRetryRequest(error)) {
+					throw error;
 				}
+
+				const backoff = options.batchDelayMs * attempt;
+				console.warn(
+					`[ViniswapPairHistory] retrying Blockscout ${eventType} ${current} -> ${batchEnd} (attempt ${attempt}/${options.maxRetries}) in ${backoff}ms`
+				);
+				await sleep(backoff);
 			}
 		}
 
@@ -199,12 +204,13 @@ const paginateBlocks = async <T extends BaseEvent>(
 		}
 
 		if (callbacks?.onProgress) {
-			callbacks.onProgress({
+			const progress: ViniswapHistoryProgress = {
 				eventType,
 				fromBlock: current,
 				toBlock: batchEnd,
 				entriesFound: logs.length,
-			});
+			};
+			callbacks.onProgress(progress);
 		}
 
 		if (options.batchDelayMs > 0 && batchEnd < toBlock) {
@@ -216,7 +222,8 @@ const paginateBlocks = async <T extends BaseEvent>(
 };
 
 const enrichWithTimestamp = async <T extends BaseEvent>(
-	events: T[]
+	events: T[],
+	provider: JsonRpcProvider
 ): Promise<void> => {
 	const eventsNeedingTimestamp = events.filter(
 		(event) => event.timestamp === undefined
@@ -247,11 +254,12 @@ const enrichWithTimestamp = async <T extends BaseEvent>(
 	});
 };
 
-export const syncViniswapPairHistory = async (
+export const fetchViniswapPairHistory = async (
 	pairAddress: string,
-	options: ViniswapSyncOptions,
-	callbacks: ViniswapSyncCallbacks = {}
-): Promise<ViniswapSyncResult> => {
+	options: ViniswapHistoryOptions,
+	callbacks: ViniswapHistoryCallbacks = {},
+	context: ViniswapHistoryContext
+): Promise<ViniswapHistoryResult> => {
 	if (!pairAddress) {
 		throw new Error("pairAddress is required");
 	}
@@ -261,6 +269,7 @@ export const syncViniswapPairHistory = async (
 	}
 
 	const normalizedAddress = getAddress(pairAddress);
+	const { provider, blockscout } = context;
 
 	const pairContract = new Contract(
 		normalizedAddress,
@@ -285,13 +294,12 @@ export const syncViniswapPairHistory = async (
 		options.maxRetries !== undefined && options.maxRetries >= 0
 			? Math.trunc(options.maxRetries)
 			: 5;
-	const useBlockscout = options.useBlockscout ?? true;
+	if (!blockscout?.url) {
+		throw new Error("Blockscout configuration is required to sync Viniswap history");
+	}
+
 	const blockRangeSize = toBlock - fromBlock + 1;
-	const batchSize = useBlockscout
-		? blockRangeSize
-		: options.batchSize && options.batchSize > 0
-		? Math.trunc(options.batchSize)
-		: 5_000;
+	const batchSize = blockRangeSize;
 	const blockscoutPageSize =
 		options.blockscoutPageSize && options.blockscoutPageSize > 0
 			? Math.trunc(options.blockscoutPageSize)
@@ -304,7 +312,6 @@ export const syncViniswapPairHistory = async (
 	const paginationOptions = {
 		batchDelayMs,
 		maxRetries,
-		useBlockscout,
 		blockscout: {
 			pageSize: blockscoutPageSize,
 			delayMs: blockscoutDelayMs,
@@ -337,7 +344,7 @@ export const syncViniswapPairHistory = async (
 			return snapshot;
 		} catch (error) {
 			console.warn(
-				`[ViniswapPairSync] Failed to fetch reserves at block ${blockNumber}`,
+				`[ViniswapPairHistory] Failed to fetch reserves at block ${blockNumber}`,
 				error instanceof Error ? error.message : error
 			);
 			reserveCache.set(blockNumber, null);
@@ -354,8 +361,8 @@ export const syncViniswapPairHistory = async (
 		]);
 
 	const [token0, token1] = await Promise.all([
-		fetchTokenMetadata(token0Address),
-		fetchTokenMetadata(token1Address),
+		fetchTokenMetadata(token0Address, provider),
+		fetchTokenMetadata(token1Address, provider),
 	]);
 
 	const swaps = await paginateBlocks<SwapEvent>(
@@ -393,6 +400,7 @@ export const syncViniswapPairHistory = async (
 		"swap",
 		callbacks,
 		paginationOptions,
+		{ provider, blockscout },
 		getReservesSnapshot
 	);
 
@@ -425,6 +433,7 @@ export const syncViniswapPairHistory = async (
 		"mint",
 		callbacks,
 		paginationOptions,
+		{ provider, blockscout },
 		getReservesSnapshot
 	);
 
@@ -459,6 +468,7 @@ export const syncViniswapPairHistory = async (
 		"burn",
 		callbacks,
 		paginationOptions,
+		{ provider, blockscout },
 		getReservesSnapshot
 	);
 
@@ -491,6 +501,7 @@ export const syncViniswapPairHistory = async (
 		"transfer",
 		callbacks,
 		paginationOptions,
+		{ provider, blockscout },
 		getReservesSnapshot
 	);
 
@@ -520,15 +531,16 @@ export const syncViniswapPairHistory = async (
 		},
 		"sync",
 		callbacks,
-		paginationOptions
+		paginationOptions,
+		{ provider, blockscout }
 	);
 
 	await Promise.all([
-		enrichWithTimestamp(swaps),
-		enrichWithTimestamp(mints),
-		enrichWithTimestamp(burns),
-		enrichWithTimestamp(syncs),
-		enrichWithTimestamp(transfers),
+		enrichWithTimestamp(swaps, provider),
+		enrichWithTimestamp(mints, provider),
+		enrichWithTimestamp(burns, provider),
+		enrichWithTimestamp(syncs, provider),
+		enrichWithTimestamp(transfers, provider),
 	]);
 
 	return {
@@ -564,6 +576,6 @@ export type {
 	SwapEvent as ViniswapSwapEvent,
 	MintEvent as ViniswapMintEvent,
 	BurnEvent as ViniswapBurnEvent,
-	SyncEvent as ViniswapSyncEvent,
+	SyncEvent as ViniswapPairSyncEvent,
 	TransferEvent as ViniswapTransferEvent,
 };

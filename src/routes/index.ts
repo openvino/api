@@ -10,7 +10,7 @@ import auth from "../middlewares/auth";
 import { sendEmail } from "../controllers/Email.controller";
 import { verifyContract } from "../controllers/VerifyContract.Controller";
 import checkVerifyStatus from "../controllers/CheckVerifyStatus";
-import { syncViniswapPairController } from "../controllers/ViniswapSync.controller";
+import { getViniswapPairHistoryController } from "../controllers/ViniswapHistory.controller";
 
 const router: Router = Router();
 
@@ -27,9 +27,9 @@ router.post("/verify-contract", auth, verifyContract);
 router.get("/checkverifystatus", auth, checkVerifyStatus);
 
 router.post(
-	"/defi/viniswap/pairs/:pairAddress/sync",
+	"/defi/viniswap/pairs/:pairAddress/history",
 	// auth,
-	syncViniswapPairController
+	getViniswapPairHistoryController
 );
 
 router.get("/", (req, res) => {

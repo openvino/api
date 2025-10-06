@@ -1,8 +1,8 @@
 import axios from "axios";
-import { BLOCKSCOUT_API_KEY, BLOCKSCOUT_API_URL } from "../config";
 import { Log } from "ethers";
+import { BLOCKSCOUT_API_KEY, BLOCKSCOUT_API_URL_BASE } from "../config";
 
-const DEFAULT_BLOCKSCOUT_URL = "https://base.blockscout.com/api";
+const DEFAULT_BLOCKSCOUT_URL_BASE = "https://base.blockscout.com/api";
 
 interface BlockscoutLogEntry {
 	address?: string;
@@ -33,6 +33,11 @@ interface FetchLogsParams {
 	toBlock: number;
 	pageSize: number;
 	delayMs: number;
+}
+
+interface BlockscoutClientConfig {
+	url?: string;
+	apiKey?: string;
 }
 
 const sleep = (ms: number): Promise<void> =>
@@ -88,9 +93,11 @@ const toEthersLog = (
 };
 
 export const fetchLogsFromBlockscout = async (
-	params: FetchLogsParams
+	params: FetchLogsParams,
+	config?: BlockscoutClientConfig
 ): Promise<Log[]> => {
-	const baseURL = BLOCKSCOUT_API_URL || DEFAULT_BLOCKSCOUT_URL;
+	const baseURL =
+		config?.url ?? BLOCKSCOUT_API_URL_BASE ?? DEFAULT_BLOCKSCOUT_URL_BASE;
 	const logs: Log[] = [];
 	let page = 1;
 
@@ -105,7 +112,7 @@ export const fetchLogsFromBlockscout = async (
 			page,
 			offset: params.pageSize,
 			sort: "asc",
-			apikey: BLOCKSCOUT_API_KEY,
+			apikey: config?.apiKey ?? BLOCKSCOUT_API_KEY,
 		};
 
 		const { data } = await axios.get<BlockscoutApiResponse>(baseURL, {
