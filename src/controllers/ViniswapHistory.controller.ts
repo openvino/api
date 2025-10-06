@@ -343,6 +343,18 @@ export const getViniswapPairHistoryController = async (
 			transfers: enrich(result.events.transfers, (event) => event.reservesAfter ?? {}),
 		};
 
+		const summary = {
+			...result.summary,
+			currentReserves: {
+				...result.summary.currentReserves,
+				tokenReserves: buildTokenReserves(result.summary.currentReserves),
+			},
+			reservesByYearEnd: result.summary.reservesByYearEnd.map((entry) => ({
+				...entry,
+				tokenReserves: buildTokenReserves(entry.reserves ?? undefined),
+			})),
+		};
+
 		res.status(200).json({
 			pair: {
 				address: result.pairAddress,
@@ -383,7 +395,7 @@ export const getViniswapPairHistoryController = async (
 				fromBlock: result.fromBlock,
 				toBlock: result.toBlock,
 			},
-			summary: result.summary,
+			summary,
 			events: enrichedEvents,
 		});
 	} catch (error) {

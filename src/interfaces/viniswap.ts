@@ -93,6 +93,22 @@ export interface ViniswapHistoryResult {
 		burnCount: number;
 		syncCount: number;
 		transferCount: number;
+		currentReserves: {
+			reserve0: string;
+			reserve1: string;
+			blockTimestampLast: number;
+			isoDate?: string;
+			readableDate?: string;
+		};
+		reservesByYearEnd: Array<{
+			year: number;
+			blockNumber: number;
+			targetTimestamp: number;
+			blockTimestamp: number;
+			isoDate?: string;
+			readableDate?: string;
+			reserves?: ReserveSnapshot;
+		}>;
 	};
 }
 

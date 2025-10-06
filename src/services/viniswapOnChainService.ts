@@ -221,6 +221,44 @@ const paginateBlocks = async <T extends BaseEvent>(
 	return results;
 };
 
+const findBlockAtOrBeforeTimestamp = async (
+	provider: JsonRpcProvider,
+	targetTimestamp: number,
+	latestBlockNumber: number
+): Promise<{ blockNumber: number; blockTimestamp: number } | undefined> => {
+	if (targetTimestamp <= 0) {
+		return undefined;
+	}
+
+	let left = 0;
+	let right = latestBlockNumber;
+	let best:
+		| {
+				blockNumber: number;
+				blockTimestamp: number;
+		  }
+		| undefined;
+
+	while (left <= right) {
+		const mid = Math.floor((left + right) / 2);
+		const block = await provider.getBlock(mid);
+		if (!block) {
+			right = mid - 1;
+			continue;
+		}
+
+		const timestamp = Number(block.timestamp);
+		if (timestamp <= targetTimestamp) {
+			best = { blockNumber: mid, blockTimestamp: timestamp };
+			left = mid + 1;
+		} else {
+			right = mid - 1;
+		}
+	}
+
+	return best;
+};
+
 const enrichWithTimestamp = async <T extends BaseEvent>(
 	events: T[],
 	provider: JsonRpcProvider
@@ -278,6 +316,10 @@ export const fetchViniswapPairHistory = async (
 	);
 
 	const latestBlock = await provider.getBlockNumber();
+	const latestBlockData = await provider.getBlock(latestBlock);
+	const latestBlockTimestamp = latestBlockData
+		? Number(latestBlockData.timestamp)
+		: Math.floor(Date.now() / 1000);
 
 	const fromBlock = Math.max(0, Math.trunc(options.startBlock));
 	const toBlock = options.endBlock ? Math.trunc(options.endBlock) : latestBlock;
@@ -364,6 +406,18 @@ export const fetchViniswapPairHistory = async (
 		fetchTokenMetadata(token0Address, provider),
 		fetchTokenMetadata(token1Address, provider),
 	]);
+
+	const currentReservesSnapshot = {
+		reserve0: formatBigint(reserves[0]),
+		reserve1: formatBigint(reserves[1]),
+		blockTimestampLast: toNumber(reserves[2]),
+	};
+
+	const currentReservesSummary = {
+		...currentReservesSnapshot,
+		isoDate: formatIsoDate(currentReservesSnapshot.blockTimestampLast),
+		readableDate: formatReadableDate(currentReservesSnapshot.blockTimestampLast),
+	};
 
 	const swaps = await paginateBlocks<SwapEvent>(
 		normalizedAddress,
@@ -543,17 +597,75 @@ export const fetchViniswapPairHistory = async (
 		enrichWithTimestamp(transfers, provider),
 	]);
 
+	const earliestEventTimestamp = (() => {
+		const candidates = [
+			swaps[0]?.timestamp,
+			mints[0]?.timestamp,
+			burns[0]?.timestamp,
+			syncs[0]?.timestamp,
+			transfers[0]?.timestamp,
+			currentReservesSummary.blockTimestampLast,
+		].filter((value): value is number => typeof value === "number" && value > 0);
+
+		if (!candidates.length) {
+			return currentReservesSummary.blockTimestampLast || latestBlockTimestamp;
+		}
+
+		return Math.min(...candidates);
+	})();
+
+	const earliestYear = new Date(earliestEventTimestamp * 1000).getUTCFullYear();
+	const currentUtcYear = new Date(latestBlockTimestamp * 1000).getUTCFullYear();
+	const startYear = Math.max(earliestYear, 1970);
+	const reservesByYearEnd: Array<{
+		year: number;
+		blockNumber: number;
+		targetTimestamp: number;
+		blockTimestamp: number;
+		isoDate?: string;
+		readableDate?: string;
+		reserves?: ReserveSnapshot;
+	}> = [];
+
+	for (let year = startYear; year <= currentUtcYear; year += 1) {
+		const targetTimestamp = Math.floor(
+			Date.UTC(year, 11, 31, 23, 59, 59) / 1000
+		);
+
+		if (targetTimestamp > latestBlockTimestamp) {
+			continue;
+		}
+
+		const blockInfo = await findBlockAtOrBeforeTimestamp(
+			provider,
+			targetTimestamp,
+			latestBlock
+		);
+
+		if (!blockInfo) {
+			continue;
+		}
+
+		const snapshot = await getReservesSnapshot(blockInfo.blockNumber);
+
+		reservesByYearEnd.push({
+			year,
+			blockNumber: blockInfo.blockNumber,
+			targetTimestamp,
+			blockTimestamp: blockInfo.blockTimestamp,
+			isoDate: formatIsoDate(blockInfo.blockTimestamp),
+			readableDate: formatReadableDate(blockInfo.blockTimestamp),
+			reserves: snapshot,
+		});
+	}
+
 	return {
 		pairAddress: normalizedAddress,
 		fromBlock,
 		toBlock,
 		token0,
 		token1,
-		currentReserves: {
-			reserve0: formatBigint(reserves[0]),
-			reserve1: formatBigint(reserves[1]),
-			blockTimestampLast: toNumber(reserves[2]),
-		},
+		currentReserves: currentReservesSnapshot,
 		totalSupply: formatBigint(totalSupplyRaw),
 		events: {
 			swaps,
@@ -568,6 +680,8 @@ export const fetchViniswapPairHistory = async (
 			burnCount: burns.length,
 			syncCount: syncs.length,
 			transferCount: transfers.length,
+			currentReserves: currentReservesSummary,
+			reservesByYearEnd,
 		},
 	};
 };

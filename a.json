@@ -1,1968 +1,2026 @@
 {
 	"pair": {
-		"address": "0x4c2871bc115c01Fb05EE95d377EA67F159f148Fa",
+		"address": "0x7ECaDC96563a0E158f1a1Eec220Bb4f661640D39",
+		"network": "mainnet",
 		"token0": {
-			"address": "0x4200000000000000000000000000000000000006",
-			"symbol": "WETH",
-			"name": "Wrapped Ether",
+			"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+			"symbol": "MTB18",
+			"name": "MIKETANGOBRAVO18",
 			"decimals": 18,
 			"reserveLabel": "reserve0"
 		},
 		"token1": {
-			"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-			"symbol": "MTB21",
-			"name": "MikeTangoBravo21",
+			"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+			"symbol": "WETH",
+			"name": "Wrapped Ether",
 			"decimals": 18,
 			"reserveLabel": "reserve1"
 		},
 		"reserveMapping": {
 			"reserve0": {
 				"token": {
-					"address": "0x4200000000000000000000000000000000000006",
-					"symbol": "WETH",
-					"name": "Wrapped Ether",
+					"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+					"symbol": "MTB18",
+					"name": "MIKETANGOBRAVO18",
 					"decimals": 18
 				},
 				"description": "Liquidity reserve for token0"
 			},
 			"reserve1": {
 				"token": {
-					"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-					"symbol": "MTB21",
-					"name": "MikeTangoBravo21",
+					"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+					"symbol": "WETH",
+					"name": "Wrapped Ether",
 					"decimals": 18
 				},
 				"description": "Liquidity reserve for token1"
 			}
 		},
 		"currentReserves": {
-			"reserve0": "602110525950517436",
-			"reserve1": "1620000000000000000000",
-			"blockTimestampLast": 1757644333
+			"reserve0": "24842",
+			"reserve1": "41",
+			"blockTimestampLast": 1732361627
 		},
-		"totalSupply": "31124041141991139091"
+		"currentReservesEth": {
+			"reserve0": "0.000000000000024842",
+			"reserve1": "0.000000000000000041",
+			"blockTimestampLast": 1732361627
+		},
+		"totalSupply": "1000"
 	},
-	"range": { "fromBlock": 21723135, "toBlock": 36486726 },
+	"range": { "fromBlock": 12890402, "toBlock": 23521574 },
 	"summary": {
-		"swapCount": 17,
-		"mintCount": 8,
-		"burnCount": 0,
-		"syncCount": 25,
-		"transferCount": 9
+		"swapCount": 16,
+		"mintCount": 2,
+		"burnCount": 3,
+		"syncCount": 21,
+		"transferCount": 10,
+		"currentReserves": {
+			"reserve0": "24842",
+			"reserve1": "41",
+			"blockTimestampLast": 1732361627,
+			"isoDate": "2024-11-23T11:33:47.000Z",
+			"readableDate": "2024-11-23 11:33:47 UTC",
+			"tokenReserves": {
+				"token0": {
+					"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+					"symbol": "MTB18",
+					"name": "MIKETANGOBRAVO18",
+					"decimals": 18,
+					"reserveKey": "reserve0",
+					"amount": "24842",
+					"amountEth": "0.000000000000024842"
+				},
+				"token1": {
+					"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+					"symbol": "WETH",
+					"name": "Wrapped Ether",
+					"decimals": 18,
+					"reserveKey": "reserve1",
+					"amount": "41",
+					"amountEth": "0.000000000000000041"
+				}
+			}
+		},
+		"reservesByYearEnd": [
+			{
+				"year": 2021,
+				"blockNumber": 13916165,
+				"targetTimestamp": 1640995199,
+				"blockTimestamp": 1640995189,
+				"isoDate": "2021-12-31T23:59:49.000Z",
+				"readableDate": "2021-12-31 23:59:49 UTC",
+				"reserves": {
+					"reserve0": "953000000000000000000",
+					"reserve1": "3193489946177920682",
+					"blockTimestampLast": 1640707644
+				},
+				"tokenReserves": {
+					"token0": {
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "953000000000000000000",
+						"amountEth": "953.0"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+						"symbol": "WETH",
+						"name": "Wrapped Ether",
+						"decimals": 18,
+						"reserveKey": "reserve1",
+						"amount": "3193489946177920682",
+						"amountEth": "3.193489946177920682"
+					}
+				}
+			},
+			{
+				"year": 2022,
+				"blockNumber": 16308189,
+				"targetTimestamp": 1672531199,
+				"blockTimestamp": 1672531199,
+				"isoDate": "2022-12-31T23:59:59.000Z",
+				"readableDate": "2022-12-31 23:59:59 UTC",
+				"reserves": {
+					"reserve0": "959999999999999999835",
+					"reserve1": "3170508746714910854",
+					"blockTimestampLast": 1667856767
+				},
+				"tokenReserves": {
+					"token0": {
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "959999999999999999835",
+						"amountEth": "959.999999999999999835"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+						"symbol": "WETH",
+						"name": "Wrapped Ether",
+						"decimals": 18,
+						"reserveKey": "reserve1",
+						"amount": "3170508746714910854",
+						"amountEth": "3.170508746714910854"
+					}
+				}
+			},
+			{
+				"year": 2023,
+				"blockNumber": 18908894,
+				"targetTimestamp": 1704067199,
+				"blockTimestamp": 1704067199,
+				"isoDate": "2023-12-31T23:59:59.000Z",
+				"readableDate": "2023-12-31 23:59:59 UTC",
+				"reserves": {
+					"reserve0": "953999999999999999835",
+					"reserve1": "3190861929937170718",
+					"blockTimestampLast": 1701529523
+				},
+				"tokenReserves": {
+					"token0": {
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "953999999999999999835",
+						"amountEth": "953.999999999999999835"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+						"symbol": "WETH",
+						"name": "Wrapped Ether",
+						"decimals": 18,
+						"reserveKey": "reserve1",
+						"amount": "3190861929937170718",
+						"amountEth": "3.190861929937170718"
+					}
+				}
+			},
+			{
+				"year": 2024,
+				"blockNumber": 21525890,
+				"targetTimestamp": 1735689599,
+				"blockTimestamp": 1735689599,
+				"isoDate": "2024-12-31T23:59:59.000Z",
+				"readableDate": "2024-12-31 23:59:59 UTC",
+				"reserves": {
+					"reserve0": "24842",
+					"reserve1": "41",
+					"blockTimestampLast": 1732361627
+				},
+				"tokenReserves": {
+					"token0": {
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "24842",
+						"amountEth": "0.000000000000024842"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+						"symbol": "WETH",
+						"name": "Wrapped Ether",
+						"decimals": 18,
+						"reserveKey": "reserve1",
+						"amount": "41",
+						"amountEth": "0.000000000000000041"
+					}
+				}
+			}
+		]
 	},
 	"events": {
 		"swaps": [
 			{
-				"blockNumber": 22847184,
-				"transactionHash": "0x6c74edbf58467693b5f0ea7a267c5c0ec1827fcab74c13701f8be8027a616260",
-				"logIndex": 502,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"to": "0x7C6561E2b07bb4F1dCD4D025ae6AfADf2D9099c0",
-				"amount0In": "7551879396984925",
+				"blockNumber": 12993966,
+				"transactionHash": "0xdd214502507588717b5b2d9cc9782343e88c58e7c6ba23c0b4767b6b800df160",
+				"logIndex": 288,
+				"sender": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"to": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"amount0In": "12000000000000000000",
 				"amount1In": "0",
 				"amount0Out": "0",
-				"amount1Out": "12000000000000000000",
+				"amount1Out": "64726461957145433",
 				"reservesAfter": {
-					"reserve0": "75178959396984925",
-					"reserve1": "108000000000000000000",
-					"blockTimestampLast": 1732483715
+					"reserve0": "732000000000000000000",
+					"reserve1": "3895273538042854567",
+					"blockTimestampLast": 1628552277
 				},
-				"timestamp": 1732483715,
-				"isoDate": "2024-11-24T21:28:35.000Z",
-				"readableDate": "2024-11-24 21:28:35 UTC",
+				"timestamp": 1628552277,
+				"isoDate": "2021-08-09T23:37:57.000Z",
+				"readableDate": "2021-08-09 23:37:57 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "732000000000000000000",
+						"amountEth": "732.0"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "75178959396984925"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "108000000000000000000"
+						"amount": "3895273538042854567",
+						"amountEth": "3.895273538042854567"
 					}
 				}
 			},
 			{
-				"blockNumber": 23064919,
-				"transactionHash": "0x1465b64f0ae0dfcbf12e9cbe688ab7fe570cdb451cef9d3cc44d9a7aec96c726",
-				"logIndex": 202,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"to": "0x7C6561E2b07bb4F1dCD4D025ae6AfADf2D9099c0",
-				"amount0In": "7709871746178333",
+				"blockNumber": 13496244,
+				"transactionHash": "0xa9e389ac346b2e26fd41a500a8c596b968a7609f908323248f92163d99eca90a",
+				"logIndex": 26,
+				"sender": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"to": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"amount0In": "24000000000000000000",
 				"amount1In": "0",
 				"amount0Out": "0",
-				"amount1Out": "10000000000000000000",
+				"amount1Out": "123424268771346731",
 				"reservesAfter": {
-					"reserve0": "82888831143163258",
-					"reserve1": "98000000000000000000",
-					"blockTimestampLast": 1732919185
+					"reserve0": "780000000000000000000",
+					"reserve1": "3899563155764716182",
+					"blockTimestampLast": 1635295204
 				},
-				"timestamp": 1732919185,
-				"isoDate": "2024-11-29T22:26:25.000Z",
-				"readableDate": "2024-11-29 22:26:25 UTC",
+				"timestamp": 1635295204,
+				"isoDate": "2021-10-27T00:40:04.000Z",
+				"readableDate": "2021-10-27 00:40:04 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "780000000000000000000",
+						"amountEth": "780.0"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "82888831143163258"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "98000000000000000000"
+						"amount": "3899563155764716182",
+						"amountEth": "3.899563155764716182"
 					}
 				}
 			},
 			{
-				"blockNumber": 23064958,
-				"transactionHash": "0x80f72b83ebd5672d25f7d28e90477b7ce07903a07dc7f3a945e3d45e987c8f1f",
-				"logIndex": 171,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"to": "0x7C6561E2b07bb4F1dCD4D025ae6AfADf2D9099c0",
-				"amount0In": "1735528290267238",
+				"blockNumber": 13685943,
+				"transactionHash": "0x4a34d4b2d141c5c8c9788a3fc3363c81a9856dfceb0e28383d6bc61c8af092d3",
+				"logIndex": 264,
+				"sender": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"to": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"amount0In": "100000000000000000000",
 				"amount1In": "0",
 				"amount0Out": "0",
-				"amount1Out": "2000000000000000000",
+				"amount1Out": "441953446208641813",
 				"reservesAfter": {
-					"reserve0": "84624359433430496",
-					"reserve1": "96000000000000000000",
-					"blockTimestampLast": 1732919263
+					"reserve0": "880000000000000000000",
+					"reserve1": "3457609709556074369",
+					"blockTimestampLast": 1637876982
 				},
-				"timestamp": 1732919263,
-				"isoDate": "2024-11-29T22:27:43.000Z",
-				"readableDate": "2024-11-29 22:27:43 UTC",
+				"timestamp": 1637876982,
+				"isoDate": "2021-11-25T21:49:42.000Z",
+				"readableDate": "2021-11-25 21:49:42 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "880000000000000000000",
+						"amountEth": "880.0"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "84624359433430496"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "96000000000000000000"
+						"amount": "3457609709556074369",
+						"amountEth": "3.457609709556074369"
 					}
 				}
 			},
 			{
-				"blockNumber": 23065029,
-				"transactionHash": "0xddcc4a67e07b1d88e258753848d8d356097585fce07c252882ea1cc643f3661e",
-				"logIndex": 236,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"to": "0x7C6561E2b07bb4F1dCD4D025ae6AfADf2D9099c0",
-				"amount0In": "1809566116399669",
+				"blockNumber": 13894705,
+				"transactionHash": "0xd4e02e5ac3b45a0e97a2c1ff95e223a54181107b013423b0ee5bbe175ede4621",
+				"logIndex": 174,
+				"sender": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"to": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"amount0In": "73000000000000000000",
 				"amount1In": "0",
 				"amount0Out": "0",
-				"amount1Out": "2000000000000000000",
+				"amount1Out": "264119763378153687",
 				"reservesAfter": {
-					"reserve0": "86433925549830165",
-					"reserve1": "94000000000000000000",
-					"blockTimestampLast": 1732919405
+					"reserve0": "953000000000000000000",
+					"reserve1": "3193489946177920682",
+					"blockTimestampLast": 1640707644
 				},
-				"timestamp": 1732919405,
-				"isoDate": "2024-11-29T22:30:05.000Z",
-				"readableDate": "2024-11-29 22:30:05 UTC",
+				"timestamp": 1640707644,
+				"isoDate": "2021-12-28T16:07:24.000Z",
+				"readableDate": "2021-12-28 16:07:24 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "953000000000000000000",
+						"amountEth": "953.0"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "86433925549830165"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "94000000000000000000"
+						"amount": "3193489946177920682",
+						"amountEth": "3.193489946177920682"
 					}
 				}
 			},
 			{
-				"blockNumber": 23065070,
-				"transactionHash": "0xb3fce022ad63e7c17dbd5da082017924949d6a01c5076598b06aa2675b534dd6",
-				"logIndex": 155,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"to": "0x7C6561E2b07bb4F1dCD4D025ae6AfADf2D9099c0",
-				"amount0In": "1888440584440249",
+				"blockNumber": 14107432,
+				"transactionHash": "0x5bbdd94c62a70284f39e631a70055f6e2d0d14892825f9821813fea3e29d3f02",
+				"logIndex": 232,
+				"sender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+				"to": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+				"amount0In": "15000000000000000000",
 				"amount1In": "0",
 				"amount0Out": "0",
-				"amount1Out": "2000000000000000000",
+				"amount1Out": "49339733918509438",
 				"reservesAfter": {
-					"reserve0": "88322366134270414",
-					"reserve1": "92000000000000000000",
-					"blockTimestampLast": 1732919487
+					"reserve0": "968000000000000000000",
+					"reserve1": "3144150212259411244",
+					"blockTimestampLast": 1643549807
 				},
-				"timestamp": 1732919487,
-				"isoDate": "2024-11-29T22:31:27.000Z",
-				"readableDate": "2024-11-29 22:31:27 UTC",
+				"timestamp": 1643549807,
+				"isoDate": "2022-01-30T13:36:47.000Z",
+				"readableDate": "2022-01-30 13:36:47 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "968000000000000000000",
+						"amountEth": "968.0"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "88322366134270414"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "92000000000000000000"
+						"amount": "3144150212259411244",
+						"amountEth": "3.144150212259411244"
 					}
 				}
 			},
 			{
-				"blockNumber": 23065449,
-				"transactionHash": "0x95ff0f619aa26f925f3d58c24beea63431dcbfdc2473481de92c762e0fb63917",
-				"logIndex": 216,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"to": "0x7C6561E2b07bb4F1dCD4D025ae6AfADf2D9099c0",
-				"amount0In": "1972582158219329",
+				"blockNumber": 14352252,
+				"transactionHash": "0x446e4812f673e769821ea646cf2930181ce58347fff1d16379f4038926973217",
+				"logIndex": 517,
+				"sender": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"to": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"amount0In": "4000000000000000000",
 				"amount1In": "0",
 				"amount0Out": "0",
-				"amount1Out": "2000000000000000000",
+				"amount1Out": "12900232355225097",
 				"reservesAfter": {
-					"reserve0": "90294948292489743",
-					"reserve1": "90000000000000000000",
-					"blockTimestampLast": 1732920245
+					"reserve0": "972000000000000000000",
+					"reserve1": "3131249979904186147",
+					"blockTimestampLast": 1646824900
 				},
-				"timestamp": 1732920245,
-				"isoDate": "2024-11-29T22:44:05.000Z",
-				"readableDate": "2024-11-29 22:44:05 UTC",
+				"timestamp": 1646824900,
+				"isoDate": "2022-03-09T11:21:40.000Z",
+				"readableDate": "2022-03-09 11:21:40 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "972000000000000000000",
+						"amountEth": "972.0"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "90294948292489743"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "90000000000000000000"
+						"amount": "3131249979904186147",
+						"amountEth": "3.131249979904186147"
 					}
 				}
 			},
 			{
-				"blockNumber": 26813379,
-				"transactionHash": "0x357cb2adb859ad1ee59b56aed48ceaee6654c2c80d5d37fd0891b821f228636f",
-				"logIndex": 272,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"to": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
+				"blockNumber": 14684633,
+				"transactionHash": "0x08d517221ad69d7f04c558698e18cde02030b8a633bd2ae19ec1ab4ff6da85bf",
+				"logIndex": 24,
+				"sender": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"to": "0xf54516b8E279D103b1A1f8551D97F817DBfB4ebB",
 				"amount0In": "0",
-				"amount1In": "44000000000000000000",
-				"amount0Out": "29549355929475264",
+				"amount1In": "19507279477589204",
+				"amount0Out": "6000000000000000000",
 				"amount1Out": "0",
 				"reservesAfter": {
-					"reserve0": "60745592363014479",
-					"reserve1": "134000000000000000000",
-					"blockTimestampLast": 1740416105
+					"reserve0": "966000000000000000000",
+					"reserve1": "3150757259381775351",
+					"blockTimestampLast": 1651308424
 				},
-				"timestamp": 1740416105,
-				"isoDate": "2025-02-24T16:55:05.000Z",
-				"readableDate": "2025-02-24 16:55:05 UTC",
+				"timestamp": 1651308424,
+				"isoDate": "2022-04-30T08:47:04.000Z",
+				"readableDate": "2022-04-30 08:47:04 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "966000000000000000000",
+						"amountEth": "966.0"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "60745592363014479"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "134000000000000000000"
+						"amount": "3150757259381775351",
+						"amountEth": "3.150757259381775351"
 					}
 				}
 			},
 			{
-				"blockNumber": 26860275,
-				"transactionHash": "0x8d5b9e31f8bf6062f8a731b291ae1cfe6fac74ca5ef3b59b22fef79b522a1f3b",
-				"logIndex": 97,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"to": "0xbCe25877CECE25f7C10FCb15f0259e86Dd0f2821",
-				"amount0In": "6005001304524045",
-				"amount1In": "0",
-				"amount0Out": "0",
-				"amount1Out": "12000000000000000000",
-				"reservesAfter": {
-					"reserve0": "66750593667538524",
-					"reserve1": "122000000000000000000",
-					"blockTimestampLast": 1740509897
-				},
-				"timestamp": 1740509897,
-				"isoDate": "2025-02-25T18:58:17.000Z",
-				"readableDate": "2025-02-25 18:58:17 UTC",
-				"tokenReserves": {
-					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
-						"symbol": "WETH",
-						"name": "Wrapped Ether",
-						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "66750593667538524"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
-						"reserveKey": "reserve1",
-						"amount": "122000000000000000000"
-					}
-				}
-			},
-			{
-				"blockNumber": 26860313,
-				"transactionHash": "0xb44dba2888de9d4aa632ab618f7de3e8e43b62f790608b91e0c86b699241e6f0",
-				"logIndex": 49,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"to": "0xbCe25877CECE25f7C10FCb15f0259e86Dd0f2821",
-				"amount0In": "6648164519379997",
-				"amount1In": "0",
-				"amount0Out": "0",
-				"amount1Out": "11000000000000000000",
-				"reservesAfter": {
-					"reserve0": "73398758186918521",
-					"reserve1": "111000000000000000000",
-					"blockTimestampLast": 1740509973
-				},
-				"timestamp": 1740509973,
-				"isoDate": "2025-02-25T18:59:33.000Z",
-				"readableDate": "2025-02-25 18:59:33 UTC",
-				"tokenReserves": {
-					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
-						"symbol": "WETH",
-						"name": "Wrapped Ether",
-						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "73398758186918521"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
-						"reserveKey": "reserve1",
-						"amount": "111000000000000000000"
-					}
-				}
-			},
-			{
-				"blockNumber": 26908859,
-				"transactionHash": "0x55eaa3cff45229f91f62ad2dda2c01d9602a86a8f04ed7b7e318014fe672d2ce",
-				"logIndex": 678,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"to": "0x823d6c600750C558B86D33FBD444C81656047874",
-				"amount0In": "670614510615976",
-				"amount1In": "0",
-				"amount0Out": "0",
-				"amount1Out": "1000000000000000000",
-				"reservesAfter": {
-					"reserve0": "74069372697534497",
-					"reserve1": "110000000000000000000",
-					"blockTimestampLast": 1740607065
-				},
-				"timestamp": 1740607065,
-				"isoDate": "2025-02-26T21:57:45.000Z",
-				"readableDate": "2025-02-26 21:57:45 UTC",
-				"tokenReserves": {
-					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
-						"symbol": "WETH",
-						"name": "Wrapped Ether",
-						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "74069372697534497"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
-						"reserveKey": "reserve1",
-						"amount": "110000000000000000000"
-					}
-				}
-			},
-			{
-				"blockNumber": 26910901,
-				"transactionHash": "0x2c418ea1eba94a6a4eb9b514ead8c93e2f14799f2d5207f9dc5c0a5dab4cea3c",
-				"logIndex": 498,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"to": "0x823d6c600750C558B86D33FBD444C81656047874",
-				"amount0In": "682950280738874",
-				"amount1In": "0",
-				"amount0Out": "0",
-				"amount1Out": "1000000000000000000",
-				"reservesAfter": {
-					"reserve0": "74752322978273371",
-					"reserve1": "109000000000000000000",
-					"blockTimestampLast": 1740611149
-				},
-				"timestamp": 1740611149,
-				"isoDate": "2025-02-26T23:05:49.000Z",
-				"readableDate": "2025-02-26 23:05:49 UTC",
-				"tokenReserves": {
-					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
-						"symbol": "WETH",
-						"name": "Wrapped Ether",
-						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "74752322978273371"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
-						"reserveKey": "reserve1",
-						"amount": "109000000000000000000"
-					}
-				}
-			},
-			{
-				"blockNumber": 28214384,
-				"transactionHash": "0xc0d4faef5466c9dc08be01f9e7fae346dffd60c7902f3cf5b4d6ca9a45b87219",
-				"logIndex": 231,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"to": "0x641Ca0a952412f0ccacE256BF8Ab85Ce005FDCAC",
-				"amount0In": "15855365343793470",
-				"amount1In": "0",
-				"amount0Out": "0",
-				"amount1Out": "12000000000000000000",
-				"reservesAfter": {
-					"reserve0": "111826570489330026",
-					"reserve1": "73000000000000000000",
-					"blockTimestampLast": 1743218115
-				},
-				"timestamp": 1743218115,
-				"isoDate": "2025-03-29T03:15:15.000Z",
-				"readableDate": "2025-03-29 03:15:15 UTC",
-				"tokenReserves": {
-					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
-						"symbol": "WETH",
-						"name": "Wrapped Ether",
-						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "111826570489330026"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
-						"reserveKey": "reserve1",
-						"amount": "73000000000000000000"
-					}
-				}
-			},
-			{
-				"blockNumber": 28799619,
-				"transactionHash": "0x9237ff86981b7b35a8bff5f8051f7487c06b87ebec0b5f3b11278a9a725267dc",
-				"logIndex": 348,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"to": "0x641Ca0a952412f0ccacE256BF8Ab85Ce005FDCAC",
-				"amount0In": "19130583224582930",
-				"amount1In": "0",
-				"amount0Out": "0",
-				"amount1Out": "12000000000000000000",
-				"reservesAfter": {
-					"reserve0": "123822699921113014",
-					"reserve1": "66000000000000000000",
-					"blockTimestampLast": 1744388585
-				},
-				"timestamp": 1744388585,
-				"isoDate": "2025-04-11T16:23:05.000Z",
-				"readableDate": "2025-04-11 16:23:05 UTC",
-				"tokenReserves": {
-					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
-						"symbol": "WETH",
-						"name": "Wrapped Ether",
-						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "123822699921113014"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
-						"reserveKey": "reserve1",
-						"amount": "66000000000000000000"
-					}
-				}
-			},
-			{
-				"blockNumber": 28804712,
-				"transactionHash": "0x150cd83483071dcea087cc14e0461c7d85bbbfdcb4f2ad4bd6412b21217e79f9",
-				"logIndex": 201,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"to": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
+				"blockNumber": 15920855,
+				"transactionHash": "0x734908b0bf351e6e5eb317d6983397e816ba11d16130d8ae5f15eb19cf0f7dfa",
+				"logIndex": 697,
+				"sender": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+				"to": "0xFD4bA0A1C08E0aF938A2B1AC06E8937c8535eC93",
 				"amount0In": "0",
-				"amount1In": "12000000000000000000",
-				"amount0Out": "18968989441340638",
+				"amount1In": "19751487333135503",
+				"amount0Out": "6000000000000000165",
 				"amount1Out": "0",
 				"reservesAfter": {
-					"reserve0": "104853710479772376",
-					"reserve1": "78000000000000000000",
-					"blockTimestampLast": 1744398771
+					"reserve0": "959999999999999999835",
+					"reserve1": "3170508746714910854",
+					"blockTimestampLast": 1667856767
 				},
-				"timestamp": 1744398771,
-				"isoDate": "2025-04-11T19:12:51.000Z",
-				"readableDate": "2025-04-11 19:12:51 UTC",
+				"timestamp": 1667856767,
+				"isoDate": "2022-11-07T21:32:47.000Z",
+				"readableDate": "2022-11-07 21:32:47 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "959999999999999999835",
+						"amountEth": "959.999999999999999835"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "104853710479772376"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "78000000000000000000"
+						"amount": "3170508746714910854",
+						"amountEth": "3.170508746714910854"
 					}
 				}
 			},
 			{
-				"blockNumber": 29156187,
-				"transactionHash": "0x7ec4e81695c3afc1e03ab0927cb01c02ae1aafe6b4535fdd45681fcacd660f04",
-				"logIndex": 558,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"to": "0x64cF0d9aeb25ae93F5895E864FF5dcBeBa55cb13",
-				"amount0In": "1368579396720909",
+				"blockNumber": 17834071,
+				"transactionHash": "0x909511edb7e8798f577125d73e7336213198ceb03911eff45a292c697c49bd77",
+				"logIndex": 55,
+				"sender": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"to": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"amount0In": "18000000000000000000",
 				"amount1In": "0",
 				"amount0Out": "0",
-				"amount1Out": "1000000000000000000",
+				"amount1Out": "58181075405539559",
 				"reservesAfter": {
-					"reserve0": "106222289876493285",
-					"reserve1": "77000000000000000000",
-					"blockTimestampLast": 1745101721
+					"reserve0": "977999999999999999835",
+					"reserve1": "3112327671309371295",
+					"blockTimestampLast": 1691060891
 				},
-				"timestamp": 1745101721,
-				"isoDate": "2025-04-19T22:28:41.000Z",
-				"readableDate": "2025-04-19 22:28:41 UTC",
+				"timestamp": 1691060891,
+				"isoDate": "2023-08-03T11:08:11.000Z",
+				"readableDate": "2023-08-03 11:08:11 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "977999999999999999835",
+						"amountEth": "977.999999999999999835"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "106222289876493285"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "77000000000000000000"
+						"amount": "3112327671309371295",
+						"amountEth": "3.112327671309371295"
 					}
 				}
 			},
 			{
-				"blockNumber": 32681326,
-				"transactionHash": "0xce73efe5993f570cfa6be07a8fb6431f3df225260db0dbe5fd5d7ea04e89e310",
-				"logIndex": 1379,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"to": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
+				"blockNumber": 18212085,
+				"transactionHash": "0xd2c5e981d8fe89dfa755eeeff8b4bd7ebef2e1ee09b82849c8dcd11f89b0bdab",
+				"logIndex": 258,
+				"sender": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"to": "0x732c8beAa96b9416b205dE654e93EaC63C3E8d9E",
 				"amount0In": "0",
-				"amount1In": "280000000000000000000",
-				"amount0Out": "124843601705160080",
+				"amount1In": "58531739054213352",
+				"amount0Out": "18000000000000000000",
 				"amount1Out": "0",
 				"reservesAfter": {
-					"reserve0": "601364370022702184",
-					"reserve1": "1622000000000000000000",
-					"blockTimestampLast": 1752151999
+					"reserve0": "959999999999999999835",
+					"reserve1": "3170859410363584647",
+					"blockTimestampLast": 1695636251
 				},
-				"timestamp": 1752151999,
-				"isoDate": "2025-07-10T12:53:19.000Z",
-				"readableDate": "2025-07-10 12:53:19 UTC",
+				"timestamp": 1695636251,
+				"isoDate": "2023-09-25T10:04:11.000Z",
+				"readableDate": "2023-09-25 10:04:11 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "959999999999999999835",
+						"amountEth": "959.999999999999999835"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "601364370022702184"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "1622000000000000000000"
+						"amount": "3170859410363584647",
+						"amountEth": "3.170859410363584647"
 					}
 				}
 			},
 			{
-				"blockNumber": 35427493,
-				"transactionHash": "0x51224c4334344f6d346148ed53fa78eecc8541e5125fc2414364bd205924facd",
-				"logIndex": 37,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"to": "0x649B63F6F3354141aa936E3Ce360A721c5dA990A",
-				"amount0In": "746155927815252",
-				"amount1In": "0",
-				"amount0Out": "0",
-				"amount1Out": "2000000000000000000",
+				"blockNumber": 18699499,
+				"transactionHash": "0x08ebd9e28dd161501c5b9acceb260f66e07acd552cc8590520c5aed1fa68604e",
+				"logIndex": 131,
+				"sender": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"to": "0x6474679BAfAbeD6b8De79de422E9ed1c24a631Be",
+				"amount0In": "0",
+				"amount1In": "20002519573586071",
+				"amount0Out": "6000000000000000000",
+				"amount1Out": "0",
 				"reservesAfter": {
-					"reserve0": "602110525950517436",
-					"reserve1": "1620000000000000000000",
-					"blockTimestampLast": 1757644333
+					"reserve0": "953999999999999999835",
+					"reserve1": "3190861929937170718",
+					"blockTimestampLast": 1701529523
 				},
-				"timestamp": 1757644333,
-				"isoDate": "2025-09-12T02:32:13.000Z",
-				"readableDate": "2025-09-12 02:32:13 UTC",
+				"timestamp": 1701529523,
+				"isoDate": "2023-12-02T15:05:23.000Z",
+				"readableDate": "2023-12-02 15:05:23 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "953999999999999999835",
+						"amountEth": "953.999999999999999835"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
+						"reserveKey": "reserve1",
+						"amount": "3190861929937170718",
+						"amountEth": "3.190861929937170718"
+					}
+				}
+			},
+			{
+				"blockNumber": 18918250,
+				"transactionHash": "0x9338b7919ecf52d3f61ca1e1321523ab63e6218bbfa7589a8cd5e5efdb282cbe",
+				"logIndex": 89,
+				"sender": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"to": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"amount0In": "30000000000000000000",
+				"amount1In": "0",
+				"amount0Out": "0",
+				"amount1Out": "96999400681384248",
+				"reservesAfter": {
+					"reserve0": "983999999999999999835",
+					"reserve1": "3093862529255786470",
+					"blockTimestampLast": 1704180923
+				},
+				"timestamp": 1704180923,
+				"isoDate": "2024-01-02T07:35:23.000Z",
+				"readableDate": "2024-01-02 07:35:23 UTC",
+				"tokenReserves": {
+					"token0": {
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
 						"reserveKey": "reserve0",
-						"amount": "602110525950517436"
+						"amount": "983999999999999999835",
+						"amountEth": "983.999999999999999835"
 					},
 					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+						"symbol": "WETH",
+						"name": "Wrapped Ether",
 						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "1620000000000000000000"
+						"amount": "3093862529255786470",
+						"amountEth": "3.09386252925578647"
+					}
+				}
+			},
+			{
+				"blockNumber": 19390399,
+				"transactionHash": "0x23fddecd34032442e7287b9f58f5a04b997ec24c350430e95234321e7e20207b",
+				"logIndex": 29,
+				"sender": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"to": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"amount0In": "57000000000000000000",
+				"amount1In": "0",
+				"amount0Out": "0",
+				"amount1Out": "153676878978752436",
+				"reservesAfter": {
+					"reserve0": "406288618537178250734",
+					"reserve1": "944545650277034034",
+					"blockTimestampLast": 1709900303
+				},
+				"timestamp": 1709900303,
+				"isoDate": "2024-03-08T12:18:23.000Z",
+				"readableDate": "2024-03-08 12:18:23 UTC",
+				"tokenReserves": {
+					"token0": {
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "406288618537178250734",
+						"amountEth": "406.288618537178250734"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+						"symbol": "WETH",
+						"name": "Wrapped Ether",
+						"decimals": 18,
+						"reserveKey": "reserve1",
+						"amount": "944545650277034034",
+						"amountEth": "0.944545650277034034"
+					}
+				}
+			},
+			{
+				"blockNumber": 19722806,
+				"transactionHash": "0xd8fb1ef2e4e6a9840ee6877c36acdda29a7db15db8b2ea3e5979b5eb8c8935e3",
+				"logIndex": 165,
+				"sender": "0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD",
+				"to": "0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD",
+				"amount0In": "79000000000000000000",
+				"amount1In": "0",
+				"amount0Out": "0",
+				"amount1Out": "153375942290702370",
+				"reservesAfter": {
+					"reserve0": "485288618537178250734",
+					"reserve1": "791169707986331664",
+					"blockTimestampLast": 1713932279
+				},
+				"timestamp": 1713932279,
+				"isoDate": "2024-04-24T04:17:59.000Z",
+				"readableDate": "2024-04-24 04:17:59 UTC",
+				"tokenReserves": {
+					"token0": {
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "485288618537178250734",
+						"amountEth": "485.288618537178250734"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+						"symbol": "WETH",
+						"name": "Wrapped Ether",
+						"decimals": 18,
+						"reserveKey": "reserve1",
+						"amount": "791169707986331664",
+						"amountEth": "0.791169707986331664"
+					}
+				}
+			},
+			{
+				"blockNumber": 20505883,
+				"transactionHash": "0x300103bbaac64cbd866fb7417a86cb4af53170ce23507209a3472547f899d35b",
+				"logIndex": 268,
+				"sender": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"to": "0x1Fe5844315ba92E86eB64c8317CDB2f11C8FE544",
+				"amount0In": "0",
+				"amount1In": "1638589734899175",
+				"amount0Out": "1000000000000000000",
+				"amount1Out": "0",
+				"reservesAfter": {
+					"reserve0": "484288618537178250734",
+					"reserve1": "792808297721230839",
+					"blockTimestampLast": 1723385507
+				},
+				"timestamp": 1723385507,
+				"isoDate": "2024-08-11T14:11:47.000Z",
+				"readableDate": "2024-08-11 14:11:47 UTC",
+				"tokenReserves": {
+					"token0": {
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "484288618537178250734",
+						"amountEth": "484.288618537178250734"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+						"symbol": "WETH",
+						"name": "Wrapped Ether",
+						"decimals": 18,
+						"reserveKey": "reserve1",
+						"amount": "792808297721230839",
+						"amountEth": "0.792808297721230839"
+					}
+				}
+			},
+			{
+				"blockNumber": 20565734,
+				"transactionHash": "0x44314b052267764d25fe86b3d57e65f8f4d7166f7fc73783d60de4e2850fa966",
+				"logIndex": 285,
+				"sender": "0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD",
+				"to": "0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD",
+				"amount0In": "2000000000000000000",
+				"amount1In": "0",
+				"amount0Out": "0",
+				"amount1Out": "3250907364140697",
+				"reservesAfter": {
+					"reserve0": "486288618537178250734",
+					"reserve1": "789557390357090142",
+					"blockTimestampLast": 1724107427
+				},
+				"timestamp": 1724107427,
+				"isoDate": "2024-08-19T22:43:47.000Z",
+				"readableDate": "2024-08-19 22:43:47 UTC",
+				"tokenReserves": {
+					"token0": {
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "486288618537178250734",
+						"amountEth": "486.288618537178250734"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+						"symbol": "WETH",
+						"name": "Wrapped Ether",
+						"decimals": 18,
+						"reserveKey": "reserve1",
+						"amount": "789557390357090142",
+						"amountEth": "0.789557390357090142"
 					}
 				}
 			}
 		],
 		"mints": [
 			{
-				"blockNumber": 21723135,
-				"transactionHash": "0x83c04b7f6a8258353cc9fcd474fa5abf6b953ced93f214ebcef01b7bfe662136",
-				"logIndex": 461,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"amount0": "563559000000000",
-				"amount1": "1000000000000000000",
+				"blockNumber": 12890402,
+				"transactionHash": "0xf8cb14a3ba6c8ac5c08e5d595f1e5700f84a67867d58b1090da21427b3dd2054",
+				"logIndex": 145,
+				"sender": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"amount0": "720000000000000000000",
+				"amount1": "3960000000000000000",
 				"reservesAfter": {
-					"reserve0": "563559000000000",
-					"reserve1": "1000000000000000000",
-					"blockTimestampLast": 1730235617
+					"reserve0": "720000000000000000000",
+					"reserve1": "3960000000000000000",
+					"blockTimestampLast": 1627148287
 				},
-				"timestamp": 1730235617,
-				"isoDate": "2024-10-29T21:00:17.000Z",
-				"readableDate": "2024-10-29 21:00:17 UTC",
+				"timestamp": 1627148287,
+				"isoDate": "2021-07-24T17:38:07.000Z",
+				"readableDate": "2021-07-24 17:38:07 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "720000000000000000000",
+						"amountEth": "720.0"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "563559000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "1000000000000000000"
+						"amount": "3960000000000000000",
+						"amountEth": "3.96"
 					}
 				}
 			},
 			{
-				"blockNumber": 22191492,
-				"transactionHash": "0x9f30a052c945792dd57f09ea8103ee790b4a5cb33dc1886c89dfe11bef5479a2",
-				"logIndex": 617,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"amount0": "2817795000000000",
-				"amount1": "5000000000000000000",
+				"blockNumber": 13089709,
+				"transactionHash": "0xc9fae7badc0033998859ce659c5079f2ff4e6cc9b27a8b4e5d1fa36497535230",
+				"logIndex": 262,
+				"sender": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"amount0": "24000000000000000000",
+				"amount1": "127713886493208346",
 				"reservesAfter": {
-					"reserve0": "3381354000000000",
-					"reserve1": "6000000000000000000",
-					"blockTimestampLast": 1731172331
+					"reserve0": "756000000000000000000",
+					"reserve1": "4022987424536062913",
+					"blockTimestampLast": 1629829812
 				},
-				"timestamp": 1731172331,
-				"isoDate": "2024-11-09T17:12:11.000Z",
-				"readableDate": "2024-11-09 17:12:11 UTC",
+				"timestamp": 1629829812,
+				"isoDate": "2021-08-24T18:30:12.000Z",
+				"readableDate": "2021-08-24 18:30:12 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "756000000000000000000",
+						"amountEth": "756.0"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "3381354000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "6000000000000000000"
-					}
-				}
-			},
-			{
-				"blockNumber": 22192033,
-				"transactionHash": "0xfe5247d65e4179db1b81d893806d8d1780f10102af36d85c22b14d03f48fb952",
-				"logIndex": 585,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"amount0": "2254236000000000",
-				"amount1": "4000000000000000000",
-				"reservesAfter": {
-					"reserve0": "5635590000000000",
-					"reserve1": "10000000000000000000",
-					"blockTimestampLast": 1731173413
-				},
-				"timestamp": 1731173413,
-				"isoDate": "2024-11-09T17:30:13.000Z",
-				"readableDate": "2024-11-09 17:30:13 UTC",
-				"tokenReserves": {
-					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
-						"symbol": "WETH",
-						"name": "Wrapped Ether",
-						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "5635590000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
-						"reserveKey": "reserve1",
-						"amount": "10000000000000000000"
-					}
-				}
-			},
-			{
-				"blockNumber": 22192296,
-				"transactionHash": "0x0943dec58f3f7c57d593c9d275fd5e7685a24bedd5524890f7e6c110a46f654c",
-				"logIndex": 294,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"amount0": "5635590000000000",
-				"amount1": "10000000000000000000",
-				"reservesAfter": {
-					"reserve0": "11271180000000000",
-					"reserve1": "20000000000000000000",
-					"blockTimestampLast": 1731173939
-				},
-				"timestamp": 1731173939,
-				"isoDate": "2024-11-09T17:38:59.000Z",
-				"readableDate": "2024-11-09 17:38:59 UTC",
-				"tokenReserves": {
-					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
-						"symbol": "WETH",
-						"name": "Wrapped Ether",
-						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "11271180000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
-						"reserveKey": "reserve1",
-						"amount": "20000000000000000000"
-					}
-				}
-			},
-			{
-				"blockNumber": 22192433,
-				"transactionHash": "0x2da207a8f9111970f6bee126d51fd4cbec69a0b4659501f21cc1f07073f7b098",
-				"logIndex": 505,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"amount0": "5635590000000000",
-				"amount1": "10000000000000000000",
-				"reservesAfter": {
-					"reserve0": "16906770000000000",
-					"reserve1": "30000000000000000000",
-					"blockTimestampLast": 1731174213
-				},
-				"timestamp": 1731174213,
-				"isoDate": "2024-11-09T17:43:33.000Z",
-				"readableDate": "2024-11-09 17:43:33 UTC",
-				"tokenReserves": {
-					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
-						"symbol": "WETH",
-						"name": "Wrapped Ether",
-						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "16906770000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
-						"reserveKey": "reserve1",
-						"amount": "30000000000000000000"
-					}
-				}
-			},
-			{
-				"blockNumber": 22192790,
-				"transactionHash": "0x1c174e0308e0057187d17cbbc6083c2df56957bdb47110317a36c91e45a69f55",
-				"logIndex": 438,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"amount0": "5635590000000000",
-				"amount1": "10000000000000000000",
-				"reservesAfter": {
-					"reserve0": "22542360000000000",
-					"reserve1": "40000000000000000000",
-					"blockTimestampLast": 1731174927
-				},
-				"timestamp": 1731174927,
-				"isoDate": "2024-11-09T17:55:27.000Z",
-				"readableDate": "2024-11-09 17:55:27 UTC",
-				"tokenReserves": {
-					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
-						"symbol": "WETH",
-						"name": "Wrapped Ether",
-						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "22542360000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
-						"reserveKey": "reserve1",
-						"amount": "40000000000000000000"
-					}
-				}
-			},
-			{
-				"blockNumber": 22238933,
-				"transactionHash": "0x353a10de8c3879bbd66dbeb6fe20b3f323c878c4c2b9df4cefa0aaa5a64d05e4",
-				"logIndex": 382,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"amount0": "11271180000000000",
-				"amount1": "20000000000000000000",
-				"reservesAfter": {
-					"reserve0": "33813540000000000",
-					"reserve1": "60000000000000000000",
-					"blockTimestampLast": 1731267213
-				},
-				"timestamp": 1731267213,
-				"isoDate": "2024-11-10T19:33:33.000Z",
-				"readableDate": "2024-11-10 19:33:33 UTC",
-				"tokenReserves": {
-					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
-						"symbol": "WETH",
-						"name": "Wrapped Ether",
-						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "33813540000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
-						"reserveKey": "reserve1",
-						"amount": "60000000000000000000"
-					}
-				}
-			},
-			{
-				"blockNumber": 22238973,
-				"transactionHash": "0x71e00d2e34da109296e5c1bf5fa9424f8aabfaf7c4f2fad31cf229ae93cc799d",
-				"logIndex": 338,
-				"sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
-				"amount0": "33813540000000000",
-				"amount1": "60000000000000000000",
-				"reservesAfter": {
-					"reserve0": "67627080000000000",
-					"reserve1": "120000000000000000000",
-					"blockTimestampLast": 1731267293
-				},
-				"timestamp": 1731267293,
-				"isoDate": "2024-11-10T19:34:53.000Z",
-				"readableDate": "2024-11-10 19:34:53 UTC",
-				"tokenReserves": {
-					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
-						"symbol": "WETH",
-						"name": "Wrapped Ether",
-						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "67627080000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
-						"reserveKey": "reserve1",
-						"amount": "120000000000000000000"
+						"amount": "4022987424536062913",
+						"amountEth": "4.022987424536062913"
 					}
 				}
 			}
 		],
-		"burns": [],
+		"burns": [
+			{
+				"blockNumber": 19197579,
+				"transactionHash": "0x916fcdd0f68adbb8d887016bcad94e59cf049917d78971db1ddcac64b0f735cf",
+				"logIndex": 140,
+				"sender": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"to": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"amount0": "634711381462821749101",
+				"amount1": "1995640000000000000",
+				"reservesAfter": {
+					"reserve0": "349288618537178250734",
+					"reserve1": "1098222529255786470",
+					"blockTimestampLast": 1707566519
+				},
+				"timestamp": 1707566519,
+				"isoDate": "2024-02-10T12:01:59.000Z",
+				"readableDate": "2024-02-10 12:01:59 UTC",
+				"tokenReserves": {
+					"token0": {
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "349288618537178250734",
+						"amountEth": "349.288618537178250734"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+						"symbol": "WETH",
+						"name": "Wrapped Ether",
+						"decimals": 18,
+						"reserveKey": "reserve1",
+						"amount": "1098222529255786470",
+						"amountEth": "1.09822252925578647"
+					}
+				}
+			},
+			{
+				"blockNumber": 20860382,
+				"transactionHash": "0xcd6b65dc18e6b35596e14e4267c8e628973565f676d510a2c0fde1823da2b1b1",
+				"logIndex": 246,
+				"sender": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"to": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"amount0": "442798137104702808543",
+				"amount1": "718944528537513069",
+				"reservesAfter": {
+					"reserve0": "43490481432475442191",
+					"reserve1": "70612861819577073",
+					"blockTimestampLast": 1727662151
+				},
+				"timestamp": 1727662151,
+				"isoDate": "2024-09-30T02:09:11.000Z",
+				"readableDate": "2024-09-30 02:09:11 UTC",
+				"tokenReserves": {
+					"token0": {
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "43490481432475442191",
+						"amountEth": "43.490481432475442191"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+						"symbol": "WETH",
+						"name": "Wrapped Ether",
+						"decimals": 18,
+						"reserveKey": "reserve1",
+						"amount": "70612861819577073",
+						"amountEth": "0.070612861819577073"
+					}
+				}
+			},
+			{
+				"blockNumber": 21250169,
+				"transactionHash": "0xe9d1aa54374dc4ab04a33edcbce7e0b39ec7623ddfa95e8ec7ef1ff3c494df06",
+				"logIndex": 253,
+				"sender": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"to": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+				"amount0": "43490481432475417349",
+				"amount1": "70612861819577032",
+				"reservesAfter": {
+					"reserve0": "24842",
+					"reserve1": "41",
+					"blockTimestampLast": 1732361627
+				},
+				"timestamp": 1732361627,
+				"isoDate": "2024-11-23T11:33:47.000Z",
+				"readableDate": "2024-11-23 11:33:47 UTC",
+				"tokenReserves": {
+					"token0": {
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "24842",
+						"amountEth": "0.000000000000024842"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+						"symbol": "WETH",
+						"name": "Wrapped Ether",
+						"decimals": 18,
+						"reserveKey": "reserve1",
+						"amount": "41",
+						"amountEth": "0.000000000000000041"
+					}
+				}
+			}
+		],
 		"syncs": [
 			{
-				"blockNumber": 21723135,
-				"transactionHash": "0x83c04b7f6a8258353cc9fcd474fa5abf6b953ced93f214ebcef01b7bfe662136",
-				"logIndex": 460,
-				"reserve0": "563559000000000",
-				"reserve1": "1000000000000000000",
-				"timestamp": 1730235617,
-				"isoDate": "2024-10-29T21:00:17.000Z",
-				"readableDate": "2024-10-29 21:00:17 UTC",
+				"blockNumber": 12890402,
+				"transactionHash": "0xf8cb14a3ba6c8ac5c08e5d595f1e5700f84a67867d58b1090da21427b3dd2054",
+				"logIndex": 144,
+				"reserve0": "720000000000000000000",
+				"reserve1": "3960000000000000000",
+				"timestamp": 1627148287,
+				"isoDate": "2021-07-24T17:38:07.000Z",
+				"readableDate": "2021-07-24 17:38:07 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "720000000000000000000",
+						"amountEth": "720.0"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "563559000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "1000000000000000000"
+						"amount": "3960000000000000000",
+						"amountEth": "3.96"
 					}
 				}
 			},
 			{
-				"blockNumber": 22191492,
-				"transactionHash": "0x9f30a052c945792dd57f09ea8103ee790b4a5cb33dc1886c89dfe11bef5479a2",
-				"logIndex": 616,
-				"reserve0": "3381354000000000",
-				"reserve1": "6000000000000000000",
-				"timestamp": 1731172331,
-				"isoDate": "2024-11-09T17:12:11.000Z",
-				"readableDate": "2024-11-09 17:12:11 UTC",
+				"blockNumber": 12993966,
+				"transactionHash": "0xdd214502507588717b5b2d9cc9782343e88c58e7c6ba23c0b4767b6b800df160",
+				"logIndex": 287,
+				"reserve0": "732000000000000000000",
+				"reserve1": "3895273538042854567",
+				"timestamp": 1628552277,
+				"isoDate": "2021-08-09T23:37:57.000Z",
+				"readableDate": "2021-08-09 23:37:57 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "732000000000000000000",
+						"amountEth": "732.0"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "3381354000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "6000000000000000000"
+						"amount": "3895273538042854567",
+						"amountEth": "3.895273538042854567"
 					}
 				}
 			},
 			{
-				"blockNumber": 22192033,
-				"transactionHash": "0xfe5247d65e4179db1b81d893806d8d1780f10102af36d85c22b14d03f48fb952",
-				"logIndex": 584,
-				"reserve0": "5635590000000000",
-				"reserve1": "10000000000000000000",
-				"timestamp": 1731173413,
-				"isoDate": "2024-11-09T17:30:13.000Z",
-				"readableDate": "2024-11-09 17:30:13 UTC",
+				"blockNumber": 13089709,
+				"transactionHash": "0xc9fae7badc0033998859ce659c5079f2ff4e6cc9b27a8b4e5d1fa36497535230",
+				"logIndex": 261,
+				"reserve0": "756000000000000000000",
+				"reserve1": "4022987424536062913",
+				"timestamp": 1629829812,
+				"isoDate": "2021-08-24T18:30:12.000Z",
+				"readableDate": "2021-08-24 18:30:12 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "756000000000000000000",
+						"amountEth": "756.0"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "5635590000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "10000000000000000000"
+						"amount": "4022987424536062913",
+						"amountEth": "4.022987424536062913"
 					}
 				}
 			},
 			{
-				"blockNumber": 22192296,
-				"transactionHash": "0x0943dec58f3f7c57d593c9d275fd5e7685a24bedd5524890f7e6c110a46f654c",
-				"logIndex": 293,
-				"reserve0": "11271180000000000",
-				"reserve1": "20000000000000000000",
-				"timestamp": 1731173939,
-				"isoDate": "2024-11-09T17:38:59.000Z",
-				"readableDate": "2024-11-09 17:38:59 UTC",
+				"blockNumber": 13496244,
+				"transactionHash": "0xa9e389ac346b2e26fd41a500a8c596b968a7609f908323248f92163d99eca90a",
+				"logIndex": 25,
+				"reserve0": "780000000000000000000",
+				"reserve1": "3899563155764716182",
+				"timestamp": 1635295204,
+				"isoDate": "2021-10-27T00:40:04.000Z",
+				"readableDate": "2021-10-27 00:40:04 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "780000000000000000000",
+						"amountEth": "780.0"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "11271180000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "20000000000000000000"
+						"amount": "3899563155764716182",
+						"amountEth": "3.899563155764716182"
 					}
 				}
 			},
 			{
-				"blockNumber": 22192433,
-				"transactionHash": "0x2da207a8f9111970f6bee126d51fd4cbec69a0b4659501f21cc1f07073f7b098",
-				"logIndex": 504,
-				"reserve0": "16906770000000000",
-				"reserve1": "30000000000000000000",
-				"timestamp": 1731174213,
-				"isoDate": "2024-11-09T17:43:33.000Z",
-				"readableDate": "2024-11-09 17:43:33 UTC",
+				"blockNumber": 13685943,
+				"transactionHash": "0x4a34d4b2d141c5c8c9788a3fc3363c81a9856dfceb0e28383d6bc61c8af092d3",
+				"logIndex": 263,
+				"reserve0": "880000000000000000000",
+				"reserve1": "3457609709556074369",
+				"timestamp": 1637876982,
+				"isoDate": "2021-11-25T21:49:42.000Z",
+				"readableDate": "2021-11-25 21:49:42 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "880000000000000000000",
+						"amountEth": "880.0"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "16906770000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "30000000000000000000"
+						"amount": "3457609709556074369",
+						"amountEth": "3.457609709556074369"
 					}
 				}
 			},
 			{
-				"blockNumber": 22192790,
-				"transactionHash": "0x1c174e0308e0057187d17cbbc6083c2df56957bdb47110317a36c91e45a69f55",
-				"logIndex": 437,
-				"reserve0": "22542360000000000",
-				"reserve1": "40000000000000000000",
-				"timestamp": 1731174927,
-				"isoDate": "2024-11-09T17:55:27.000Z",
-				"readableDate": "2024-11-09 17:55:27 UTC",
+				"blockNumber": 13894705,
+				"transactionHash": "0xd4e02e5ac3b45a0e97a2c1ff95e223a54181107b013423b0ee5bbe175ede4621",
+				"logIndex": 173,
+				"reserve0": "953000000000000000000",
+				"reserve1": "3193489946177920682",
+				"timestamp": 1640707644,
+				"isoDate": "2021-12-28T16:07:24.000Z",
+				"readableDate": "2021-12-28 16:07:24 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "953000000000000000000",
+						"amountEth": "953.0"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "22542360000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "40000000000000000000"
+						"amount": "3193489946177920682",
+						"amountEth": "3.193489946177920682"
 					}
 				}
 			},
 			{
-				"blockNumber": 22238933,
-				"transactionHash": "0x353a10de8c3879bbd66dbeb6fe20b3f323c878c4c2b9df4cefa0aaa5a64d05e4",
-				"logIndex": 381,
-				"reserve0": "33813540000000000",
-				"reserve1": "60000000000000000000",
-				"timestamp": 1731267213,
-				"isoDate": "2024-11-10T19:33:33.000Z",
-				"readableDate": "2024-11-10 19:33:33 UTC",
+				"blockNumber": 14107432,
+				"transactionHash": "0x5bbdd94c62a70284f39e631a70055f6e2d0d14892825f9821813fea3e29d3f02",
+				"logIndex": 231,
+				"reserve0": "968000000000000000000",
+				"reserve1": "3144150212259411244",
+				"timestamp": 1643549807,
+				"isoDate": "2022-01-30T13:36:47.000Z",
+				"readableDate": "2022-01-30 13:36:47 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "968000000000000000000",
+						"amountEth": "968.0"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "33813540000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "60000000000000000000"
+						"amount": "3144150212259411244",
+						"amountEth": "3.144150212259411244"
 					}
 				}
 			},
 			{
-				"blockNumber": 22238973,
-				"transactionHash": "0x71e00d2e34da109296e5c1bf5fa9424f8aabfaf7c4f2fad31cf229ae93cc799d",
-				"logIndex": 337,
-				"reserve0": "67627080000000000",
-				"reserve1": "120000000000000000000",
-				"timestamp": 1731267293,
-				"isoDate": "2024-11-10T19:34:53.000Z",
-				"readableDate": "2024-11-10 19:34:53 UTC",
+				"blockNumber": 14352252,
+				"transactionHash": "0x446e4812f673e769821ea646cf2930181ce58347fff1d16379f4038926973217",
+				"logIndex": 516,
+				"reserve0": "972000000000000000000",
+				"reserve1": "3131249979904186147",
+				"timestamp": 1646824900,
+				"isoDate": "2022-03-09T11:21:40.000Z",
+				"readableDate": "2022-03-09 11:21:40 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "972000000000000000000",
+						"amountEth": "972.0"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "67627080000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "120000000000000000000"
+						"amount": "3131249979904186147",
+						"amountEth": "3.131249979904186147"
 					}
 				}
 			},
 			{
-				"blockNumber": 22847184,
-				"transactionHash": "0x6c74edbf58467693b5f0ea7a267c5c0ec1827fcab74c13701f8be8027a616260",
-				"logIndex": 501,
-				"reserve0": "75178959396984925",
-				"reserve1": "108000000000000000000",
-				"timestamp": 1732483715,
-				"isoDate": "2024-11-24T21:28:35.000Z",
-				"readableDate": "2024-11-24 21:28:35 UTC",
+				"blockNumber": 14684633,
+				"transactionHash": "0x08d517221ad69d7f04c558698e18cde02030b8a633bd2ae19ec1ab4ff6da85bf",
+				"logIndex": 23,
+				"reserve0": "966000000000000000000",
+				"reserve1": "3150757259381775351",
+				"timestamp": 1651308424,
+				"isoDate": "2022-04-30T08:47:04.000Z",
+				"readableDate": "2022-04-30 08:47:04 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "966000000000000000000",
+						"amountEth": "966.0"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "75178959396984925"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "108000000000000000000"
+						"amount": "3150757259381775351",
+						"amountEth": "3.150757259381775351"
 					}
 				}
 			},
 			{
-				"blockNumber": 23064919,
-				"transactionHash": "0x1465b64f0ae0dfcbf12e9cbe688ab7fe570cdb451cef9d3cc44d9a7aec96c726",
-				"logIndex": 201,
-				"reserve0": "82888831143163258",
-				"reserve1": "98000000000000000000",
-				"timestamp": 1732919185,
-				"isoDate": "2024-11-29T22:26:25.000Z",
-				"readableDate": "2024-11-29 22:26:25 UTC",
+				"blockNumber": 15920855,
+				"transactionHash": "0x734908b0bf351e6e5eb317d6983397e816ba11d16130d8ae5f15eb19cf0f7dfa",
+				"logIndex": 696,
+				"reserve0": "959999999999999999835",
+				"reserve1": "3170508746714910854",
+				"timestamp": 1667856767,
+				"isoDate": "2022-11-07T21:32:47.000Z",
+				"readableDate": "2022-11-07 21:32:47 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "959999999999999999835",
+						"amountEth": "959.999999999999999835"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "82888831143163258"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "98000000000000000000"
+						"amount": "3170508746714910854",
+						"amountEth": "3.170508746714910854"
 					}
 				}
 			},
 			{
-				"blockNumber": 23064958,
-				"transactionHash": "0x80f72b83ebd5672d25f7d28e90477b7ce07903a07dc7f3a945e3d45e987c8f1f",
-				"logIndex": 170,
-				"reserve0": "84624359433430496",
-				"reserve1": "96000000000000000000",
-				"timestamp": 1732919263,
-				"isoDate": "2024-11-29T22:27:43.000Z",
-				"readableDate": "2024-11-29 22:27:43 UTC",
+				"blockNumber": 17834071,
+				"transactionHash": "0x909511edb7e8798f577125d73e7336213198ceb03911eff45a292c697c49bd77",
+				"logIndex": 54,
+				"reserve0": "977999999999999999835",
+				"reserve1": "3112327671309371295",
+				"timestamp": 1691060891,
+				"isoDate": "2023-08-03T11:08:11.000Z",
+				"readableDate": "2023-08-03 11:08:11 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "977999999999999999835",
+						"amountEth": "977.999999999999999835"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "84624359433430496"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "96000000000000000000"
+						"amount": "3112327671309371295",
+						"amountEth": "3.112327671309371295"
 					}
 				}
 			},
 			{
-				"blockNumber": 23065029,
-				"transactionHash": "0xddcc4a67e07b1d88e258753848d8d356097585fce07c252882ea1cc643f3661e",
-				"logIndex": 235,
-				"reserve0": "86433925549830165",
-				"reserve1": "94000000000000000000",
-				"timestamp": 1732919405,
-				"isoDate": "2024-11-29T22:30:05.000Z",
-				"readableDate": "2024-11-29 22:30:05 UTC",
+				"blockNumber": 18212085,
+				"transactionHash": "0xd2c5e981d8fe89dfa755eeeff8b4bd7ebef2e1ee09b82849c8dcd11f89b0bdab",
+				"logIndex": 257,
+				"reserve0": "959999999999999999835",
+				"reserve1": "3170859410363584647",
+				"timestamp": 1695636251,
+				"isoDate": "2023-09-25T10:04:11.000Z",
+				"readableDate": "2023-09-25 10:04:11 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "959999999999999999835",
+						"amountEth": "959.999999999999999835"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "86433925549830165"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "94000000000000000000"
+						"amount": "3170859410363584647",
+						"amountEth": "3.170859410363584647"
 					}
 				}
 			},
 			{
-				"blockNumber": 23065070,
-				"transactionHash": "0xb3fce022ad63e7c17dbd5da082017924949d6a01c5076598b06aa2675b534dd6",
-				"logIndex": 154,
-				"reserve0": "88322366134270414",
-				"reserve1": "92000000000000000000",
-				"timestamp": 1732919487,
-				"isoDate": "2024-11-29T22:31:27.000Z",
-				"readableDate": "2024-11-29 22:31:27 UTC",
+				"blockNumber": 18699499,
+				"transactionHash": "0x08ebd9e28dd161501c5b9acceb260f66e07acd552cc8590520c5aed1fa68604e",
+				"logIndex": 130,
+				"reserve0": "953999999999999999835",
+				"reserve1": "3190861929937170718",
+				"timestamp": 1701529523,
+				"isoDate": "2023-12-02T15:05:23.000Z",
+				"readableDate": "2023-12-02 15:05:23 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "953999999999999999835",
+						"amountEth": "953.999999999999999835"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "88322366134270414"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "92000000000000000000"
+						"amount": "3190861929937170718",
+						"amountEth": "3.190861929937170718"
 					}
 				}
 			},
 			{
-				"blockNumber": 23065449,
-				"transactionHash": "0x95ff0f619aa26f925f3d58c24beea63431dcbfdc2473481de92c762e0fb63917",
-				"logIndex": 215,
-				"reserve0": "90294948292489743",
-				"reserve1": "90000000000000000000",
-				"timestamp": 1732920245,
-				"isoDate": "2024-11-29T22:44:05.000Z",
-				"readableDate": "2024-11-29 22:44:05 UTC",
+				"blockNumber": 18918250,
+				"transactionHash": "0x9338b7919ecf52d3f61ca1e1321523ab63e6218bbfa7589a8cd5e5efdb282cbe",
+				"logIndex": 88,
+				"reserve0": "983999999999999999835",
+				"reserve1": "3093862529255786470",
+				"timestamp": 1704180923,
+				"isoDate": "2024-01-02T07:35:23.000Z",
+				"readableDate": "2024-01-02 07:35:23 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "983999999999999999835",
+						"amountEth": "983.999999999999999835"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "90294948292489743"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "90000000000000000000"
+						"amount": "3093862529255786470",
+						"amountEth": "3.09386252925578647"
 					}
 				}
 			},
 			{
-				"blockNumber": 26813379,
-				"transactionHash": "0x357cb2adb859ad1ee59b56aed48ceaee6654c2c80d5d37fd0891b821f228636f",
-				"logIndex": 271,
-				"reserve0": "60745592363014479",
-				"reserve1": "134000000000000000000",
-				"timestamp": 1740416105,
-				"isoDate": "2025-02-24T16:55:05.000Z",
-				"readableDate": "2025-02-24 16:55:05 UTC",
+				"blockNumber": 19197579,
+				"transactionHash": "0x916fcdd0f68adbb8d887016bcad94e59cf049917d78971db1ddcac64b0f735cf",
+				"logIndex": 139,
+				"reserve0": "349288618537178250734",
+				"reserve1": "1098222529255786470",
+				"timestamp": 1707566519,
+				"isoDate": "2024-02-10T12:01:59.000Z",
+				"readableDate": "2024-02-10 12:01:59 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "349288618537178250734",
+						"amountEth": "349.288618537178250734"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "60745592363014479"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "134000000000000000000"
+						"amount": "1098222529255786470",
+						"amountEth": "1.09822252925578647"
 					}
 				}
 			},
 			{
-				"blockNumber": 26860275,
-				"transactionHash": "0x8d5b9e31f8bf6062f8a731b291ae1cfe6fac74ca5ef3b59b22fef79b522a1f3b",
-				"logIndex": 96,
-				"reserve0": "66750593667538524",
-				"reserve1": "122000000000000000000",
-				"timestamp": 1740509897,
-				"isoDate": "2025-02-25T18:58:17.000Z",
-				"readableDate": "2025-02-25 18:58:17 UTC",
+				"blockNumber": 19390399,
+				"transactionHash": "0x23fddecd34032442e7287b9f58f5a04b997ec24c350430e95234321e7e20207b",
+				"logIndex": 28,
+				"reserve0": "406288618537178250734",
+				"reserve1": "944545650277034034",
+				"timestamp": 1709900303,
+				"isoDate": "2024-03-08T12:18:23.000Z",
+				"readableDate": "2024-03-08 12:18:23 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "406288618537178250734",
+						"amountEth": "406.288618537178250734"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "66750593667538524"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "122000000000000000000"
+						"amount": "944545650277034034",
+						"amountEth": "0.944545650277034034"
 					}
 				}
 			},
 			{
-				"blockNumber": 26860313,
-				"transactionHash": "0xb44dba2888de9d4aa632ab618f7de3e8e43b62f790608b91e0c86b699241e6f0",
-				"logIndex": 48,
-				"reserve0": "73398758186918521",
-				"reserve1": "111000000000000000000",
-				"timestamp": 1740509973,
-				"isoDate": "2025-02-25T18:59:33.000Z",
-				"readableDate": "2025-02-25 18:59:33 UTC",
+				"blockNumber": 19722806,
+				"transactionHash": "0xd8fb1ef2e4e6a9840ee6877c36acdda29a7db15db8b2ea3e5979b5eb8c8935e3",
+				"logIndex": 164,
+				"reserve0": "485288618537178250734",
+				"reserve1": "791169707986331664",
+				"timestamp": 1713932279,
+				"isoDate": "2024-04-24T04:17:59.000Z",
+				"readableDate": "2024-04-24 04:17:59 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "485288618537178250734",
+						"amountEth": "485.288618537178250734"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "73398758186918521"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "111000000000000000000"
+						"amount": "791169707986331664",
+						"amountEth": "0.791169707986331664"
 					}
 				}
 			},
 			{
-				"blockNumber": 26908859,
-				"transactionHash": "0x55eaa3cff45229f91f62ad2dda2c01d9602a86a8f04ed7b7e318014fe672d2ce",
-				"logIndex": 677,
-				"reserve0": "74069372697534497",
-				"reserve1": "110000000000000000000",
-				"timestamp": 1740607065,
-				"isoDate": "2025-02-26T21:57:45.000Z",
-				"readableDate": "2025-02-26 21:57:45 UTC",
+				"blockNumber": 20505883,
+				"transactionHash": "0x300103bbaac64cbd866fb7417a86cb4af53170ce23507209a3472547f899d35b",
+				"logIndex": 267,
+				"reserve0": "484288618537178250734",
+				"reserve1": "792808297721230839",
+				"timestamp": 1723385507,
+				"isoDate": "2024-08-11T14:11:47.000Z",
+				"readableDate": "2024-08-11 14:11:47 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "484288618537178250734",
+						"amountEth": "484.288618537178250734"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "74069372697534497"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "110000000000000000000"
+						"amount": "792808297721230839",
+						"amountEth": "0.792808297721230839"
 					}
 				}
 			},
 			{
-				"blockNumber": 26910901,
-				"transactionHash": "0x2c418ea1eba94a6a4eb9b514ead8c93e2f14799f2d5207f9dc5c0a5dab4cea3c",
-				"logIndex": 497,
-				"reserve0": "74752322978273371",
-				"reserve1": "109000000000000000000",
-				"timestamp": 1740611149,
-				"isoDate": "2025-02-26T23:05:49.000Z",
-				"readableDate": "2025-02-26 23:05:49 UTC",
+				"blockNumber": 20565734,
+				"transactionHash": "0x44314b052267764d25fe86b3d57e65f8f4d7166f7fc73783d60de4e2850fa966",
+				"logIndex": 284,
+				"reserve0": "486288618537178250734",
+				"reserve1": "789557390357090142",
+				"timestamp": 1724107427,
+				"isoDate": "2024-08-19T22:43:47.000Z",
+				"readableDate": "2024-08-19 22:43:47 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "486288618537178250734",
+						"amountEth": "486.288618537178250734"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "74752322978273371"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "109000000000000000000"
+						"amount": "789557390357090142",
+						"amountEth": "0.789557390357090142"
 					}
 				}
 			},
 			{
-				"blockNumber": 28214384,
-				"transactionHash": "0xc0d4faef5466c9dc08be01f9e7fae346dffd60c7902f3cf5b4d6ca9a45b87219",
-				"logIndex": 230,
-				"reserve0": "111826570489330026",
-				"reserve1": "73000000000000000000",
-				"timestamp": 1743218115,
-				"isoDate": "2025-03-29T03:15:15.000Z",
-				"readableDate": "2025-03-29 03:15:15 UTC",
+				"blockNumber": 20860382,
+				"transactionHash": "0xcd6b65dc18e6b35596e14e4267c8e628973565f676d510a2c0fde1823da2b1b1",
+				"logIndex": 245,
+				"reserve0": "43490481432475442191",
+				"reserve1": "70612861819577073",
+				"timestamp": 1727662151,
+				"isoDate": "2024-09-30T02:09:11.000Z",
+				"readableDate": "2024-09-30 02:09:11 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "43490481432475442191",
+						"amountEth": "43.490481432475442191"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "111826570489330026"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "73000000000000000000"
+						"amount": "70612861819577073",
+						"amountEth": "0.070612861819577073"
 					}
 				}
 			},
 			{
-				"blockNumber": 28799619,
-				"transactionHash": "0x9237ff86981b7b35a8bff5f8051f7487c06b87ebec0b5f3b11278a9a725267dc",
-				"logIndex": 347,
-				"reserve0": "123822699921113014",
-				"reserve1": "66000000000000000000",
-				"timestamp": 1744388585,
-				"isoDate": "2025-04-11T16:23:05.000Z",
-				"readableDate": "2025-04-11 16:23:05 UTC",
+				"blockNumber": 21250169,
+				"transactionHash": "0xe9d1aa54374dc4ab04a33edcbce7e0b39ec7623ddfa95e8ec7ef1ff3c494df06",
+				"logIndex": 252,
+				"reserve0": "24842",
+				"reserve1": "41",
+				"timestamp": 1732361627,
+				"isoDate": "2024-11-23T11:33:47.000Z",
+				"readableDate": "2024-11-23 11:33:47 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "24842",
+						"amountEth": "0.000000000000024842"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "123822699921113014"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "66000000000000000000"
-					}
-				}
-			},
-			{
-				"blockNumber": 28804712,
-				"transactionHash": "0x150cd83483071dcea087cc14e0461c7d85bbbfdcb4f2ad4bd6412b21217e79f9",
-				"logIndex": 200,
-				"reserve0": "104853710479772376",
-				"reserve1": "78000000000000000000",
-				"timestamp": 1744398771,
-				"isoDate": "2025-04-11T19:12:51.000Z",
-				"readableDate": "2025-04-11 19:12:51 UTC",
-				"tokenReserves": {
-					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
-						"symbol": "WETH",
-						"name": "Wrapped Ether",
-						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "104853710479772376"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
-						"reserveKey": "reserve1",
-						"amount": "78000000000000000000"
-					}
-				}
-			},
-			{
-				"blockNumber": 29156187,
-				"transactionHash": "0x7ec4e81695c3afc1e03ab0927cb01c02ae1aafe6b4535fdd45681fcacd660f04",
-				"logIndex": 557,
-				"reserve0": "106222289876493285",
-				"reserve1": "77000000000000000000",
-				"timestamp": 1745101721,
-				"isoDate": "2025-04-19T22:28:41.000Z",
-				"readableDate": "2025-04-19 22:28:41 UTC",
-				"tokenReserves": {
-					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
-						"symbol": "WETH",
-						"name": "Wrapped Ether",
-						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "106222289876493285"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
-						"reserveKey": "reserve1",
-						"amount": "77000000000000000000"
-					}
-				}
-			},
-			{
-				"blockNumber": 32681326,
-				"transactionHash": "0xce73efe5993f570cfa6be07a8fb6431f3df225260db0dbe5fd5d7ea04e89e310",
-				"logIndex": 1378,
-				"reserve0": "601364370022702184",
-				"reserve1": "1622000000000000000000",
-				"timestamp": 1752151999,
-				"isoDate": "2025-07-10T12:53:19.000Z",
-				"readableDate": "2025-07-10 12:53:19 UTC",
-				"tokenReserves": {
-					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
-						"symbol": "WETH",
-						"name": "Wrapped Ether",
-						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "601364370022702184"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
-						"reserveKey": "reserve1",
-						"amount": "1622000000000000000000"
-					}
-				}
-			},
-			{
-				"blockNumber": 35427493,
-				"transactionHash": "0x51224c4334344f6d346148ed53fa78eecc8541e5125fc2414364bd205924facd",
-				"logIndex": 36,
-				"reserve0": "602110525950517436",
-				"reserve1": "1620000000000000000000",
-				"timestamp": 1757644333,
-				"isoDate": "2025-09-12T02:32:13.000Z",
-				"readableDate": "2025-09-12 02:32:13 UTC",
-				"tokenReserves": {
-					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
-						"symbol": "WETH",
-						"name": "Wrapped Ether",
-						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "602110525950517436"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
-						"reserveKey": "reserve1",
-						"amount": "1620000000000000000000"
+						"amount": "41",
+						"amountEth": "0.000000000000000041"
 					}
 				}
 			}
 		],
 		"transfers": [
 			{
-				"blockNumber": 21723135,
-				"transactionHash": "0x83c04b7f6a8258353cc9fcd474fa5abf6b953ced93f214ebcef01b7bfe662136",
-				"logIndex": 458,
+				"blockNumber": 12890402,
+				"transactionHash": "0xf8cb14a3ba6c8ac5c08e5d595f1e5700f84a67867d58b1090da21427b3dd2054",
+				"logIndex": 142,
 				"from": "0x0000000000000000000000000000000000000000",
 				"to": "0x0000000000000000000000000000000000000000",
 				"value": "1000",
 				"reservesAfter": {
-					"reserve0": "563559000000000",
-					"reserve1": "1000000000000000000",
-					"blockTimestampLast": 1730235617
+					"reserve0": "720000000000000000000",
+					"reserve1": "3960000000000000000",
+					"blockTimestampLast": 1627148287
 				},
-				"timestamp": 1730235617,
-				"isoDate": "2024-10-29T21:00:17.000Z",
-				"readableDate": "2024-10-29 21:00:17 UTC",
+				"timestamp": 1627148287,
+				"isoDate": "2021-07-24T17:38:07.000Z",
+				"readableDate": "2021-07-24 17:38:07 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "720000000000000000000",
+						"amountEth": "720.0"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "563559000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "1000000000000000000"
+						"amount": "3960000000000000000",
+						"amountEth": "3.96"
 					}
 				}
 			},
 			{
-				"blockNumber": 21723135,
-				"transactionHash": "0x83c04b7f6a8258353cc9fcd474fa5abf6b953ced93f214ebcef01b7bfe662136",
-				"logIndex": 459,
+				"blockNumber": 12890402,
+				"transactionHash": "0xf8cb14a3ba6c8ac5c08e5d595f1e5700f84a67867d58b1090da21427b3dd2054",
+				"logIndex": 143,
 				"from": "0x0000000000000000000000000000000000000000",
-				"to": "0xcFE7E071641cFF57a40EDc50D2c43D5F6D68eE8d",
-				"value": "23739397633468978",
+				"to": "0x0B23Cf6Bb6a713461b9640511E7F2D7B92aA075A",
+				"value": "53396629107088772230",
 				"reservesAfter": {
-					"reserve0": "563559000000000",
-					"reserve1": "1000000000000000000",
-					"blockTimestampLast": 1730235617
+					"reserve0": "720000000000000000000",
+					"reserve1": "3960000000000000000",
+					"blockTimestampLast": 1627148287
 				},
-				"timestamp": 1730235617,
-				"isoDate": "2024-10-29T21:00:17.000Z",
-				"readableDate": "2024-10-29 21:00:17 UTC",
+				"timestamp": 1627148287,
+				"isoDate": "2021-07-24T17:38:07.000Z",
+				"readableDate": "2021-07-24 17:38:07 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "720000000000000000000",
+						"amountEth": "720.0"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "563559000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "1000000000000000000"
+						"amount": "3960000000000000000",
+						"amountEth": "3.96"
 					}
 				}
 			},
 			{
-				"blockNumber": 22191492,
-				"transactionHash": "0x9f30a052c945792dd57f09ea8103ee790b4a5cb33dc1886c89dfe11bef5479a2",
-				"logIndex": 615,
+				"blockNumber": 13089709,
+				"transactionHash": "0xc9fae7badc0033998859ce659c5079f2ff4e6cc9b27a8b4e5d1fa36497535230",
+				"logIndex": 260,
 				"from": "0x0000000000000000000000000000000000000000",
-				"to": "0x4787e065A97aAA9Fb59e3Bf14089EF6a47f75B38",
-				"value": "118696988167349890",
+				"to": "0xc06C1eCeB4a101246Cb775c2d93F601086B3A4E0",
+				"value": "1750709151052090919",
 				"reservesAfter": {
-					"reserve0": "3381354000000000",
-					"reserve1": "6000000000000000000",
-					"blockTimestampLast": 1731172331
+					"reserve0": "756000000000000000000",
+					"reserve1": "4022987424536062913",
+					"blockTimestampLast": 1629829812
 				},
-				"timestamp": 1731172331,
-				"isoDate": "2024-11-09T17:12:11.000Z",
-				"readableDate": "2024-11-09 17:12:11 UTC",
+				"timestamp": 1629829812,
+				"isoDate": "2021-08-24T18:30:12.000Z",
+				"readableDate": "2021-08-24 18:30:12 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "756000000000000000000",
+						"amountEth": "756.0"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "3381354000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "6000000000000000000"
+						"amount": "4022987424536062913",
+						"amountEth": "4.022987424536062913"
 					}
 				}
 			},
 			{
-				"blockNumber": 22192033,
-				"transactionHash": "0xfe5247d65e4179db1b81d893806d8d1780f10102af36d85c22b14d03f48fb952",
-				"logIndex": 583,
-				"from": "0x0000000000000000000000000000000000000000",
-				"to": "0x4787e065A97aAA9Fb59e3Bf14089EF6a47f75B38",
-				"value": "94957590533879912",
+				"blockNumber": 19197579,
+				"transactionHash": "0x916fcdd0f68adbb8d887016bcad94e59cf049917d78971db1ddcac64b0f735cf",
+				"logIndex": 135,
+				"from": "0x0B23Cf6Bb6a713461b9640511E7F2D7B92aA075A",
+				"to": "0x7ECaDC96563a0E158f1a1Eec220Bb4f661640D39",
+				"value": "35571791920550924729",
 				"reservesAfter": {
-					"reserve0": "5635590000000000",
-					"reserve1": "10000000000000000000",
-					"blockTimestampLast": 1731173413
+					"reserve0": "349288618537178250734",
+					"reserve1": "1098222529255786470",
+					"blockTimestampLast": 1707566519
 				},
-				"timestamp": 1731173413,
-				"isoDate": "2024-11-09T17:30:13.000Z",
-				"readableDate": "2024-11-09 17:30:13 UTC",
+				"timestamp": 1707566519,
+				"isoDate": "2024-02-10T12:01:59.000Z",
+				"readableDate": "2024-02-10 12:01:59 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "349288618537178250734",
+						"amountEth": "349.288618537178250734"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "5635590000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "10000000000000000000"
+						"amount": "1098222529255786470",
+						"amountEth": "1.09822252925578647"
 					}
 				}
 			},
 			{
-				"blockNumber": 22192296,
-				"transactionHash": "0x0943dec58f3f7c57d593c9d275fd5e7685a24bedd5524890f7e6c110a46f654c",
-				"logIndex": 292,
-				"from": "0x0000000000000000000000000000000000000000",
-				"to": "0x4787e065A97aAA9Fb59e3Bf14089EF6a47f75B38",
-				"value": "237393976334699780",
+				"blockNumber": 19197579,
+				"transactionHash": "0x916fcdd0f68adbb8d887016bcad94e59cf049917d78971db1ddcac64b0f735cf",
+				"logIndex": 136,
+				"from": "0x7ECaDC96563a0E158f1a1Eec220Bb4f661640D39",
+				"to": "0x0000000000000000000000000000000000000000",
+				"value": "35571791920550924729",
 				"reservesAfter": {
-					"reserve0": "11271180000000000",
-					"reserve1": "20000000000000000000",
-					"blockTimestampLast": 1731173939
+					"reserve0": "349288618537178250734",
+					"reserve1": "1098222529255786470",
+					"blockTimestampLast": 1707566519
 				},
-				"timestamp": 1731173939,
-				"isoDate": "2024-11-09T17:38:59.000Z",
-				"readableDate": "2024-11-09 17:38:59 UTC",
+				"timestamp": 1707566519,
+				"isoDate": "2024-02-10T12:01:59.000Z",
+				"readableDate": "2024-02-10 12:01:59 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "349288618537178250734",
+						"amountEth": "349.288618537178250734"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "11271180000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "20000000000000000000"
+						"amount": "1098222529255786470",
+						"amountEth": "1.09822252925578647"
 					}
 				}
 			},
 			{
-				"blockNumber": 22192433,
-				"transactionHash": "0x2da207a8f9111970f6bee126d51fd4cbec69a0b4659501f21cc1f07073f7b098",
-				"logIndex": 503,
-				"from": "0x0000000000000000000000000000000000000000",
-				"to": "0x4787e065A97aAA9Fb59e3Bf14089EF6a47f75B38",
-				"value": "237393976334699780",
+				"blockNumber": 20860310,
+				"transactionHash": "0x12fdce989e6885b19f64be933c7a707e23af892af9c9aade6f63bf8bba895e80",
+				"logIndex": 384,
+				"from": "0x0B23Cf6Bb6a713461b9640511E7F2D7B92aA075A",
+				"to": "0x18e9F66D7A287Ba4f926EA1D13c1B7D6b178ce7F",
+				"value": "17824837186537847501",
 				"reservesAfter": {
-					"reserve0": "16906770000000000",
-					"reserve1": "30000000000000000000",
-					"blockTimestampLast": 1731174213
+					"reserve0": "486288618537178250734",
+					"reserve1": "789557390357090142",
+					"blockTimestampLast": 1724107427
 				},
-				"timestamp": 1731174213,
-				"isoDate": "2024-11-09T17:43:33.000Z",
-				"readableDate": "2024-11-09 17:43:33 UTC",
+				"timestamp": 1727661287,
+				"isoDate": "2024-09-30T01:54:47.000Z",
+				"readableDate": "2024-09-30 01:54:47 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "486288618537178250734",
+						"amountEth": "486.288618537178250734"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "16906770000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "30000000000000000000"
+						"amount": "789557390357090142",
+						"amountEth": "0.789557390357090142"
 					}
 				}
 			},
 			{
-				"blockNumber": 22192790,
-				"transactionHash": "0x1c174e0308e0057187d17cbbc6083c2df56957bdb47110317a36c91e45a69f55",
-				"logIndex": 436,
-				"from": "0x0000000000000000000000000000000000000000",
-				"to": "0x4787e065A97aAA9Fb59e3Bf14089EF6a47f75B38",
-				"value": "237393976334699780",
+				"blockNumber": 20860382,
+				"transactionHash": "0xcd6b65dc18e6b35596e14e4267c8e628973565f676d510a2c0fde1823da2b1b1",
+				"logIndex": 241,
+				"from": "0x18e9F66D7A287Ba4f926EA1D13c1B7D6b178ce7F",
+				"to": "0x7ECaDC96563a0E158f1a1Eec220Bb4f661640D39",
+				"value": "17824837186537847501",
 				"reservesAfter": {
-					"reserve0": "22542360000000000",
-					"reserve1": "40000000000000000000",
-					"blockTimestampLast": 1731174927
+					"reserve0": "43490481432475442191",
+					"reserve1": "70612861819577073",
+					"blockTimestampLast": 1727662151
 				},
-				"timestamp": 1731174927,
-				"isoDate": "2024-11-09T17:55:27.000Z",
-				"readableDate": "2024-11-09 17:55:27 UTC",
+				"timestamp": 1727662151,
+				"isoDate": "2024-09-30T02:09:11.000Z",
+				"readableDate": "2024-09-30 02:09:11 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "43490481432475442191",
+						"amountEth": "43.490481432475442191"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "22542360000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "40000000000000000000"
+						"amount": "70612861819577073",
+						"amountEth": "0.070612861819577073"
 					}
 				}
 			},
 			{
-				"blockNumber": 22238933,
-				"transactionHash": "0x353a10de8c3879bbd66dbeb6fe20b3f323c878c4c2b9df4cefa0aaa5a64d05e4",
-				"logIndex": 380,
-				"from": "0x0000000000000000000000000000000000000000",
-				"to": "0xcFE7E071641cFF57a40EDc50D2c43D5F6D68eE8d",
-				"value": "474787952669399560",
+				"blockNumber": 20860382,
+				"transactionHash": "0xcd6b65dc18e6b35596e14e4267c8e628973565f676d510a2c0fde1823da2b1b1",
+				"logIndex": 242,
+				"from": "0x7ECaDC96563a0E158f1a1Eec220Bb4f661640D39",
+				"to": "0x0000000000000000000000000000000000000000",
+				"value": "17824837186537847501",
 				"reservesAfter": {
-					"reserve0": "33813540000000000",
-					"reserve1": "60000000000000000000",
-					"blockTimestampLast": 1731267213
+					"reserve0": "43490481432475442191",
+					"reserve1": "70612861819577073",
+					"blockTimestampLast": 1727662151
 				},
-				"timestamp": 1731267213,
-				"isoDate": "2024-11-10T19:33:33.000Z",
-				"readableDate": "2024-11-10 19:33:33 UTC",
+				"timestamp": 1727662151,
+				"isoDate": "2024-09-30T02:09:11.000Z",
+				"readableDate": "2024-09-30 02:09:11 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "43490481432475442191",
+						"amountEth": "43.490481432475442191"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
-						"reserveKey": "reserve0",
-						"amount": "33813540000000000"
-					},
-					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
-						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "60000000000000000000"
+						"amount": "70612861819577073",
+						"amountEth": "0.070612861819577073"
 					}
 				}
 			},
 			{
-				"blockNumber": 22238973,
-				"transactionHash": "0x71e00d2e34da109296e5c1bf5fa9424f8aabfaf7c4f2fad31cf229ae93cc799d",
-				"logIndex": 336,
-				"from": "0x0000000000000000000000000000000000000000",
-				"to": "0xcFE7E071641cFF57a40EDc50D2c43D5F6D68eE8d",
-				"value": "1424363858008198680",
+				"blockNumber": 21250169,
+				"transactionHash": "0xe9d1aa54374dc4ab04a33edcbce7e0b39ec7623ddfa95e8ec7ef1ff3c494df06",
+				"logIndex": 248,
+				"from": "0xc06C1eCeB4a101246Cb775c2d93F601086B3A4E0",
+				"to": "0x7ECaDC96563a0E158f1a1Eec220Bb4f661640D39",
+				"value": "1750709151052090919",
 				"reservesAfter": {
-					"reserve0": "67627080000000000",
-					"reserve1": "120000000000000000000",
-					"blockTimestampLast": 1731267293
+					"reserve0": "24842",
+					"reserve1": "41",
+					"blockTimestampLast": 1732361627
 				},
-				"timestamp": 1731267293,
-				"isoDate": "2024-11-10T19:34:53.000Z",
-				"readableDate": "2024-11-10 19:34:53 UTC",
+				"timestamp": 1732361627,
+				"isoDate": "2024-11-23T11:33:47.000Z",
+				"readableDate": "2024-11-23 11:33:47 UTC",
 				"tokenReserves": {
 					"token0": {
-						"address": "0x4200000000000000000000000000000000000006",
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
+						"reserveKey": "reserve0",
+						"amount": "24842",
+						"amountEth": "0.000000000000024842"
+					},
+					"token1": {
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
 						"symbol": "WETH",
 						"name": "Wrapped Ether",
 						"decimals": 18,
+						"reserveKey": "reserve1",
+						"amount": "41",
+						"amountEth": "0.000000000000000041"
+					}
+				}
+			},
+			{
+				"blockNumber": 21250169,
+				"transactionHash": "0xe9d1aa54374dc4ab04a33edcbce7e0b39ec7623ddfa95e8ec7ef1ff3c494df06",
+				"logIndex": 249,
+				"from": "0x7ECaDC96563a0E158f1a1Eec220Bb4f661640D39",
+				"to": "0x0000000000000000000000000000000000000000",
+				"value": "1750709151052090919",
+				"reservesAfter": {
+					"reserve0": "24842",
+					"reserve1": "41",
+					"blockTimestampLast": 1732361627
+				},
+				"timestamp": 1732361627,
+				"isoDate": "2024-11-23T11:33:47.000Z",
+				"readableDate": "2024-11-23 11:33:47 UTC",
+				"tokenReserves": {
+					"token0": {
+						"address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+						"symbol": "MTB18",
+						"name": "MIKETANGOBRAVO18",
+						"decimals": 18,
 						"reserveKey": "reserve0",
-						"amount": "67627080000000000"
+						"amount": "24842",
+						"amountEth": "0.000000000000024842"
 					},
 					"token1": {
-						"address": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
-						"symbol": "MTB21",
-						"name": "MikeTangoBravo21",
+						"address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+						"symbol": "WETH",
+						"name": "Wrapped Ether",
 						"decimals": 18,
 						"reserveKey": "reserve1",
-						"amount": "120000000000000000000"
+						"amount": "41",
+						"amountEth": "0.000000000000000041"
 					}
 				}
 			}
