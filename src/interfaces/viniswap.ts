@@ -185,7 +185,12 @@ export interface ViniswapHistoryResult {
 			isoDate?: string;
 			readableDate?: string;
 			reserves?: ReserveSnapshot;
+			isCurrent?: boolean;
 		}>;
+		latestBlock?: number;
+		latestBlockTimestamp?: number;
+		latestIsoDate?: string;
+		latestReadableDate?: string;
 	};
 }
 

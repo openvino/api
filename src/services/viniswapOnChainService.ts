@@ -57,7 +57,10 @@ const TOKEN_HISTORY_CACHE_DIR = path.join(
 );
 
 const sanitizeCacheSegment = (value: string): string => {
-	const normalized = value.toLowerCase().trim().replace(/[^a-z0-9_-]/g, "-");
+	const normalized = value
+		.toLowerCase()
+		.trim()
+		.replace(/[^a-z0-9_-]/g, "-");
 	return normalized || "default";
 };
 
@@ -171,7 +174,10 @@ const shouldRetryRequest = (error: unknown): boolean => {
 		return false;
 	}
 
-	const { code, message, shortMessage, value, info } = error as Record<string, unknown>;
+	const { code, message, shortMessage, value, info } = error as Record<
+		string,
+		unknown
+	>;
 
 	if (code === "TIMEOUT") {
 		return true;
@@ -353,17 +359,17 @@ const paginateBlocks = async <T extends BaseEvent>(
 	fromBlock: number,
 	toBlock: number,
 	batchSize: number,
-		parser: (log: Log) => Promise<T>,
-		eventType: SyncEventType,
-		callbacks: ViniswapHistoryCallbacks | undefined,
-		options: {
-			batchDelayMs: number;
-			maxRetries: number;
-			blockscout: { pageSize: number; delayMs: number };
-		},
-		context: {
-			provider: JsonRpcProvider;
-			blockscout?: { url?: string; apiKey?: string };
+	parser: (log: Log) => Promise<T>,
+	eventType: SyncEventType,
+	callbacks: ViniswapHistoryCallbacks | undefined,
+	options: {
+		batchDelayMs: number;
+		maxRetries: number;
+		blockscout: { pageSize: number; delayMs: number };
+	},
+	context: {
+		provider: JsonRpcProvider;
+		blockscout?: { url?: string; apiKey?: string };
 	},
 	fetchReserves?: (blockNumber: number) => Promise<ReserveSnapshot | undefined>
 ): Promise<T[]> => {
@@ -481,7 +487,7 @@ const findBlockAtOrBeforeTimestamp = async (
 				blockNumber: number;
 				blockTimestamp: number;
 		  }
-			| undefined;
+		| undefined;
 	const timestampCache = new Map<number, number>();
 
 	while (left <= right) {
@@ -588,16 +594,12 @@ const enrichWithTimestamp = async <T extends BaseEvent>(
 	const timestampCache = new Map<number, number>();
 
 	for (const blockNumber of uniqueBlocks) {
-		const timestamp = await getBlockTimestamp(
-			blockNumber,
-			context,
-			{
-				blockscoutMaxRetries: 5,
-				blockscoutDelayMs: 750,
-				providerMaxRetries: 8,
-				providerDelayMs: 750,
-			}
-		);
+		const timestamp = await getBlockTimestamp(blockNumber, context, {
+			blockscoutMaxRetries: 5,
+			blockscoutDelayMs: 750,
+			providerMaxRetries: 8,
+			providerDelayMs: 750,
+		});
 		timestampCache.set(blockNumber, timestamp ?? 0);
 	}
 
@@ -634,16 +636,12 @@ export const fetchViniswapPairHistory = async (
 
 	const latestBlock = await provider.getBlockNumber();
 	const latestBlockTimestamp =
-		(await getBlockTimestamp(
-			latestBlock,
-			context,
-			{
-				blockscoutMaxRetries: 5,
-				blockscoutDelayMs: 500,
-				providerMaxRetries: 5,
-				providerDelayMs: 500,
-			}
-		)) ?? Math.floor(Date.now() / 1000);
+		(await getBlockTimestamp(latestBlock, context, {
+			blockscoutMaxRetries: 5,
+			blockscoutDelayMs: 500,
+			providerMaxRetries: 5,
+			providerDelayMs: 500,
+		})) ?? Math.floor(Date.now() / 1000);
 
 	const fromBlock = Math.max(0, Math.trunc(options.startBlock));
 	const toBlock = options.endBlock ? Math.trunc(options.endBlock) : latestBlock;
@@ -661,7 +659,9 @@ export const fetchViniswapPairHistory = async (
 			? Math.trunc(options.maxRetries)
 			: 5;
 	if (!blockscout?.url) {
-		throw new Error("Blockscout configuration is required to sync Viniswap history");
+		throw new Error(
+			"Blockscout configuration is required to sync Viniswap history"
+		);
 	}
 
 	const blockRangeSize = toBlock - fromBlock + 1;
@@ -700,11 +700,11 @@ export const fetchViniswapPairHistory = async (
 			const [reserve0Raw, reserve1Raw, blockTimestampRaw] =
 				reservesTuple as unknown as [bigint, bigint, bigint];
 
-			const snapshot = formatReservesSnapshot(
-				reserve0Raw,
-				reserve1Raw,
-				blockTimestampRaw
-			);
+			const snapshot = {
+				reserve0: formatBigint(reserve0Raw),
+				reserve1: formatBigint(reserve1Raw),
+				blockTimestampLast: toNumber(blockTimestampRaw),
+			};
 
 			reserveCache.set(blockNumber, snapshot);
 			return snapshot;
@@ -740,7 +740,9 @@ export const fetchViniswapPairHistory = async (
 	const currentReservesSummary = {
 		...currentReservesSnapshot,
 		isoDate: formatIsoDate(currentReservesSnapshot.blockTimestampLast),
-		readableDate: formatReadableDate(currentReservesSnapshot.blockTimestampLast),
+		readableDate: formatReadableDate(
+			currentReservesSnapshot.blockTimestampLast
+		),
 	};
 
 	const swaps = await paginateBlocks<SwapEvent>(
@@ -929,7 +931,9 @@ export const fetchViniswapPairHistory = async (
 			syncs[0]?.timestamp,
 			transfers[0]?.timestamp,
 			currentReservesSummary.blockTimestampLast,
-		].filter((value): value is number => typeof value === "number" && value > 0);
+		].filter(
+			(value): value is number => typeof value === "number" && value > 0
+		);
 
 		if (!candidates.length) {
 			return currentReservesSummary.blockTimestampLast || latestBlockTimestamp;
@@ -941,6 +945,7 @@ export const fetchViniswapPairHistory = async (
 	const earliestYear = new Date(earliestEventTimestamp * 1000).getUTCFullYear();
 	const currentUtcYear = new Date(latestBlockTimestamp * 1000).getUTCFullYear();
 	const startYear = Math.max(earliestYear, 1970);
+
 	const reservesByYearEnd: Array<{
 		year: number;
 		blockNumber: number;
@@ -949,6 +954,7 @@ export const fetchViniswapPairHistory = async (
 		isoDate?: string;
 		readableDate?: string;
 		reserves?: ReserveSnapshot;
+		isCurrent?: boolean;
 	}> = [];
 
 	for (let year = startYear; year <= currentUtcYear; year += 1) {
@@ -983,6 +989,20 @@ export const fetchViniswapPairHistory = async (
 		});
 	}
 
+	reservesByYearEnd.push({
+		year: currentUtcYear,
+		blockNumber: latestBlock,
+		targetTimestamp: latestBlockTimestamp,
+		blockTimestamp: latestBlockTimestamp,
+		isoDate: formatIsoDate(latestBlockTimestamp),
+		readableDate: formatReadableDate(latestBlockTimestamp),
+		reserves: currentReservesSnapshot,
+		isCurrent: true,
+	});
+
+	const latestIsoDate = formatIsoDate(latestBlockTimestamp);
+	const latestReadableDate = formatReadableDate(latestBlockTimestamp);
+
 	return {
 		pairAddress: normalizedAddress,
 		fromBlock,
@@ -1006,6 +1026,11 @@ export const fetchViniswapPairHistory = async (
 			transferCount: transfers.length,
 			currentReserves: currentReservesSummary,
 			reservesByYearEnd,
+
+			latestBlock,
+			latestBlockTimestamp,
+			latestIsoDate,
+			latestReadableDate,
 		},
 	};
 };
@@ -1028,7 +1053,9 @@ export const fetchViniswapTokenHistory = async (
 	const { provider, blockscout } = context;
 
 	if (!blockscout?.url) {
-		throw new Error("Blockscout configuration is required to sync token history");
+		throw new Error(
+			"Blockscout configuration is required to sync token history"
+		);
 	}
 
 	const startBlock = Math.max(0, Math.trunc(options.startBlock));
@@ -1090,83 +1117,83 @@ export const fetchViniswapTokenHistory = async (
 	const scanToBlock = latestBlock;
 
 	if (verbose) {
- 	console.log(
- 		`[ViniswapTokenHistory] Escaneando ${normalizedAddress} desde ${scanFromBlock} hasta ${scanToBlock}`
- 	);
- }
+		console.log(
+			`[ViniswapTokenHistory] Escaneando ${normalizedAddress} desde ${scanFromBlock} hasta ${scanToBlock}`
+		);
+	}
 
 	let newEvents: TokenTransferEvent[] = [];
 
 	if (scanFromBlock <= scanToBlock) {
-	const loggingCallbacks = verbose
-		? {
-				onProgress: (progress: ViniswapHistoryProgress) => {
-					console.log(
-						`[ViniswapTokenHistory] TRANSFER ${progress.fromBlock} -> ${progress.toBlock} (${progress.entriesFound} eventos)`
-					);
-				},
-				onEvent: (
-					eventType: SyncEventType,
-					event:
-						| SwapEvent
-						| MintEvent
-						| BurnEvent
-						| SyncEvent
-						| TransferEvent
-				) => {
-					if (eventType !== "transfer") return;
-					const transfer = event as TransferEvent;
-					const tsPart =
-						transfer.readableDate || transfer.isoDate
-							? ` ${transfer.readableDate ?? transfer.isoDate}`
-							: "";
-					console.log(
-						`[ViniswapTokenHistory] TRANSFER block=${transfer.blockNumber} tx=${transfer.transactionHash} from=${transfer.from} -> ${transfer.to} value=${transfer.value}${tsPart}`
-					);
-				},
-		  }
-		: undefined;
-
-	const transfers = await fetchTokenTransfersFromBlockscout(
-		normalizedAddress,
-		{
-			startBlock: scanFromBlock,
-			endBlock: scanToBlock,
-			pageSize: blockscoutPageSize,
-			delayMs: blockscoutDelayMs,
-			maxRetries,
-			onPage: verbose
-				? ({ page, items }) => {
-						const firstBlock = items[0]?.blockNumber ?? scanFromBlock;
-						const lastBlock = items[items.length - 1]?.blockNumber ?? firstBlock;
+		const loggingCallbacks = verbose
+			? {
+					onProgress: (progress: ViniswapHistoryProgress) => {
 						console.log(
-							`[ViniswapTokenHistory] Blockscout página ${page} (${items.length} eventos) bloques ${firstBlock} -> ${lastBlock}`
+							`[ViniswapTokenHistory] TRANSFER ${progress.fromBlock} -> ${progress.toBlock} (${progress.entriesFound} eventos)`
 						);
-				  }
-				: undefined,
-		},
-		blockscout
-	);
+					},
+					onEvent: (
+						eventType: SyncEventType,
+						event: SwapEvent | MintEvent | BurnEvent | SyncEvent | TransferEvent
+					) => {
+						if (eventType !== "transfer") return;
+						const transfer = event as TransferEvent;
+						const tsPart =
+							transfer.readableDate || transfer.isoDate
+								? ` ${transfer.readableDate ?? transfer.isoDate}`
+								: "";
+						console.log(
+							`[ViniswapTokenHistory] TRANSFER block=${transfer.blockNumber} tx=${transfer.transactionHash} from=${transfer.from} -> ${transfer.to} value=${transfer.value}${tsPart}`
+						);
+					},
+			  }
+			: undefined;
 
-	newEvents = transfers.map((transfer, index) => {
-		const timestamp = transfer.timeStamp ?? 0;
-		const from = transfer.from ? normalizeChecksumAddress(transfer.from) : transfer.from;
-		const to = transfer.to ? normalizeChecksumAddress(transfer.to) : transfer.to;
-		return {
-			blockNumber: transfer.blockNumber,
-			transactionHash: transfer.hash,
-			logIndex: transfer.logIndex ?? transfer.transactionIndex ?? index,
-			from: from ?? "",
-			to: to ?? "",
-			value: transfer.value,
-			timestamp,
-			isoDate: timestamp ? formatIsoDate(timestamp) : undefined,
-			readableDate: timestamp ? formatReadableDate(timestamp) : undefined,
-			eventCategory: categorizeTransfer(from, to),
-		};
-	});
+		const transfers = await fetchTokenTransfersFromBlockscout(
+			normalizedAddress,
+			{
+				startBlock: scanFromBlock,
+				endBlock: scanToBlock,
+				pageSize: blockscoutPageSize,
+				delayMs: blockscoutDelayMs,
+				maxRetries,
+				onPage: verbose
+					? ({ page, items }) => {
+							const firstBlock = items[0]?.blockNumber ?? scanFromBlock;
+							const lastBlock =
+								items[items.length - 1]?.blockNumber ?? firstBlock;
+							console.log(
+								`[ViniswapTokenHistory] Blockscout página ${page} (${items.length} eventos) bloques ${firstBlock} -> ${lastBlock}`
+							);
+					  }
+					: undefined,
+			},
+			blockscout
+		);
 
-	if (verbose) {
+		newEvents = transfers.map((transfer, index) => {
+			const timestamp = transfer.timeStamp ?? 0;
+			const from = transfer.from
+				? normalizeChecksumAddress(transfer.from)
+				: transfer.from;
+			const to = transfer.to
+				? normalizeChecksumAddress(transfer.to)
+				: transfer.to;
+			return {
+				blockNumber: transfer.blockNumber,
+				transactionHash: transfer.hash,
+				logIndex: transfer.logIndex ?? transfer.transactionIndex ?? index,
+				from: from ?? "",
+				to: to ?? "",
+				value: transfer.value,
+				timestamp,
+				isoDate: timestamp ? formatIsoDate(timestamp) : undefined,
+				readableDate: timestamp ? formatReadableDate(timestamp) : undefined,
+				eventCategory: categorizeTransfer(from, to),
+			};
+		});
+
+		if (verbose) {
 			for (const transfer of newEvents) {
 				const tsPart =
 					transfer.readableDate || transfer.isoDate
@@ -1175,7 +1202,9 @@ export const fetchViniswapTokenHistory = async (
 				console.log(
 					`[ViniswapTokenHistory] ${
 						transfer.eventCategory?.toUpperCase?.() ?? "TRANSFER"
-					} block=${transfer.blockNumber} tx=${transfer.transactionHash} from=${transfer.from} -> ${transfer.to} value=${transfer.value}${tsPart}`
+					} block=${transfer.blockNumber} tx=${transfer.transactionHash} from=${
+						transfer.from
+					} -> ${transfer.to} value=${transfer.value}${tsPart}`
 				);
 			}
 		}
@@ -1183,13 +1212,16 @@ export const fetchViniswapTokenHistory = async (
 
 	const allEventsMap = new Map<string, TokenTransferEvent>();
 	for (const event of [...existingEvents, ...newEvents]) {
-		const key = `${event.blockNumber}:${event.logIndex ?? 0}:${event.transactionHash}`;
+		const key = `${event.blockNumber}:${event.logIndex ?? 0}:${
+			event.transactionHash
+		}`;
 		if (!allEventsMap.has(key)) {
 			allEventsMap.set(key, {
 				...event,
 				from: event.from ? normalizeChecksumAddress(event.from) : event.from,
 				to: event.to ? normalizeChecksumAddress(event.to) : event.to,
-				eventCategory: event.eventCategory ?? categorizeTransfer(event.from, event.to),
+				eventCategory:
+					event.eventCategory ?? categorizeTransfer(event.from, event.to),
 			});
 		}
 	}
@@ -1268,7 +1300,7 @@ export const fetchViniswapTokenHistory = async (
 	}
 	const decimals = metadata.decimals;
 
-const mintedTotal = combinedEvents.reduce((acc: bigint, item) => {
+	const mintedTotal = combinedEvents.reduce((acc: bigint, item) => {
 		if (item.eventCategory === "mint" && item.value) {
 			try {
 				return acc + BigInt(item.value);
@@ -1311,12 +1343,14 @@ const mintedTotal = combinedEvents.reduce((acc: bigint, item) => {
 		return holderSum;
 	})();
 
-const computedRedeemAmount =
-	mintedTotal > resolvedTotalSupply ? mintedTotal - resolvedTotalSupply : BigInt(0);
+	const computedRedeemAmount =
+		mintedTotal > resolvedTotalSupply
+			? mintedTotal - resolvedTotalSupply
+			: BigInt(0);
 
-if (computedRedeemAmount > BigInt(0)) {
-	summaryWithStats.redeemAmount = computedRedeemAmount.toString();
-}
+	if (computedRedeemAmount > BigInt(0)) {
+		summaryWithStats.redeemAmount = computedRedeemAmount.toString();
+	}
 
 	const result: ViniswapTokenHistoryResult = {
 		token: {
@@ -1367,7 +1401,6 @@ if (computedRedeemAmount > BigInt(0)) {
 
 	return result;
 };
-
 
 export type {
 	SwapEvent as ViniswapSwapEvent,
