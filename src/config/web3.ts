@@ -44,7 +44,7 @@ const blockscoutConfig: Record<string, BlockscoutConfig> = {
 	},
 };
 
-const normalizeNetworkKey = (network?: string): string => {
+export const normalizeNetworkKey = (network?: string): string => {
 	if (!network) {
 		return "default";
 	}

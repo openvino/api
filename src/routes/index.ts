@@ -11,6 +11,7 @@ import { sendEmail } from "../controllers/Email.controller";
 import { verifyContract } from "../controllers/VerifyContract.Controller";
 import checkVerifyStatus from "../controllers/CheckVerifyStatus";
 import { getViniswapPairHistoryController } from "../controllers/ViniswapHistory.controller";
+import { getViniswapTokenHistoryController } from "../controllers/ViniswapTokenHistory.controller";
 
 const router: Router = Router();
 
@@ -30,6 +31,11 @@ router.post(
 	"/defi/viniswap/pairs/:pairAddress/history",
 	// auth,
 	getViniswapPairHistoryController
+);
+router.post(
+	"/defi/viniswap/tokens/:tokenAddress/history",
+	// auth,
+	getViniswapTokenHistoryController
 );
 
 router.get("/", (req, res) => {

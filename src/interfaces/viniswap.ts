@@ -59,6 +59,83 @@ export interface TransferEvent extends BaseEvent {
 
 export type SyncEventType = "swap" | "mint" | "burn" | "sync" | "transfer";
 
+export type TokenTransferEvent = TransferEvent & {
+	eventCategory?: "mint" | "redeem" | "transfer";
+};
+
+export interface TokenHolderSnapshot {
+	address: string;
+	balance: string;
+	percentage?: number;
+}
+
+export interface ViniswapTokenHistoryOptions extends ViniswapHistoryOptions {
+	cacheKey?: string;
+	holderPageLimit?: number;
+	blockBatchSize?: number;
+}
+
+export interface ViniswapTokenHistoryCache {
+	version: number;
+	network: string;
+	tokenAddress: string;
+	startBlock: number;
+	lastSyncedBlock: number;
+	lastSyncedTimestamp?: number;
+	events: TokenTransferEvent[];
+	holders: TokenHolderSnapshot[];
+	totals: {
+		transferCount: number;
+		redeemAmount: string;
+		mintCount: number;
+		mintAmount: string;
+		totalVolume: string;
+	};
+}
+
+export interface ViniswapTokenHistoryResult {
+	token: {
+		address: string;
+		metadata: TokenMetadata;
+		decimals?: number;
+		totalSupply?: string;
+		circulatingSupply?: string;
+		holdersCount?: number;
+		totalTransfers?: number;
+		price?: {
+			rate?: number;
+			currency?: string;
+			usd?: number;
+		};
+		marketCap?: number;
+	};
+	range: {
+		fromBlock: number;
+		toBlock: number;
+	};
+	summary: {
+		firstBlock: number;
+		firstTimestamp?: number;
+		firstIsoDate?: string;
+		lastBlock: number;
+		lastTimestamp?: number;
+		lastIsoDate?: string;
+		holderCount: number;
+		uniqueAddresses: number;
+		transferCount: number;
+		redeemAmount: string;
+		mintCount: number;
+		mintAmount: string;
+		totalVolume: string;
+	};
+	holders: Array<
+		TokenHolderSnapshot & {
+			formattedBalance?: string | null;
+		}
+	>;
+	events: TokenTransferEvent[];
+}
+
 export interface ViniswapHistoryOptions {
 	startBlock: number;
 	endBlock?: number;
