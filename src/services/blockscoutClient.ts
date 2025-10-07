@@ -229,6 +229,76 @@ export const fetchLogsFromBlockscout = async (
 	return logs;
 };
 
+export const fetchBlockTimestampFromBlockscout = async (
+	blockNumber: number,
+	{
+		maxRetries = 3,
+		delayMs = 500,
+	}: { maxRetries?: number; delayMs?: number } = {},
+	config?: BlockscoutClientConfig
+): Promise<number | undefined> => {
+	const baseURL = normalizeBlockscoutBaseUrl(
+		config?.url ?? BLOCKSCOUT_API_URL_BASE
+	);
+
+	const data = await executeWithRetries(
+		async () => {
+			const response = await axios.get<BlockscoutApiResponse>(baseURL, {
+				params: {
+					module: "block",
+					action: "getblockreward",
+					blockno: blockNumber,
+					apikey: config?.apiKey ?? BLOCKSCOUT_API_KEY,
+				},
+			});
+			return response.data;
+		},
+		{
+			maxRetries,
+			delayMs,
+			label: `block timestamp ${blockNumber}`,
+		}
+	);
+
+	if (data.status === "0") {
+		const message = (data.message ?? "").toLowerCase();
+		if (message.includes("notok") || message.includes("no record")) {
+			return undefined;
+		}
+
+		const errorDetail =
+			typeof data.result === "string"
+				? data.result
+				: JSON.stringify(data.result);
+		throw new Error(
+			`Blockscout getblockreward error: ${data.message || "unknown"} (${errorDetail})`
+		);
+	}
+
+	const resultRecord = asRecord(data.result);
+
+	if (!resultRecord) {
+		return undefined;
+	}
+
+	const rawTimestamp =
+		resultRecord.timeStamp ??
+		resultRecord.timestamp ??
+		resultRecord.time_stamp ??
+		resultRecord.blockTimeStamp;
+
+	if (typeof rawTimestamp === "number") {
+		return Number.isFinite(rawTimestamp) ? rawTimestamp : undefined;
+	}
+
+	if (typeof rawTimestamp === "string" && rawTimestamp.trim()) {
+		const parsed = Number(rawTimestamp);
+		return Number.isFinite(parsed) ? parsed : undefined;
+	}
+
+	return undefined;
+};
+
 const normalizeBlockscoutBaseUrl = (url?: string): string => {
 	if (!url) {
 		return DEFAULT_BLOCKSCOUT_URL_BASE;

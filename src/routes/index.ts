@@ -28,12 +28,12 @@ router.post("/verify-contract", auth, verifyContract);
 router.get("/checkverifystatus", auth, checkVerifyStatus);
 
 router.post(
-	"/defi/viniswap/pairs/:pairAddress/history",
+	"/viniswap/pairs/:pairAddress/history",
 	// auth,
 	getViniswapPairHistoryController
 );
 router.post(
-	"/defi/viniswap/tokens/:tokenAddress/history",
+	"/viniswap/tokens/:tokenAddress/history",
 	// auth,
 	getViniswapTokenHistoryController
 );

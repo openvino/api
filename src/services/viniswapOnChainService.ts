@@ -11,6 +11,7 @@ import {
 import { VINISWAP_PAIR_ABI, ERC20_ABI } from "../abi";
 import {
 	fetchLogsFromBlockscout,
+	fetchBlockTimestampFromBlockscout,
 	fetchTokenInfoWithRetries,
 	fetchTokenTransfersFromBlockscout,
 	fetchTokenHoldersFromBlockscout,
@@ -170,10 +171,7 @@ const shouldRetryRequest = (error: unknown): boolean => {
 		return false;
 	}
 
-	const { code, message, shortMessage, value, info } = error as Record<
-		string,
-		unknown
-	>;
+	const { code, message, shortMessage, value, info } = error as Record<string, unknown>;
 
 	if (code === "TIMEOUT") {
 		return true;
@@ -468,7 +466,7 @@ const paginateBlocks = async <T extends BaseEvent>(
 };
 
 const findBlockAtOrBeforeTimestamp = async (
-	provider: JsonRpcProvider,
+	context: ViniswapHistoryContext,
 	targetTimestamp: number,
 	latestBlockNumber: number
 ): Promise<{ blockNumber: number; blockTimestamp: number } | undefined> => {
@@ -483,17 +481,23 @@ const findBlockAtOrBeforeTimestamp = async (
 				blockNumber: number;
 				blockTimestamp: number;
 		  }
-		| undefined;
+			| undefined;
+	const timestampCache = new Map<number, number>();
 
 	while (left <= right) {
 		const mid = Math.floor((left + right) / 2);
-		const block = await provider.getBlock(mid);
-		if (!block) {
+		let timestamp = timestampCache.get(mid);
+		if (timestamp === undefined) {
+			const fetched = await getBlockTimestamp(mid, context);
+			timestamp = fetched ?? 0;
+			timestampCache.set(mid, timestamp);
+		}
+
+		if (!timestamp) {
 			right = mid - 1;
 			continue;
 		}
 
-		const timestamp = Number(block.timestamp);
 		if (timestamp <= targetTimestamp) {
 			best = { blockNumber: mid, blockTimestamp: timestamp };
 			left = mid + 1;
@@ -505,9 +509,69 @@ const findBlockAtOrBeforeTimestamp = async (
 	return best;
 };
 
+const getBlockTimestamp = async (
+	blockNumber: number,
+	context: ViniswapHistoryContext,
+	{
+		blockscoutMaxRetries = 3,
+		blockscoutDelayMs = 500,
+		providerMaxRetries = 5,
+		providerDelayMs = 500,
+	}: {
+		blockscoutMaxRetries?: number;
+		blockscoutDelayMs?: number;
+		providerMaxRetries?: number;
+		providerDelayMs?: number;
+	} = {}
+): Promise<number | undefined> => {
+	const { provider, blockscout } = context;
+
+	if (blockscout && (blockscout.url || blockscout.apiKey)) {
+		try {
+			const timestamp = await fetchBlockTimestampFromBlockscout(
+				blockNumber,
+				{
+					maxRetries: blockscoutMaxRetries,
+					delayMs: blockscoutDelayMs,
+				},
+				blockscout
+			);
+
+			if (timestamp !== undefined) {
+				return timestamp;
+			}
+		} catch (error) {
+			console.warn(
+				`[ViniswapPairHistory] Blockscout timestamp lookup failed for block ${blockNumber}`,
+				error instanceof Error ? error.message : error
+			);
+		}
+	}
+
+	let attempt = 0;
+	for (;;) {
+		try {
+			const block = await provider.getBlock(blockNumber);
+			return block ? Number(block.timestamp) : undefined;
+		} catch (error) {
+			attempt += 1;
+
+			if (attempt > providerMaxRetries || !shouldRetryRequest(error)) {
+				throw error;
+			}
+
+			const backoff = providerDelayMs * attempt;
+			console.warn(
+				`[ViniswapPairHistory] retrying provider block ${blockNumber} (attempt ${attempt}/${providerMaxRetries}) in ${backoff}ms`
+			);
+			await sleep(backoff);
+		}
+	}
+};
+
 const enrichWithTimestamp = async <T extends BaseEvent>(
 	events: T[],
-	provider: JsonRpcProvider
+	context: ViniswapHistoryContext
 ): Promise<void> => {
 	const eventsNeedingTimestamp = events.filter(
 		(event) => event.timestamp === undefined
@@ -523,12 +587,19 @@ const enrichWithTimestamp = async <T extends BaseEvent>(
 
 	const timestampCache = new Map<number, number>();
 
-	await Promise.all(
-		uniqueBlocks.map(async (blockNumber) => {
-			const block = await provider.getBlock(blockNumber);
-			timestampCache.set(blockNumber, block ? Number(block.timestamp) : 0);
-		})
-	);
+	for (const blockNumber of uniqueBlocks) {
+		const timestamp = await getBlockTimestamp(
+			blockNumber,
+			context,
+			{
+				blockscoutMaxRetries: 5,
+				blockscoutDelayMs: 750,
+				providerMaxRetries: 8,
+				providerDelayMs: 750,
+			}
+		);
+		timestampCache.set(blockNumber, timestamp ?? 0);
+	}
 
 	eventsNeedingTimestamp.forEach((event) => {
 		const ts = timestampCache.get(event.blockNumber) ?? 0;
@@ -562,10 +633,17 @@ export const fetchViniswapPairHistory = async (
 	);
 
 	const latestBlock = await provider.getBlockNumber();
-	const latestBlockData = await provider.getBlock(latestBlock);
-	const latestBlockTimestamp = latestBlockData
-		? Number(latestBlockData.timestamp)
-		: Math.floor(Date.now() / 1000);
+	const latestBlockTimestamp =
+		(await getBlockTimestamp(
+			latestBlock,
+			context,
+			{
+				blockscoutMaxRetries: 5,
+				blockscoutDelayMs: 500,
+				providerMaxRetries: 5,
+				providerDelayMs: 500,
+			}
+		)) ?? Math.floor(Date.now() / 1000);
 
 	const fromBlock = Math.max(0, Math.trunc(options.startBlock));
 	const toBlock = options.endBlock ? Math.trunc(options.endBlock) : latestBlock;
@@ -836,11 +914,11 @@ export const fetchViniswapPairHistory = async (
 	);
 
 	await Promise.all([
-		enrichWithTimestamp(swaps, provider),
-		enrichWithTimestamp(mints, provider),
-		enrichWithTimestamp(burns, provider),
-		enrichWithTimestamp(syncs, provider),
-		enrichWithTimestamp(transfers, provider),
+		enrichWithTimestamp(swaps, context),
+		enrichWithTimestamp(mints, context),
+		enrichWithTimestamp(burns, context),
+		enrichWithTimestamp(syncs, context),
+		enrichWithTimestamp(transfers, context),
 	]);
 
 	const earliestEventTimestamp = (() => {
@@ -883,7 +961,7 @@ export const fetchViniswapPairHistory = async (
 		}
 
 		const blockInfo = await findBlockAtOrBeforeTimestamp(
-			provider,
+			context,
 			targetTimestamp,
 			latestBlock
 		);
