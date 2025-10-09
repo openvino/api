@@ -3,7 +3,7 @@
   "network": "mainnet",
   "tokenAddress": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
   "startBlock": 5555000,
-  "lastSyncedBlock": 23526030,
+  "lastSyncedBlock": 23533533,
   "lastSyncedTimestamp": 1754743763,
   "events": [
     {

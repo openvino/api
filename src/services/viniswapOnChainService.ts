@@ -692,30 +692,96 @@ export const fetchViniswapPairHistory = async (
 			return reserveCache.get(blockNumber) ?? undefined;
 		}
 
-		try {
-			const reservesTuple = await pairContract.getReserves({
-				blockTag: blockNumber,
-			});
+		const tryFetch = async (bn: number): Promise<ReserveSnapshot | null> => {
+			try {
+				const reservesTuple = await pairContract.getReserves({ blockTag: bn });
+				const [reserve0Raw, reserve1Raw, blockTimestampRaw] =
+					reservesTuple as unknown as [bigint, bigint, bigint];
+				return {
+					reserve0: formatBigint(reserve0Raw),
+					reserve1: formatBigint(reserve1Raw),
+					blockTimestampLast: toNumber(blockTimestampRaw),
+				};
+			} catch (error) {
+				const msg = (
+					error instanceof Error ? error.message : String(error)
+				).toLowerCase();
+				const transient =
+					msg.includes("header not found") ||
+					msg.includes("missing trie node") ||
+					msg.includes("timeout") ||
+					msg.includes("too many requests") ||
+					msg.includes("rate limit");
+				if (!transient) return null;
+				return null;
+			}
+		};
 
-			const [reserve0Raw, reserve1Raw, blockTimestampRaw] =
-				reservesTuple as unknown as [bigint, bigint, bigint];
-
-			const snapshot = {
-				reserve0: formatBigint(reserve0Raw),
-				reserve1: formatBigint(reserve1Raw),
-				blockTimestampLast: toNumber(blockTimestampRaw),
-			};
-
+		let snapshot = await tryFetch(blockNumber);
+		if (snapshot) {
 			reserveCache.set(blockNumber, snapshot);
 			return snapshot;
-		} catch (error) {
-			console.warn(
-				`[ViniswapPairHistory] Failed to fetch reserves at block ${blockNumber}`,
-				error instanceof Error ? error.message : error
-			);
-			reserveCache.set(blockNumber, null);
-			return undefined;
 		}
+
+		const MAX_DISTANCE = 20000;
+		const STEPS = [
+			1, 2, 5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 20000,
+		];
+		for (const step of STEPS) {
+			const candidates: number[] = [];
+			const prev = blockNumber - step;
+			const next = blockNumber + step;
+			if (prev > 0) candidates.push(prev);
+			if (next <= latestBlock) candidates.push(next);
+
+			for (const bn of candidates) {
+				if (reserveCache.has(bn)) {
+					const cached = reserveCache.get(bn) ?? undefined;
+					if (cached) return cached;
+					continue;
+				}
+				snapshot = await tryFetch(bn);
+				if (snapshot) {
+					reserveCache.set(bn, snapshot);
+					return snapshot;
+				}
+			}
+
+			if (step >= MAX_DISTANCE) break;
+		}
+
+		reserveCache.set(blockNumber, null);
+		return undefined;
+	};
+
+	const getNearestReservesSnapshot = async (
+		blockNumber: number
+	): Promise<ReserveSnapshot | undefined> => {
+		let snapshot = await getReservesSnapshot(blockNumber);
+		if (snapshot) return snapshot;
+
+		const BACK_MAX = 40000;
+		const FWD_MAX = 10000;
+		const STEPS = [
+			1, 2, 5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 20000, 40000,
+		];
+
+		for (const step of STEPS) {
+			const prev = blockNumber - step;
+			if (prev > 0) {
+				snapshot = await getReservesSnapshot(prev);
+				if (snapshot) return snapshot;
+			}
+			if (step <= FWD_MAX) {
+				const next = blockNumber + step;
+				if (next <= latestBlock) {
+					snapshot = await getReservesSnapshot(next);
+					if (snapshot) return snapshot;
+				}
+			}
+			if (step >= BACK_MAX) break;
+		}
+		return undefined;
 	};
 
 	const [token0Address, token1Address, reserves, totalSupplyRaw] =
@@ -976,7 +1042,7 @@ export const fetchViniswapPairHistory = async (
 			continue;
 		}
 
-		const snapshot = await getReservesSnapshot(blockInfo.blockNumber);
+		const snapshot = await getNearestReservesSnapshot(blockInfo.blockNumber);
 
 		reservesByYearEnd.push({
 			year,
