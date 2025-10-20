@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router,Request,Response } from "express";
 import {
 	addFile,
 	addJsonFile,
@@ -25,7 +25,7 @@ router.post("/email/send", auth, sendEmail);
 router.post("/verify-contract", auth, verifyContract);
 router.get("/checkverifystatus", auth, checkVerifyStatus);
 
-router.get("/", (req, res) => {
+router.get("/", (req: Request, res: Response) => {
 	res.send("OpenVino API is Up!");
 });
 
