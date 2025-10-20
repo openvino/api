@@ -10,6 +10,8 @@ import auth from "../middlewares/auth";
 import { sendEmail } from "../controllers/Email.controller";
 import { verifyContract } from "../controllers/VerifyContract.Controller";
 import checkVerifyStatus from "../controllers/CheckVerifyStatus";
+import { getViniswapPairHistoryController } from "../controllers/ViniswapHistory.controller";
+import { getViniswapTokenHistoryController } from "../controllers/ViniswapTokenHistory.controller";
 
 const router: Router = Router();
 
@@ -25,7 +27,18 @@ router.post("/email/send", auth, sendEmail);
 router.post("/verify-contract", auth, verifyContract);
 router.get("/checkverifystatus", auth, checkVerifyStatus);
 
-router.get("/", (req: Request, res: Response) => {
+router.post(
+	"/viniswap/pairs/:pairAddress/history",
+	// auth,
+	getViniswapPairHistoryController
+);
+router.post(
+	"/viniswap/tokens/:tokenAddress/history",
+	// auth,
+	getViniswapTokenHistoryController
+);
+
+router.get("/", (req, res) => {
 	res.send("OpenVino API is Up!");
 });
 
