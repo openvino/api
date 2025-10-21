@@ -22,7 +22,7 @@ router.get("/ipfs/pins", getPinnedFiles);
 router.get("/ipfs/pins/:cid", getPinStatus);
 router.get("/ipfs/:cid");
 
-router.post("/email/send", auth, sendEmail);
+router.post("/email/send", sendEmail);
 
 router.post("/verify-contract", auth, verifyContract);
 router.get("/checkverifystatus", auth, checkVerifyStatus);
