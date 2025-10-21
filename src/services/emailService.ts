@@ -23,7 +23,7 @@ export const sendEmailService = async (
   html: string
 ) => {
   const email = await transporter.sendMail({
-    from: process.env.EMAIL_USER,
+    from: '"OpenVino" <no-reply@openvino.org>',
     to,
     subject,
     html,
