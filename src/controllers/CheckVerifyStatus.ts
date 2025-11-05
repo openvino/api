@@ -12,12 +12,12 @@ import qs from "qs";
  *   apikey=<APIKEY>
  */
 export const checkVerifyStatus = async (req: Request, res: Response) => {
-  console.log("checkVerifyStatus");
+  // console.log("checkVerifyStatus");
 
   try {
     const network = String(req.query.network || "").toLowerCase();
     const guid = String(req.query.guid || "");
-    console.log(network, " guid", guid);
+    // console.log(network, " guid", guid);
 
     if (!network || !guid) {
       res
@@ -28,7 +28,7 @@ export const checkVerifyStatus = async (req: Request, res: Response) => {
 
     let apiUrl: string;
     let apiKey: string;
-    console.log(network, " guid", guid);
+    // console.log(network, " guid", guid);
     switch (network) {
       case "mainnet":
         apiUrl = "https://api.etherscan.io/api";

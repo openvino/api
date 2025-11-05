@@ -1183,9 +1183,9 @@ export const fetchViniswapTokenHistory = async (
 	const scanToBlock = latestBlock;
 
 	if (verbose) {
-		console.log(
-			`[ViniswapTokenHistory] Escaneando ${normalizedAddress} desde ${scanFromBlock} hasta ${scanToBlock}`
-		);
+		// console.log(
+		// 	`[ViniswapTokenHistory] Escaneando ${normalizedAddress} desde ${scanFromBlock} hasta ${scanToBlock}`
+		// );
 	}
 
 	let newEvents: TokenTransferEvent[] = [];
@@ -1194,9 +1194,9 @@ export const fetchViniswapTokenHistory = async (
 		const loggingCallbacks = verbose
 			? {
 					onProgress: (progress: ViniswapHistoryProgress) => {
-						console.log(
-							`[ViniswapTokenHistory] TRANSFER ${progress.fromBlock} -> ${progress.toBlock} (${progress.entriesFound} eventos)`
-						);
+						// console.log(
+						// 	`[ViniswapTokenHistory] TRANSFER ${progress.fromBlock} -> ${progress.toBlock} (${progress.entriesFound} eventos)`
+						// );
 					},
 					onEvent: (
 						eventType: SyncEventType,
@@ -1208,9 +1208,9 @@ export const fetchViniswapTokenHistory = async (
 							transfer.readableDate || transfer.isoDate
 								? ` ${transfer.readableDate ?? transfer.isoDate}`
 								: "";
-						console.log(
-							`[ViniswapTokenHistory] TRANSFER block=${transfer.blockNumber} tx=${transfer.transactionHash} from=${transfer.from} -> ${transfer.to} value=${transfer.value}${tsPart}`
-						);
+						// console.log(
+						// 	`[ViniswapTokenHistory] TRANSFER block=${transfer.blockNumber} tx=${transfer.transactionHash} from=${transfer.from} -> ${transfer.to} value=${transfer.value}${tsPart}`
+						// );
 					},
 			  }
 			: undefined;
@@ -1228,9 +1228,9 @@ export const fetchViniswapTokenHistory = async (
 							const firstBlock = items[0]?.blockNumber ?? scanFromBlock;
 							const lastBlock =
 								items[items.length - 1]?.blockNumber ?? firstBlock;
-							console.log(
-								`[ViniswapTokenHistory] Blockscout página ${page} (${items.length} eventos) bloques ${firstBlock} -> ${lastBlock}`
-							);
+							// console.log(
+							// 	`[ViniswapTokenHistory] Blockscout página ${page} (${items.length} eventos) bloques ${firstBlock} -> ${lastBlock}`
+							// );
 					  }
 					: undefined,
 			},
@@ -1265,13 +1265,13 @@ export const fetchViniswapTokenHistory = async (
 					transfer.readableDate || transfer.isoDate
 						? ` ${transfer.readableDate ?? transfer.isoDate}`
 						: "";
-				console.log(
-					`[ViniswapTokenHistory] ${
-						transfer.eventCategory?.toUpperCase?.() ?? "TRANSFER"
-					} block=${transfer.blockNumber} tx=${transfer.transactionHash} from=${
-						transfer.from
-					} -> ${transfer.to} value=${transfer.value}${tsPart}`
-				);
+				// console.log(
+				// 	`[ViniswapTokenHistory] ${
+				// 		transfer.eventCategory?.toUpperCase?.() ?? "TRANSFER"
+				// 	} block=${transfer.blockNumber} tx=${transfer.transactionHash} from=${
+				// 		transfer.from
+				// 	} -> ${transfer.to} value=${transfer.value}${tsPart}`
+				// );
 			}
 		}
 	}
@@ -1440,9 +1440,9 @@ export const fetchViniswapTokenHistory = async (
 	};
 
 	if (verbose) {
-		console.log(
-			`[ViniswapTokenHistory] Completado ${normalizedAddress} bloques ${cachedStartBlock} -> ${scanToBlock} transfers=${summaryWithStats.transferCount} holders=${summaryWithStats.holderCount}`
-		);
+		// console.log(
+		// 	`[ViniswapTokenHistory] Completado ${normalizedAddress} bloques ${cachedStartBlock} -> ${scanToBlock} transfers=${summaryWithStats.transferCount} holders=${summaryWithStats.holderCount}`
+		// );
 	}
 
 	const cachePayload: ViniswapTokenHistoryCache = {
