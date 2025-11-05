@@ -17,7 +17,7 @@ export const sendEmail = async (req: Request, res: Response): Promise<void> => {
       "new order",
       `
             <p>Se ha realizado una transacción con los siguientes datos</p>
-            <p><strong>Usuario:</strong> ${email}</p>
+            <p><strong>Usuario:</strong> ${to}</p>
             <p><strong>Asunto:</strong> ${subject}</p>
             `
     );
