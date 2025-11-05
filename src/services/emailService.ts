@@ -1,21 +1,41 @@
-import nodemailer from "nodemailer";
+import nodemailer, { Transporter } from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
 
-// Configuración correcta con TypeScript
-const transporter = nodemailer.createTransport({
-  host: "127.0.0.1",
-  port: 1025,
-  secure: false, // true para 465, false para 587
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
+const transportMode = (process.env.EMAIL_TRANSPORT || "smtp").toLowerCase();
 
-  tls: {
-    rejectUnauthorized: false,
-  },
-});
+const buildSmtpTransport = (): Transporter => {
+  const port = Number(process.env.EMAIL_PORT || 1025);
+  const secure = (process.env.EMAIL_SECURE || "false").toLowerCase() === "true";
+
+  return nodemailer.createTransport({
+    host: process.env.EMAIL_HOST || "127.0.0.1",
+    port,
+    secure,
+    auth:
+      process.env.EMAIL_USER && process.env.EMAIL_PASS
+        ? {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+          }
+        : undefined,
+    tls: {
+      rejectUnauthorized:
+        (process.env.EMAIL_TLS_REJECT_UNAUTHORIZED || "false").toLowerCase() ===
+        "true",
+    },
+  });
+};
+
+const buildSendmailTransport = (): Transporter =>
+  nodemailer.createTransport({
+    sendmail: true,
+    newline: "unix",
+    path: process.env.SENDMAIL_PATH || "/usr/sbin/sendmail",
+  });
+
+const transporter =
+  transportMode === "sendmail" ? buildSendmailTransport() : buildSmtpTransport();
 
 export const sendEmailService = async (
   to: string,
