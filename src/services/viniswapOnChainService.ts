@@ -55,6 +55,12 @@ const TOKEN_HISTORY_CACHE_DIR = path.join(
 	"cache",
 	"viniswap-token"
 );
+const PAIR_HISTORY_CACHE_DIR = path.join(
+	process.cwd(),
+	"uploads",
+	"cache",
+	"viniswap-pair"
+);
 
 const sanitizeCacheSegment = (value: string): string => {
 	const normalized = value
@@ -74,6 +80,18 @@ const getTokenCachePath = (
 		? `${sanitizeCacheSegment(cacheKey)}.json`
 		: `${tokenAddress.toLowerCase()}.json`;
 	return path.join(TOKEN_HISTORY_CACHE_DIR, networkSegment, fileName);
+};
+
+const getViniswapPairCachePath = (
+	network: string,
+	pairAddress: string,
+	cacheKey?: string
+): string => {
+	const networkSegment = sanitizeCacheSegment(network || "default");
+	const fileName = cacheKey
+		? `${sanitizeCacheSegment(cacheKey)}.json`
+		: `${pairAddress.toLowerCase()}.json`;
+	return path.join(PAIR_HISTORY_CACHE_DIR, networkSegment, fileName);
 };
 
 const loadTokenHistoryCache = async (
@@ -100,7 +118,7 @@ const loadTokenHistoryCache = async (
 
 const saveTokenHistoryCache = async (
 	cachePath: string,
-	cache: ViniswapTokenHistoryCache
+	cache: ViniswapTokenHistoryCache | ViniswapPairHistoryCache
 ): Promise<void> => {
 	try {
 		await fs.mkdir(path.dirname(cachePath), { recursive: true });
@@ -112,6 +130,46 @@ const saveTokenHistoryCache = async (
 		);
 	}
 };
+
+interface ViniswapPairHistoryCache {
+	version: number;
+	network: string;
+	pairAddress: string;
+	startBlock: number;
+	lastSyncedBlock: number;
+	lastSyncedTimestamp?: number;
+	events: {
+		swaps: SwapEvent[];
+		mints: MintEvent[];
+		burns: BurnEvent[];
+		syncs: SyncEvent[];
+		transfers: TransferEvent[];
+	};
+}
+
+const loadViniswapPairHistoryCache = async (
+	cachePath: string
+): Promise<ViniswapPairHistoryCache | undefined> => {
+	try {
+		const raw = await fs.readFile(cachePath, "utf8");
+		const parsed = JSON.parse(raw) as ViniswapPairHistoryCache;
+		if (parsed.version !== TOKEN_HISTORY_CACHE_VERSION) {
+			return undefined;
+		}
+		return parsed;
+	} catch (error) {
+		if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+			return undefined;
+		}
+		console.warn(
+			`[ViniswapPairHistory] Failed to read cache at ${cachePath}`,
+			error instanceof Error ? error.message : error
+		);
+		return undefined;
+	}
+};
+
+const saveViniswapPairHistoryCache = saveTokenHistoryCache;
 
 export interface ViniswapHistoryContext {
 	provider: JsonRpcProvider;
@@ -184,8 +242,42 @@ const shouldRetryRequest = (error: unknown): boolean => {
 	}
 
 	const serialized = JSON.stringify({ message, shortMessage, value, info });
+	const lowerCaseError = serialized.toLowerCase();
 
-	return serialized.toLowerCase().includes("too many requests");
+	return (
+		lowerCaseError.includes("too many requests") ||
+		lowerCaseError.includes("header not found") ||
+		lowerCaseError.includes("missing trie node") ||
+		lowerCaseError.includes("rate limit")
+	);
+};
+
+const withRetries = async <T>(
+	action: () => Promise<T>,
+	options: { maxRetries: number; delayMs: number; name?: string }
+): Promise<T> => {
+	let attempt = 0;
+	for (;;) {
+		try {
+			return await action();
+		} catch (error) {
+			attempt += 1;
+			if (attempt > options.maxRetries || !shouldRetryRequest(error)) {
+				throw error;
+			}
+			const backoff = options.delayMs * attempt;
+			console.warn(
+				`[ViniswapOnChainService] Retrying ${
+					options.name ?? "operation"
+				} after error (attempt ${attempt}/${
+					options.maxRetries
+				}) in ${backoff}ms. Error: ${
+					error instanceof Error ? error.message : String(error)
+				}`
+			);
+			await sleep(backoff);
+		}
+	}
 };
 
 const formatReservesSnapshot = (
@@ -637,23 +729,47 @@ export const fetchViniswapPairHistory = async (
 	const latestBlock = await provider.getBlockNumber();
 	const latestBlockTimestamp =
 		(await getBlockTimestamp(latestBlock, context, {
-			blockscoutMaxRetries: 5,
-			blockscoutDelayMs: 500,
-			providerMaxRetries: 5,
 			providerDelayMs: 500,
 		})) ?? Math.floor(Date.now() / 1000);
 
-	const fromBlock = Math.max(0, Math.trunc(options.startBlock));
-	const toBlock = options.endBlock ? Math.trunc(options.endBlock) : latestBlock;
+	const requestedStartBlock = Math.max(0, Math.trunc(options.startBlock));
+	const requestedEndBlock = options.endBlock
+		? Math.trunc(options.endBlock)
+		: latestBlock;
 
-	if (fromBlock > toBlock) {
+	if (requestedStartBlock > requestedEndBlock) {
 		throw new Error("startBlock cannot be greater than endBlock");
 	}
 
-	const batchDelayMs =
-		options.batchDelayMs !== undefined && options.batchDelayMs >= 0
-			? Math.trunc(options.batchDelayMs)
-			: 250;
+	const networkKey = normalizeNetworkKey(context.networkKey);
+	const cachePath = getViniswapPairCachePath(
+		networkKey,
+		normalizedAddress,
+		(options as ViniswapTokenHistoryOptions).cacheKey
+	);
+
+	const cached = await loadViniswapPairHistoryCache(cachePath);
+
+	let fromBlock = requestedStartBlock;
+	let existingEvents: ViniswapPairHistoryCache["events"] = {
+		swaps: [],
+		mints: [],
+		burns: [],
+		syncs: [],
+		transfers: [],
+	};
+	let lastSyncedBlock = fromBlock - 1;
+
+	if (cached) {
+		fromBlock = Math.min(fromBlock, cached.startBlock);
+		existingEvents = cached.events ?? existingEvents;
+		lastSyncedBlock = cached.lastSyncedBlock ?? fromBlock - 1;
+	}
+
+	const scanFromBlock = Math.max(fromBlock, lastSyncedBlock + 1);
+	const scanToBlock = requestedEndBlock;
+
+	const batchDelayMs = options.batchDelayMs ?? 250;
 	const maxRetries =
 		options.maxRetries !== undefined && options.maxRetries >= 0
 			? Math.trunc(options.maxRetries)
@@ -664,16 +780,15 @@ export const fetchViniswapPairHistory = async (
 		);
 	}
 
-	const blockRangeSize = toBlock - fromBlock + 1;
+	const retryOptions = {
+		maxRetries,
+		delayMs: batchDelayMs,
+	};
+
+	const blockRangeSize = scanToBlock - scanFromBlock + 1;
 	const batchSize = blockRangeSize;
-	const blockscoutPageSize =
-		options.blockscoutPageSize && options.blockscoutPageSize > 0
-			? Math.trunc(options.blockscoutPageSize)
-			: 100;
-	const blockscoutDelayMs =
-		options.blockscoutDelayMs !== undefined && options.blockscoutDelayMs >= 0
-			? Math.trunc(options.blockscoutDelayMs)
-			: 250;
+	const blockscoutPageSize = options.blockscoutPageSize ?? 100;
+	const blockscoutDelayMs = options.blockscoutDelayMs ?? 250;
 
 	const paginationOptions = {
 		batchDelayMs,
@@ -694,7 +809,14 @@ export const fetchViniswapPairHistory = async (
 
 		const tryFetch = async (bn: number): Promise<ReserveSnapshot | null> => {
 			try {
-				const reservesTuple = await pairContract.getReserves({ blockTag: bn });
+				const reservesTuple = await withRetries(
+					() => pairContract.getReserves({ blockTag: bn }),
+					{
+						...retryOptions,
+						maxRetries: 3, // Use a smaller number of retries for this specific case
+						name: `pair.getReserves:${bn}`,
+					}
+				);
 				const [reserve0Raw, reserve1Raw, blockTimestampRaw] =
 					reservesTuple as unknown as [bigint, bigint, bigint];
 				return {
@@ -703,16 +825,7 @@ export const fetchViniswapPairHistory = async (
 					blockTimestampLast: toNumber(blockTimestampRaw),
 				};
 			} catch (error) {
-				const msg = (
-					error instanceof Error ? error.message : String(error)
-				).toLowerCase();
-				const transient =
-					msg.includes("header not found") ||
-					msg.includes("missing trie node") ||
-					msg.includes("timeout") ||
-					msg.includes("too many requests") ||
-					msg.includes("rate limit");
-				if (!transient) return null;
+				// If retries fail, return null to maintain original logic
 				return null;
 			}
 		};
@@ -786,15 +899,33 @@ export const fetchViniswapPairHistory = async (
 
 	const [token0Address, token1Address, reserves, totalSupplyRaw] =
 		await Promise.all([
-			pairContract.token0(),
-			pairContract.token1(),
-			pairContract.getReserves(),
-			pairContract.totalSupply(),
+			withRetries(() => pairContract.token0(), {
+				...retryOptions,
+				name: "pair.token0",
+			}),
+			withRetries(() => pairContract.token1(), {
+				...retryOptions,
+				name: "pair.token1",
+			}),
+			withRetries(() => pairContract.getReserves(), {
+				...retryOptions,
+				name: "pair.getReserves",
+			}),
+			withRetries(() => pairContract.totalSupply(), {
+				...retryOptions,
+				name: "pair.totalSupply",
+			}),
 		]);
 
 	const [token0, token1] = await Promise.all([
-		fetchTokenMetadata(token0Address, provider),
-		fetchTokenMetadata(token1Address, provider),
+		withRetries(() => fetchTokenMetadata(token0Address, provider), {
+			...retryOptions,
+			name: `fetchTokenMetadata.${token0Address}`,
+		}),
+		withRetries(() => fetchTokenMetadata(token1Address, provider), {
+			...retryOptions,
+			name: `fetchTokenMetadata.${token1Address}`,
+		}),
 	]);
 
 	const currentReservesSnapshot = {
@@ -811,11 +942,11 @@ export const fetchViniswapPairHistory = async (
 		),
 	};
 
-	const swaps = await paginateBlocks<SwapEvent>(
+	const newSwaps = await paginateBlocks<SwapEvent>(
 		normalizedAddress,
 		SWAP_TOPIC,
-		fromBlock,
-		toBlock,
+		scanFromBlock,
+		scanToBlock,
 		batchSize,
 		async (log) => {
 			const parsed = pairInterface.parseLog(log);
@@ -850,11 +981,11 @@ export const fetchViniswapPairHistory = async (
 		getReservesSnapshot
 	);
 
-	const mints = await paginateBlocks<MintEvent>(
+	const newMints = await paginateBlocks<MintEvent>(
 		normalizedAddress,
 		MINT_TOPIC,
-		fromBlock,
-		toBlock,
+		scanFromBlock,
+		scanToBlock,
 		batchSize,
 		async (log) => {
 			const parsed = pairInterface.parseLog(log);
@@ -883,11 +1014,11 @@ export const fetchViniswapPairHistory = async (
 		getReservesSnapshot
 	);
 
-	const burns = await paginateBlocks<BurnEvent>(
+	const newBurns = await paginateBlocks<BurnEvent>(
 		normalizedAddress,
 		BURN_TOPIC,
-		fromBlock,
-		toBlock,
+		scanFromBlock,
+		scanToBlock,
 		batchSize,
 		async (log) => {
 			const parsed = pairInterface.parseLog(log);
@@ -918,11 +1049,11 @@ export const fetchViniswapPairHistory = async (
 		getReservesSnapshot
 	);
 
-	const transfers = await paginateBlocks<TransferEvent>(
+	const newTransfers = await paginateBlocks<TransferEvent>(
 		normalizedAddress,
 		TRANSFER_TOPIC,
-		fromBlock,
-		toBlock,
+		scanFromBlock,
+		scanToBlock,
 		batchSize,
 		async (log) => {
 			const parsed = pairInterface.parseLog(log);
@@ -951,11 +1082,11 @@ export const fetchViniswapPairHistory = async (
 		getReservesSnapshot
 	);
 
-	const syncs = await paginateBlocks<SyncEvent>(
+	const newSyncs = await paginateBlocks<SyncEvent>(
 		normalizedAddress,
 		SYNC_TOPIC,
-		fromBlock,
-		toBlock,
+		scanFromBlock,
+		scanToBlock,
 		batchSize,
 		async (log) => {
 			const parsed = pairInterface.parseLog(log);
@@ -981,21 +1112,39 @@ export const fetchViniswapPairHistory = async (
 		{ provider, blockscout }
 	);
 
+	const allEvents = {
+		swaps: [...existingEvents.swaps, ...newSwaps],
+		mints: [...existingEvents.mints, ...newMints],
+		burns: [...existingEvents.burns, ...newBurns],
+		syncs: [...existingEvents.syncs, ...newSyncs],
+		transfers: [...existingEvents.transfers, ...newTransfers],
+	};
+
+	// Deduplicate and sort
+	for (const key of Object.keys(allEvents) as Array<keyof typeof allEvents>) {
+		const map = new Map(
+			allEvents[key].map((e) => [`${e.blockNumber}-${e.logIndex}`, e])
+		);
+		allEvents[key] = Array.from(map.values()).sort(
+			(a, b) => a.blockNumber - b.blockNumber || a.logIndex - b.logIndex
+		) as any;
+	}
+
 	await Promise.all([
-		enrichWithTimestamp(swaps, context),
-		enrichWithTimestamp(mints, context),
-		enrichWithTimestamp(burns, context),
-		enrichWithTimestamp(syncs, context),
-		enrichWithTimestamp(transfers, context),
+		enrichWithTimestamp(allEvents.swaps, context),
+		enrichWithTimestamp(allEvents.mints, context),
+		enrichWithTimestamp(allEvents.burns, context),
+		enrichWithTimestamp(allEvents.syncs, context),
+		enrichWithTimestamp(allEvents.transfers, context),
 	]);
 
 	const earliestEventTimestamp = (() => {
 		const candidates = [
-			swaps[0]?.timestamp,
-			mints[0]?.timestamp,
-			burns[0]?.timestamp,
-			syncs[0]?.timestamp,
-			transfers[0]?.timestamp,
+			allEvents.swaps[0]?.timestamp,
+			allEvents.mints[0]?.timestamp,
+			allEvents.burns[0]?.timestamp,
+			allEvents.syncs[0]?.timestamp,
+			allEvents.transfers[0]?.timestamp,
 			currentReservesSummary.blockTimestampLast,
 		].filter(
 			(value): value is number => typeof value === "number" && value > 0
@@ -1066,30 +1215,42 @@ export const fetchViniswapPairHistory = async (
 		isCurrent: true,
 	});
 
+	const cacheToSave: ViniswapPairHistoryCache = {
+		version: TOKEN_HISTORY_CACHE_VERSION,
+		network: networkKey,
+		pairAddress: normalizedAddress,
+		startBlock: fromBlock,
+		lastSyncedBlock: scanToBlock,
+		lastSyncedTimestamp: latestBlockTimestamp,
+		events: allEvents,
+	};
+
+	await saveViniswapPairHistoryCache(cachePath, cacheToSave);
+
 	const latestIsoDate = formatIsoDate(latestBlockTimestamp);
 	const latestReadableDate = formatReadableDate(latestBlockTimestamp);
 
 	return {
 		pairAddress: normalizedAddress,
 		fromBlock,
-		toBlock,
+		toBlock: scanToBlock,
 		token0,
 		token1,
 		currentReserves: currentReservesSnapshot,
 		totalSupply: formatBigint(totalSupplyRaw),
 		events: {
-			swaps,
-			mints,
-			burns,
-			syncs,
-			transfers,
+			swaps: allEvents.swaps,
+			mints: allEvents.mints,
+			burns: allEvents.burns,
+			syncs: allEvents.syncs,
+			transfers: allEvents.transfers,
 		},
 		summary: {
-			swapCount: swaps.length,
-			mintCount: mints.length,
-			burnCount: burns.length,
-			syncCount: syncs.length,
-			transferCount: transfers.length,
+			swapCount: allEvents.swaps.length,
+			mintCount: allEvents.mints.length,
+			burnCount: allEvents.burns.length,
+			syncCount: allEvents.syncs.length,
+			transferCount: allEvents.transfers.length,
 			currentReserves: currentReservesSummary,
 			reservesByYearEnd,
 

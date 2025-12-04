@@ -9,6 +9,7 @@ import { handleUploadSingleFile } from "../middlewares";
 import auth from "../middlewares/auth";
 import { sendEmail } from "../controllers/Email.controller";
 import { verifyContract } from "../controllers/VerifyContract.Controller";
+import { verifyOVI } from "../controllers/VerifyOVI.Controller";
 import checkVerifyStatus from "../controllers/CheckVerifyStatus";
 import { getViniswapPairHistoryController } from "../controllers/ViniswapHistory.controller";
 import { getViniswapTokenHistoryController } from "../controllers/ViniswapTokenHistory.controller";
@@ -25,6 +26,7 @@ router.get("/ipfs/:cid");
 router.post("/email/send", auth, sendEmail);
 
 router.post("/verify-contract", auth, verifyContract);
+router.post("/verify-ovi", auth, verifyOVI);
 router.get("/checkverifystatus", auth, checkVerifyStatus);
 
 router.post(

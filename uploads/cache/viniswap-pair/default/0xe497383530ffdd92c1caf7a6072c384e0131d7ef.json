@@ -1,0 +1,248 @@
+{
+  "version": 3,
+  "network": "default",
+  "pairAddress": "0xe497383530ffDD92c1caF7a6072C384E0131D7ef",
+  "startBlock": 2171714,
+  "lastSyncedBlock": 36655788,
+  "lastSyncedTimestamp": 1760100923,
+  "events": {
+    "swaps": [
+      {
+        "blockNumber": 33250121,
+        "transactionHash": "0x8936ecabf0ee2c8f5a57644c3248fbd781c3a6e2f72e7e439410ac5bf164de42",
+        "logIndex": 298,
+        "sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
+        "to": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
+        "amount0In": "24000000000000000000",
+        "amount1In": "0",
+        "amount0Out": "0",
+        "amount1Out": "22615695968818629",
+        "reservesAfter": {
+          "reserve0": "905000000000000000000",
+          "reserve1": "834356287626851466",
+          "blockTimestampLast": 1753289589
+        },
+        "timestamp": 1753289589,
+        "isoDate": "2025-07-23T16:53:09.000Z",
+        "readableDate": "2025-07-23 16:53:09 UTC"
+      },
+      {
+        "blockNumber": 33328977,
+        "transactionHash": "0x3f1cb9988fadce588cab25f1b296567fda7752b94433054f0f20e31764b46074",
+        "logIndex": 581,
+        "sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
+        "to": "0xF4e3E803fE0C0EDC0b5A31C76CA3902C18602Fd3",
+        "amount0In": "0",
+        "amount1In": "5596545268904153",
+        "amount0Out": "6000000000000000000",
+        "amount1Out": "0",
+        "reservesAfter": {
+          "reserve0": "899000000000000000000",
+          "reserve1": "839952832895755619",
+          "blockTimestampLast": 1753447301
+        },
+        "timestamp": 1753447301,
+        "isoDate": "2025-07-25T12:41:41.000Z",
+        "readableDate": "2025-07-25 12:41:41 UTC"
+      },
+      {
+        "blockNumber": 36595548,
+        "transactionHash": "0xa1d7c163f545a7f357cfa0dbfa9c35a588af75dffb061590d308ad27c62dcd19",
+        "logIndex": 23,
+        "sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
+        "to": "0x649B63F6F3354141aa936E3Ce360A721c5dA990A",
+        "amount0In": "0",
+        "amount1In": "1882215610708517",
+        "amount0Out": "2000000000000000000",
+        "amount1Out": "0",
+        "reservesAfter": {
+          "reserve0": "899000000000000000000",
+          "reserve1": "839952832895755619",
+          "blockTimestampLast": 1753447301
+        },
+        "timestamp": 1759980443,
+        "isoDate": "2025-10-09T03:27:23.000Z",
+        "readableDate": "2025-10-09 03:27:23 UTC"
+      }
+    ],
+    "mints": [
+      {
+        "blockNumber": 21723782,
+        "transactionHash": "0x565f2e483414eab4112dba41d6a4db05f7fb18d643e49a2e3e1a320ca4742478",
+        "logIndex": 115,
+        "sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
+        "amount0": "1000000000000000000",
+        "amount1": "2627576000000000",
+        "reservesAfter": {
+          "reserve0": "1000000000000000000",
+          "reserve1": "2627576000000000",
+          "blockTimestampLast": 1730236911
+        },
+        "timestamp": 1730236911,
+        "isoDate": "2024-10-29T21:21:51.000Z",
+        "readableDate": "2024-10-29 21:21:51 UTC"
+      },
+      {
+        "blockNumber": 21723873,
+        "transactionHash": "0x34f08916a12422016d1e21ead2dce92aa516c176b8b153e5b559d64960744cb7",
+        "logIndex": 293,
+        "sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
+        "amount0": "1000000000000000000",
+        "amount1": "2627576000000000",
+        "reservesAfter": {
+          "reserve0": "2000000000000000000",
+          "reserve1": "5255152000000000",
+          "blockTimestampLast": 1730237093
+        },
+        "timestamp": 1730237093,
+        "isoDate": "2024-10-29T21:24:53.000Z",
+        "readableDate": "2024-10-29 21:24:53 UTC"
+      },
+      {
+        "blockNumber": 22148134,
+        "transactionHash": "0x3326806ebf4a73d4a3176fb93bd4eef667bdeaa9dda26c60f52a8eac96dddf1c",
+        "logIndex": 425,
+        "sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
+        "amount0": "29000000000000000000",
+        "amount1": "76199704000000000",
+        "reservesAfter": {
+          "reserve0": "31000000000000000000",
+          "reserve1": "81454856000000000",
+          "blockTimestampLast": 1731085615
+        },
+        "timestamp": 1731085615,
+        "isoDate": "2024-11-08T17:06:55.000Z",
+        "readableDate": "2024-11-08 17:06:55 UTC"
+      }
+    ],
+    "burns": [],
+    "syncs": [
+      {
+        "blockNumber": 21723782,
+        "transactionHash": "0x565f2e483414eab4112dba41d6a4db05f7fb18d643e49a2e3e1a320ca4742478",
+        "logIndex": 114,
+        "reserve0": "1000000000000000000",
+        "reserve1": "2627576000000000",
+        "timestamp": 1730236911,
+        "isoDate": "2024-10-29T21:21:51.000Z",
+        "readableDate": "2024-10-29 21:21:51 UTC"
+      },
+      {
+        "blockNumber": 21723873,
+        "transactionHash": "0x34f08916a12422016d1e21ead2dce92aa516c176b8b153e5b559d64960744cb7",
+        "logIndex": 292,
+        "reserve0": "2000000000000000000",
+        "reserve1": "5255152000000000",
+        "timestamp": 1730237093,
+        "isoDate": "2024-10-29T21:24:53.000Z",
+        "readableDate": "2024-10-29 21:24:53 UTC"
+      },
+      {
+        "blockNumber": 22148134,
+        "transactionHash": "0x3326806ebf4a73d4a3176fb93bd4eef667bdeaa9dda26c60f52a8eac96dddf1c",
+        "logIndex": 424,
+        "reserve0": "31000000000000000000",
+        "reserve1": "81454856000000000",
+        "timestamp": 1731085615,
+        "isoDate": "2024-11-08T17:06:55.000Z",
+        "readableDate": "2024-11-08 17:06:55 UTC"
+      },
+      {
+        "blockNumber": 33250121,
+        "transactionHash": "0x8936ecabf0ee2c8f5a57644c3248fbd781c3a6e2f72e7e439410ac5bf164de42",
+        "logIndex": 297,
+        "reserve0": "905000000000000000000",
+        "reserve1": "834356287626851466",
+        "timestamp": 1753289589,
+        "isoDate": "2025-07-23T16:53:09.000Z",
+        "readableDate": "2025-07-23 16:53:09 UTC"
+      },
+      {
+        "blockNumber": 33328977,
+        "transactionHash": "0x3f1cb9988fadce588cab25f1b296567fda7752b94433054f0f20e31764b46074",
+        "logIndex": 580,
+        "reserve0": "899000000000000000000",
+        "reserve1": "839952832895755619",
+        "timestamp": 1753447301,
+        "isoDate": "2025-07-25T12:41:41.000Z",
+        "readableDate": "2025-07-25 12:41:41 UTC"
+      },
+      {
+        "blockNumber": 36595548,
+        "transactionHash": "0xa1d7c163f545a7f357cfa0dbfa9c35a588af75dffb061590d308ad27c62dcd19",
+        "logIndex": 22,
+        "reserve0": "897000000000000000000",
+        "reserve1": "841835048506464136",
+        "timestamp": 1759980443,
+        "isoDate": "2025-10-09T03:27:23.000Z",
+        "readableDate": "2025-10-09 03:27:23 UTC"
+      }
+    ],
+    "transfers": [
+      {
+        "blockNumber": 21723782,
+        "transactionHash": "0x565f2e483414eab4112dba41d6a4db05f7fb18d643e49a2e3e1a320ca4742478",
+        "logIndex": 112,
+        "from": "0x0000000000000000000000000000000000000000",
+        "to": "0x0000000000000000000000000000000000000000",
+        "value": "1000",
+        "reservesAfter": {
+          "reserve0": "1000000000000000000",
+          "reserve1": "2627576000000000",
+          "blockTimestampLast": 1730236911
+        },
+        "timestamp": 1730236911,
+        "isoDate": "2024-10-29T21:21:51.000Z",
+        "readableDate": "2024-10-29 21:21:51 UTC"
+      },
+      {
+        "blockNumber": 21723782,
+        "transactionHash": "0x565f2e483414eab4112dba41d6a4db05f7fb18d643e49a2e3e1a320ca4742478",
+        "logIndex": 113,
+        "from": "0x0000000000000000000000000000000000000000",
+        "to": "0xcFE7E071641cFF57a40EDc50D2c43D5F6D68eE8d",
+        "value": "51259886851220199",
+        "reservesAfter": {
+          "reserve0": "1000000000000000000",
+          "reserve1": "2627576000000000",
+          "blockTimestampLast": 1730236911
+        },
+        "timestamp": 1730236911,
+        "isoDate": "2024-10-29T21:21:51.000Z",
+        "readableDate": "2024-10-29 21:21:51 UTC"
+      },
+      {
+        "blockNumber": 21723873,
+        "transactionHash": "0x34f08916a12422016d1e21ead2dce92aa516c176b8b153e5b559d64960744cb7",
+        "logIndex": 291,
+        "from": "0x0000000000000000000000000000000000000000",
+        "to": "0xcFE7E071641cFF57a40EDc50D2c43D5F6D68eE8d",
+        "value": "51259886851221199",
+        "reservesAfter": {
+          "reserve0": "2000000000000000000",
+          "reserve1": "5255152000000000",
+          "blockTimestampLast": 1730237093
+        },
+        "timestamp": 1730237093,
+        "isoDate": "2024-10-29T21:24:53.000Z",
+        "readableDate": "2024-10-29 21:24:53 UTC"
+      },
+      {
+        "blockNumber": 22148134,
+        "transactionHash": "0x3326806ebf4a73d4a3176fb93bd4eef667bdeaa9dda26c60f52a8eac96dddf1c",
+        "logIndex": 423,
+        "from": "0x0000000000000000000000000000000000000000",
+        "to": "0xcFE7E071641cFF57a40EDc50D2c43D5F6D68eE8d",
+        "value": "1486536718685414771",
+        "reservesAfter": {
+          "reserve0": "31000000000000000000",
+          "reserve1": "81454856000000000",
+          "blockTimestampLast": 1731085615
+        },
+        "timestamp": 1731085615,
+        "isoDate": "2024-11-08T17:06:55.000Z",
+        "readableDate": "2024-11-08 17:06:55 UTC"
+      }
+    ]
+  }
+}

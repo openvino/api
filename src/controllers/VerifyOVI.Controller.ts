@@ -1,13 +1,10 @@
 import { Request, Response } from "express";
 import axios from "axios";
 import qs from "qs";
-import { sourceCode, saveVerificationDebugPayload } from "../utils";
+import { saveVerificationDebugPayload, sourceCodeOVI } from "../utils";
 
-export const verifyContract = async (
-	req: Request,
-	res: Response
-): Promise<void> => {
-	console.log("verifyContract");
+export const verifyOVI = async (req: Request, res: Response): Promise<void> => {
+	console.log("verifyOVI");
 
 	try {
 		const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
@@ -72,14 +69,14 @@ export const verifyContract = async (
 				});
 				return;
 		}
-		console.log("verivying in network", network, "endpoint:", apiBase);
+		console.log("verifying OVI in network", network, "endpoint:", apiBase);
 
 		const postData = {
 			apikey: apiKey,
 			module: "contract",
 			action: "verifysourcecode",
 			contractaddress: address,
-			sourceCode: sourceCode,
+			sourceCode: sourceCodeOVI,
 			codeformat: "solidity-standard-json-input",
 			contractname: contractName,
 			compilerversion: compilerVersion,
@@ -118,7 +115,7 @@ export const verifyContract = async (
 				constructorArgs,
 				optimizationUsed,
 				runs,
-				sourceCode,
+				sourceCode: sourceCodeOVI,
 				explorerResponse: data,
 			});
 			res.json({
@@ -128,7 +125,7 @@ export const verifyContract = async (
 			});
 		}
 	} catch (err: any) {
-		console.error("Error verifying Contract", err);
+		console.error("Error verifying OVI Contract", err);
 		await saveVerificationDebugPayload({
 			network: req.body?.network ?? "unknown",
 			address: req.body?.address ?? "unknown",
@@ -139,7 +136,7 @@ export const verifyContract = async (
 			constructorArgs: req.body?.constructorArgs,
 			optimizationUsed: req.body?.optimizationUsed,
 			runs: req.body?.runs,
-			sourceCode,
+			sourceCode: sourceCodeOVI,
 			errorMessage: err?.message ?? err?.toString?.(),
 		});
 		res.status(500).json({ error: err.message || err.toString() });

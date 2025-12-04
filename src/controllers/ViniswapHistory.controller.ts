@@ -71,6 +71,212 @@ const formatAmountToEth = (
 	}
 };
 
+type ViniswapPairHistoryExecutionParams = {
+	pairAddress: string;
+	options: ViniswapHistoryOptions;
+	network?: string;
+	verbose?: boolean;
+};
+
+type ViniswapPairHistoryExecutionContext = {
+	provider?: ReturnType<typeof getProviderForNetwork>;
+	blockscoutConfig?: ReturnType<typeof getBlockscoutConfigForNetwork>;
+};
+
+type ViniswapPairHistoryExecutionResult = {
+	result: Awaited<ReturnType<typeof fetchViniswapPairHistory>>;
+	tokenDecimals: { token0: number; token1: number };
+};
+
+const executeViniswapPairHistory = async (
+	params: ViniswapPairHistoryExecutionParams,
+	context: ViniswapPairHistoryExecutionContext = {}
+): Promise<ViniswapPairHistoryExecutionResult> => {
+	const { pairAddress, options, network, verbose = false } = params;
+
+	const provider = context.provider ?? getProviderForNetwork(network);
+	const blockscoutConfig =
+		context.blockscoutConfig ?? getBlockscoutConfigForNetwork(network);
+
+	if (!blockscoutConfig.url) {
+		throw new Error(
+			`Blockscout API URL not configured for network "${network ?? "default"}"`
+		);
+	}
+
+	let lastProgressMessage = "";
+	const updateProgressLine = (message: string): void => {
+		process.stdout.write(`\r${message}`);
+		lastProgressMessage = message;
+	};
+
+	const clearProgressLine = (): void => {
+		if (!lastProgressMessage) return;
+		process.stdout.write(`\r${" ".repeat(lastProgressMessage.length)}\r`);
+		lastProgressMessage = "";
+	};
+
+	const logProgress = (progress: ViniswapHistoryProgress): void => {
+		const message = `[ViniswapPairHistory] ${progress.eventType.toUpperCase()} ${progress.fromBlock} -> ${progress.toBlock} (${progress.entriesFound} eventos)`;
+		updateProgressLine(message);
+	};
+
+	let tokenDecimals = {
+		token0: DEFAULT_DECIMALS,
+		token1: DEFAULT_DECIMALS,
+	};
+
+	const logReserves = (
+		label: string,
+		reserves?: { reserve0: string; reserve1: string; blockTimestampLast?: number }
+	): void => {
+		if (!reserves) {
+			console.log(`${label}: reservas no disponibles`);
+			return;
+		}
+		const reserve0Eth = formatAmountToEth(reserves.reserve0, tokenDecimals.token0);
+		const reserve1Eth = formatAmountToEth(reserves.reserve1, tokenDecimals.token1);
+		const parts = [
+			`${label}: reserve0=${reserves.reserve0} reserve1=${reserves.reserve1}`,
+			`reserve0Eth=${reserve0Eth ?? "n/a"} reserve1Eth=${reserve1Eth ?? "n/a"}`,
+		];
+		if (reserves.blockTimestampLast !== undefined) {
+			parts.push(`ts=${reserves.blockTimestampLast}`);
+		}
+		console.log(parts.join(" | "));
+	};
+
+	const emitTimestamp = (
+		event: { timestamp?: number; isoDate?: string; readableDate?: string }
+	): string => {
+		if (!event.isoDate && !event.timestamp && !event.readableDate) {
+			return "";
+		}
+		const parts: string[] = [];
+		if (event.readableDate) {
+			parts.push(event.readableDate);
+		}
+		if (event.isoDate) {
+			parts.push(event.isoDate);
+		}
+		if (event.timestamp) {
+			parts.push(`ts=${event.timestamp}`);
+		}
+		return parts.length ? ` | ${parts.join(" ")}` : "";
+	};
+
+	const logEvent = (
+		eventType: "swap" | "mint" | "burn" | "sync" | "transfer",
+		event:
+			| ViniswapSwapEvent
+			| ViniswapMintEvent
+			| ViniswapBurnEvent
+			| ViniswapPairSyncEvent
+			| ViniswapTransferEvent
+	): void => {
+		clearProgressLine();
+		switch (eventType) {
+			case "swap": {
+				const swap = event as ViniswapSwapEvent;
+				console.log(
+					`[ViniswapPairHistory] SWAP block=${swap.blockNumber} tx=${swap.transactionHash} sender=${swap.sender} -> ${swap.to}${emitTimestamp(swap)}`
+				);
+				console.log(
+					`  amounts: in0=${swap.amount0In} in1=${swap.amount1In} out0=${swap.amount0Out} out1=${swap.amount1Out}`
+				);
+				logReserves("  reservas después", swap.reservesAfter);
+				break;
+			}
+			case "mint": {
+				const mint = event as ViniswapMintEvent;
+				console.log(
+					`[ViniswapPairHistory] MINT block=${mint.blockNumber} tx=${mint.transactionHash} sender=${mint.sender}${emitTimestamp(mint)}`
+				);
+				console.log(
+					`  liquidity: amount0=${mint.amount0} amount1=${mint.amount1}`
+				);
+				logReserves("  reservas después", mint.reservesAfter);
+				break;
+			}
+			case "burn": {
+				const burn = event as ViniswapBurnEvent;
+				console.log(
+					`[ViniswapPairHistory] BURN block=${burn.blockNumber} tx=${burn.transactionHash} sender=${burn.sender} -> ${burn.to}${emitTimestamp(burn)}`
+				);
+				console.log(
+					`  liquidity: amount0=${burn.amount0} amount1=${burn.amount1}`
+				);
+				logReserves("  reservas después", burn.reservesAfter);
+				break;
+			}
+			case "sync": {
+				const syncEvent = event as ViniswapPairSyncEvent;
+				console.log(
+					`[ViniswapPairHistory] SYNC block=${syncEvent.blockNumber} tx=${syncEvent.transactionHash}${emitTimestamp(syncEvent)}`
+				);
+				logReserves("  reservas sincronizadas", {
+					reserve0: syncEvent.reserve0,
+					reserve1: syncEvent.reserve1,
+					blockTimestampLast: syncEvent.timestamp,
+				});
+				break;
+			}
+			case "transfer": {
+				const transfer = event as ViniswapTransferEvent;
+				console.log(
+					`[ViniswapPairHistory] TRANSFER block=${transfer.blockNumber} tx=${transfer.transactionHash} from=${transfer.from} -> ${transfer.to}${emitTimestamp(transfer)}`
+				);
+				console.log(`  value=${transfer.value}`);
+				logReserves("  reservas después", transfer.reservesAfter);
+				break;
+			}
+		}
+	};
+
+	const result = await fetchViniswapPairHistory(
+		pairAddress,
+		options,
+		{
+			onProgress: verbose ? logProgress : undefined,
+			onEvent: verbose ? logEvent : undefined,
+		},
+		{
+			provider,
+			blockscout: blockscoutConfig,
+		}
+	);
+
+	tokenDecimals = {
+		token0: result.token0.decimals ?? DEFAULT_DECIMALS,
+		token1: result.token1.decimals ?? DEFAULT_DECIMALS,
+	};
+
+	if (verbose) {
+		clearProgressLine();
+	}
+
+	console.log(
+		`[ViniswapPairHistory] Completed ${pairAddress} blocks ${result.fromBlock} -> ${result.toBlock}`
+	);
+	if (verbose) {
+		console.log(
+			`[ViniswapPairHistory] Resumen eventos: swaps=${result.events.swaps.length} mints=${result.events.mints.length} burns=${result.events.burns.length} syncs=${result.events.syncs.length} transfers=${result.events.transfers.length}`
+		);
+	}
+
+	return { result, tokenDecimals };
+};
+
+export const generateViniswapPairHistoryLog = async (
+	params: Omit<ViniswapPairHistoryExecutionParams, "verbose"> & { verbose?: boolean },
+	context?: ViniswapPairHistoryExecutionContext
+): Promise<void> => {
+	await executeViniswapPairHistory(
+		{ ...params, verbose: params.verbose ?? true },
+		context
+	);
+};
+
 export const getViniswapPairHistoryController = async (
 	req: Request,
 	res: Response
@@ -143,165 +349,18 @@ export const getViniswapPairHistoryController = async (
 
 		const isVerbose = parseBoolean(verbose);
 
-		let lastProgressMessage = "";
-		const updateProgressLine = (message: string): void => {
-			process.stdout.write(`\r${message}`);
-			lastProgressMessage = message;
-		};
-
-		const clearProgressLine = (): void => {
-			if (!lastProgressMessage) return;
-			process.stdout.write(`\r${" ".repeat(lastProgressMessage.length)}\r`);
-			lastProgressMessage = "";
-		};
-
-		const logProgress = (progress: ViniswapHistoryProgress): void => {
-			const message = `[ViniswapPairHistory] ${progress.eventType.toUpperCase()} ${progress.fromBlock} -> ${progress.toBlock} (${progress.entriesFound} eventos)`;
-			updateProgressLine(message);
-		};
-
-		let tokenDecimals = {
-			token0: DEFAULT_DECIMALS,
-			token1: DEFAULT_DECIMALS,
-		};
-
-		const logReserves = (
-			label: string,
-			reserves?: { reserve0: string; reserve1: string; blockTimestampLast?: number }
-		): void => {
-			if (!reserves) {
-				console.log(`${label}: reservas no disponibles`);
-				return;
-			}
-			const reserve0Eth = formatAmountToEth(reserves.reserve0, tokenDecimals.token0);
-			const reserve1Eth = formatAmountToEth(reserves.reserve1, tokenDecimals.token1);
-			const parts = [
-				`${label}: reserve0=${reserves.reserve0} reserve1=${reserves.reserve1}`,
-				`reserve0Eth=${reserve0Eth ?? "n/a"} reserve1Eth=${reserve1Eth ?? "n/a"}`,
-			];
-			if (reserves.blockTimestampLast !== undefined) {
-				parts.push(`ts=${reserves.blockTimestampLast}`);
-			}
-			console.log(parts.join(" | "));
-		};
-
-		const emitTimestamp = (
-			event: { timestamp?: number; isoDate?: string; readableDate?: string }
-		): string => {
-			if (!event.isoDate && !event.timestamp && !event.readableDate) {
-				return "";
-			}
-			const parts: string[] = [];
-			if (event.readableDate) {
-				parts.push(event.readableDate);
-			}
-			if (event.isoDate) {
-				parts.push(event.isoDate);
-			}
-			if (event.timestamp) {
-				parts.push(`ts=${event.timestamp}`);
-			}
-			return parts.length ? ` | ${parts.join(" ")}` : "";
-		};
-
-		const logEvent = (
-			eventType: "swap" | "mint" | "burn" | "sync" | "transfer",
-			event:
-				| ViniswapSwapEvent
-				| ViniswapMintEvent
-				| ViniswapBurnEvent
-				| ViniswapPairSyncEvent
-				| ViniswapTransferEvent
-		): void => {
-			clearProgressLine();
-			switch (eventType) {
-				case "swap": {
-					const swap = event as ViniswapSwapEvent;
-					console.log(
-						`[ViniswapPairHistory] SWAP block=${swap.blockNumber} tx=${swap.transactionHash} sender=${swap.sender} -> ${swap.to}${emitTimestamp(swap)}`
-					);
-					console.log(
-						`  amounts: in0=${swap.amount0In} in1=${swap.amount1In} out0=${swap.amount0Out} out1=${swap.amount1Out}`
-					);
-					logReserves("  reservas después", swap.reservesAfter);
-					break;
-				}
-				case "mint": {
-					const mint = event as ViniswapMintEvent;
-					console.log(
-						`[ViniswapPairHistory] MINT block=${mint.blockNumber} tx=${mint.transactionHash} sender=${mint.sender}${emitTimestamp(mint)}`
-					);
-					console.log(
-						`  liquidity: amount0=${mint.amount0} amount1=${mint.amount1}`
-					);
-					logReserves("  reservas después", mint.reservesAfter);
-					break;
-				}
-				case "burn": {
-					const burn = event as ViniswapBurnEvent;
-					console.log(
-						`[ViniswapPairHistory] BURN block=${burn.blockNumber} tx=${burn.transactionHash} sender=${burn.sender} -> ${burn.to}${emitTimestamp(burn)}`
-					);
-					console.log(
-						`  liquidity: amount0=${burn.amount0} amount1=${burn.amount1}`
-					);
-					logReserves("  reservas después", burn.reservesAfter);
-					break;
-				}
-				case "sync": {
-					const syncEvent = event as ViniswapPairSyncEvent;
-					console.log(
-						`[ViniswapPairHistory] SYNC block=${syncEvent.blockNumber} tx=${syncEvent.transactionHash}${emitTimestamp(syncEvent)}`
-					);
-					logReserves("  reservas sincronizadas", {
-						reserve0: syncEvent.reserve0,
-						reserve1: syncEvent.reserve1,
-						blockTimestampLast: syncEvent.timestamp,
-					});
-					break;
-				}
-				case "transfer": {
-					const transfer = event as ViniswapTransferEvent;
-					console.log(
-						`[ViniswapPairHistory] TRANSFER block=${transfer.blockNumber} tx=${transfer.transactionHash} from=${transfer.from} -> ${transfer.to}${emitTimestamp(transfer)}`
-					);
-					console.log(`  value=${transfer.value}`);
-					logReserves("  reservas después", transfer.reservesAfter);
-					break;
-				}
-			}
-		};
-
-		const result = await fetchViniswapPairHistory(
-			pairAddress,
-			options,
+		const { result, tokenDecimals } = await executeViniswapPairHistory(
 			{
-				onProgress: isVerbose ? logProgress : undefined,
-				onEvent: isVerbose ? logEvent : undefined,
+				pairAddress,
+				options,
+				network,
+				verbose: isVerbose,
 			},
 			{
 				provider,
-				blockscout: blockscoutConfig,
+				blockscoutConfig,
 			}
 		);
-
-		tokenDecimals = {
-			token0: result.token0.decimals ?? DEFAULT_DECIMALS,
-			token1: result.token1.decimals ?? DEFAULT_DECIMALS,
-		};
-
-		if (isVerbose) {
-			clearProgressLine();
-		}
-
-		console.log(
-			`[ViniswapPairHistory] Completed ${pairAddress} blocks ${result.fromBlock} -> ${result.toBlock}`
-		);
-		if (isVerbose) {
-			console.log(
-				`[ViniswapPairHistory] Resumen eventos: swaps=${result.events.swaps.length} mints=${result.events.mints.length} burns=${result.events.burns.length} syncs=${result.events.syncs.length} transfers=${result.events.transfers.length}`
-			);
-		}
 
 		const buildTokenReserves = (
 			reserves?: { reserve0?: string | null; reserve1?: string | null }
