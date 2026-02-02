@@ -2,9 +2,11 @@ import { Request, Response } from "express";
 import { sendEmailService } from "../services/emailService";
 
 export const sendEmail = async (req: Request, res: Response): Promise<void> => {
-  const { to, subject, html, wineryEmail } = req.body;
+  const { to, subject, html, wineryEmail, wineryHtml } = req.body;
 
-  if (!to || !subject || !html || !wineryEmail) {
+
+
+  if (!to || !subject || !html || !wineryEmail || !wineryHtml) {
     res.status(400).json({ error: "Missing required fields" });
     return;
   }
@@ -15,7 +17,7 @@ export const sendEmail = async (req: Request, res: Response): Promise<void> => {
     console.log("Email sent:", to, subject);
 
     // winery email
-    await sendEmailService(wineryEmail, subject, html);
+    await sendEmailService(wineryEmail, subject, wineryHtml);
 
     res.status(200).json({ message: "Email sent successfully" });
   } catch (error) {
