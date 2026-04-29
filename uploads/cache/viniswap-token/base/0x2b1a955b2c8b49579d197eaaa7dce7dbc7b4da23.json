@@ -3,9 +3,9 @@
   "network": "base",
   "tokenAddress": "0x2b1A955b2C8B49579d197eAaa7DcE7DBC7b4dA23",
   "startBlock": 2171714,
-  "lastSyncedBlock": 45320251,
+  "lastSyncedBlock": 45320982,
   "lastSyncedTimestamp": 1777420129,
-  "lastSyncedAt": 1777429851510,
+  "lastSyncedAt": 1777431313185,
   "events": [
     {
       "blockNumber": 21717133,
