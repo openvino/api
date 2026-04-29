@@ -3,8 +3,9 @@
   "network": "default",
   "pairAddress": "0x7ECaDC96563a0E158f1a1Eec220Bb4f661640D39",
   "startBlock": 5555793,
-  "lastSyncedBlock": 23547500,
-  "lastSyncedTimestamp": 1760101319,
+  "lastSyncedBlock": 24983031,
+  "lastSyncedTimestamp": 1777433075,
+  "lastSyncedAt": 1777433121822,
   "events": {
     "swaps": [
       {
@@ -771,6 +772,111 @@
         "timestamp": 1732361627,
         "isoDate": "2024-11-23T11:33:47.000Z",
         "readableDate": "2024-11-23 11:33:47 UTC"
+      }
+    ]
+  },
+  "cachedMeta": {
+    "token0": {
+      "address": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
+      "symbol": "MTB18",
+      "name": "MIKETANGOBRAVO18",
+      "decimals": 18
+    },
+    "token1": {
+      "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      "symbol": "WETH",
+      "name": "Wrapped Ether",
+      "decimals": 18
+    },
+    "currentReserves": {
+      "reserve0": "24842",
+      "reserve1": "41",
+      "blockTimestampLast": 1732361627
+    },
+    "totalSupply": "1000",
+    "latestBlock": 24983031,
+    "latestBlockTimestamp": 1777433075,
+    "latestIsoDate": "2026-04-29T03:24:35.000Z",
+    "latestReadableDate": "2026-04-29 03:24:35 UTC",
+    "reservesByYearEnd": [
+      {
+        "year": 2021,
+        "blockNumber": 13916165,
+        "targetTimestamp": 1640995199,
+        "blockTimestamp": 1640995189,
+        "isoDate": "2021-12-31T23:59:49.000Z",
+        "readableDate": "2021-12-31 23:59:49 UTC",
+        "reserves": {
+          "reserve0": "953000000000000000000",
+          "reserve1": "3193489946177920682",
+          "blockTimestampLast": 1640707644
+        }
+      },
+      {
+        "year": 2022,
+        "blockNumber": 16308189,
+        "targetTimestamp": 1672531199,
+        "blockTimestamp": 1672531199,
+        "isoDate": "2022-12-31T23:59:59.000Z",
+        "readableDate": "2022-12-31 23:59:59 UTC",
+        "reserves": {
+          "reserve0": "959999999999999999835",
+          "reserve1": "3170508746714910854",
+          "blockTimestampLast": 1667856767
+        }
+      },
+      {
+        "year": 2023,
+        "blockNumber": 18908894,
+        "targetTimestamp": 1704067199,
+        "blockTimestamp": 1704067199,
+        "isoDate": "2023-12-31T23:59:59.000Z",
+        "readableDate": "2023-12-31 23:59:59 UTC",
+        "reserves": {
+          "reserve0": "953999999999999999835",
+          "reserve1": "3190861929937170718",
+          "blockTimestampLast": 1701529523
+        }
+      },
+      {
+        "year": 2024,
+        "blockNumber": 21525890,
+        "targetTimestamp": 1735689599,
+        "blockTimestamp": 1735689599,
+        "isoDate": "2024-12-31T23:59:59.000Z",
+        "readableDate": "2024-12-31 23:59:59 UTC",
+        "reserves": {
+          "reserve0": "24842",
+          "reserve1": "41",
+          "blockTimestampLast": 1732361627
+        }
+      },
+      {
+        "year": 2025,
+        "blockNumber": 24136052,
+        "targetTimestamp": 1767225599,
+        "blockTimestamp": 1767225599,
+        "isoDate": "2025-12-31T23:59:59.000Z",
+        "readableDate": "2025-12-31 23:59:59 UTC",
+        "reserves": {
+          "reserve0": "24842",
+          "reserve1": "41",
+          "blockTimestampLast": 1732361627
+        }
+      },
+      {
+        "year": 2026,
+        "blockNumber": 24983031,
+        "targetTimestamp": 1777433075,
+        "blockTimestamp": 1777433075,
+        "isoDate": "2026-04-29T03:24:35.000Z",
+        "readableDate": "2026-04-29 03:24:35 UTC",
+        "reserves": {
+          "reserve0": "24842",
+          "reserve1": "41",
+          "blockTimestampLast": 1732361627
+        },
+        "isCurrent": true
       }
     ]
   }

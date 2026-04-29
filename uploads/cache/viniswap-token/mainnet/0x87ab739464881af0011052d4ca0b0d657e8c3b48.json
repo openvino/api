@@ -3,9 +3,9 @@
   "network": "mainnet",
   "tokenAddress": "0x87AB739464881af0011052D4Ca0B0d657e8c3B48",
   "startBlock": 7703801,
-  "lastSyncedBlock": 24982892,
+  "lastSyncedBlock": 24983026,
   "lastSyncedTimestamp": 1774902047,
-  "lastSyncedAt": 1777431397141,
+  "lastSyncedAt": 1777433028237,
   "events": [
     {
       "blockNumber": 7703801,

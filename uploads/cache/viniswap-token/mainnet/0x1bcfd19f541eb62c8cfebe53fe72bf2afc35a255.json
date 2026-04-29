@@ -3,8 +3,9 @@
   "network": "mainnet",
   "tokenAddress": "0x1BCfD19F541eB62c8CFeBE53fe72bf2aFc35A255",
   "startBlock": 5555000,
-  "lastSyncedBlock": 23547500,
-  "lastSyncedTimestamp": 1754743763,
+  "lastSyncedBlock": 24983031,
+  "lastSyncedTimestamp": 1773875903,
+  "lastSyncedAt": 1777433077886,
   "events": [
     {
       "blockNumber": 5555793,
@@ -6377,6 +6378,18 @@
       "isoDate": "2025-08-09T12:49:23.000Z",
       "readableDate": "2025-08-09 12:49:23 UTC",
       "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 24687600,
+      "transactionHash": "0x325cc51d70b965d2321d247c54a3700b2ecab51850ec89ef818d2f1cff4b0ec3",
+      "logIndex": 88,
+      "from": "0x8D4258a1D59c6C8eE8004E79a3Eb6842517823A3",
+      "to": "0x588CAf4a036137647daCE2eE2699a85931967A7d",
+      "value": "12000000000000000000",
+      "timestamp": 1773875903,
+      "isoDate": "2026-03-18T23:18:23.000Z",
+      "readableDate": "2026-03-18 23:18:23 UTC",
+      "eventCategory": "transfer"
     }
   ],
   "holders": [
@@ -6442,7 +6455,7 @@
     },
     {
       "address": "0x588CAf4a036137647daCE2eE2699a85931967A7d",
-      "balance": "97939050900000000000"
+      "balance": "109939050900000000000"
     },
     {
       "address": "0xA409484c0d152AEd7E356d8Cd484E347E0920206",
@@ -6822,10 +6835,6 @@
     },
     {
       "address": "0x8C8ec661fD89982AeBA7b3CD86fF2907A49C24C0",
-      "balance": "12000000000000000000"
-    },
-    {
-      "address": "0x8D4258a1D59c6C8eE8004E79a3Eb6842517823A3",
       "balance": "12000000000000000000"
     },
     {
@@ -7521,11 +7530,15 @@
       "balance": "-31989984185349655704"
     }
   ],
+  "lastHolderSyncTimestamp": 1777433077886,
+  "cachedTokenInfo": {
+    "timestamp": 1777433077886
+  },
   "totals": {
-    "transferCount": 531,
-    "redeemAmount": "2496979999900000000020",
+    "transferCount": 532,
+    "redeemAmount": "0",
     "mintCount": 34,
     "mintAmount": "16384000000000000000000",
-    "totalVolume": "53120971337261993600009"
+    "totalVolume": "53132971337261993600009"
   }
 }

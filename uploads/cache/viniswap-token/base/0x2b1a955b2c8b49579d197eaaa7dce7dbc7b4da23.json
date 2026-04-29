@@ -3,9 +3,9 @@
   "network": "base",
   "tokenAddress": "0x2b1A955b2C8B49579d197eAaa7DcE7DBC7b4dA23",
   "startBlock": 2171714,
-  "lastSyncedBlock": 45320982,
+  "lastSyncedBlock": 45321915,
   "lastSyncedTimestamp": 1777420129,
-  "lastSyncedAt": 1777431313185,
+  "lastSyncedAt": 1777433179250,
   "events": [
     {
       "blockNumber": 21717133,
@@ -314,7 +314,7 @@
       "balance": "-18000000000000000000"
     }
   ],
-  "lastHolderSyncTimestamp": 1777428021918,
+  "lastHolderSyncTimestamp": 1777433179250,
   "cachedTokenInfo": {
     "timestamp": 1777428697812
   },

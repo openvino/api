@@ -753,7 +753,7 @@ const buildPairResultFromCache = (cached: ViniswapPairHistoryCache): ViniswapHis
 	};
 };
 
-export const fetchViniswapPairHistory = async (
+const fetchViniswapPairHistoryImpl = async (
 	pairAddress: string,
 	options: ViniswapHistoryOptions,
 	callbacks: ViniswapHistoryCallbacks = {},
@@ -1333,6 +1333,28 @@ export const fetchViniswapPairHistory = async (
 			latestReadableDate,
 		},
 	};
+};
+
+const inflightPairHistory = new Map<string, Promise<ViniswapHistoryResult>>();
+
+export const fetchViniswapPairHistory = (
+	pairAddress: string,
+	options: ViniswapHistoryOptions,
+	callbacks: ViniswapHistoryCallbacks = {},
+	context: ViniswapHistoryContext
+): Promise<ViniswapHistoryResult> => {
+	const networkKey = normalizeNetworkKey(context.networkKey);
+	const normalizedAddress = getAddress(pairAddress);
+	const inflightKey = `${networkKey}:${normalizedAddress}`;
+
+	const existing = inflightPairHistory.get(inflightKey);
+	if (existing) return existing;
+
+	const promise = fetchViniswapPairHistoryImpl(pairAddress, options, callbacks, context).finally(
+		() => inflightPairHistory.delete(inflightKey)
+	);
+	inflightPairHistory.set(inflightKey, promise);
+	return promise;
 };
 
 const buildResultFromCache = (cached: ViniswapTokenHistoryCache): ViniswapTokenHistoryResult => {
