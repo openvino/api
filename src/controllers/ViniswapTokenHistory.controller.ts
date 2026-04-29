@@ -82,6 +82,7 @@ export const getViniswapTokenHistoryController = async (
 			holderPageLimit,
 			holderCacheTtlMs,
 			tokenInfoCacheTtlMs,
+			syncCooldownMs,
 		} = req.body ?? {};
 
 		let options: ViniswapTokenHistoryOptions;
@@ -99,6 +100,7 @@ export const getViniswapTokenHistoryController = async (
 				holderPageLimit: parseOptionalNumber(holderPageLimit),
 				holderCacheTtlMs: parseOptionalNumber(holderCacheTtlMs),
 				tokenInfoCacheTtlMs: parseOptionalNumber(tokenInfoCacheTtlMs),
+				syncCooldownMs: parseOptionalNumber(syncCooldownMs),
 			};
 		} catch (validationError) {
 			res.status(400).json({

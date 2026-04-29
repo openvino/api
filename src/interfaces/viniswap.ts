@@ -97,6 +97,7 @@ export interface ViniswapTokenHistoryCache {
 	startBlock: number;
 	lastSyncedBlock: number;
 	lastSyncedTimestamp?: number;
+	lastSyncedAt?: number;
 	events: TokenTransferEvent[];
 	holders: TokenHolderSnapshot[];
 	lastHolderSyncTimestamp?: number;
@@ -160,6 +161,7 @@ export interface ViniswapHistoryOptions {
 	maxRetries?: number;
 	blockscoutPageSize?: number;
 	blockscoutDelayMs?: number;
+	syncCooldownMs?: number;
 }
 
 export interface ViniswapHistoryResult {

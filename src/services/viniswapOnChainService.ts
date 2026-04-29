@@ -52,6 +52,7 @@ const erc20Interface = new Interface(ERC20_ABI);
 const TOKEN_HISTORY_CACHE_VERSION = 3;
 const DEFAULT_HOLDER_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hora
 const DEFAULT_TOKEN_INFO_CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutos
+const DEFAULT_SYNC_COOLDOWN_MS = 2 * 60 * 1000; // 2 minutos
 const TOKEN_HISTORY_CACHE_DIR = path.join(
 	process.cwd(),
 	"uploads",
@@ -141,12 +142,24 @@ interface ViniswapPairHistoryCache {
 	startBlock: number;
 	lastSyncedBlock: number;
 	lastSyncedTimestamp?: number;
+	lastSyncedAt?: number;
 	events: {
 		swaps: SwapEvent[];
 		mints: MintEvent[];
 		burns: BurnEvent[];
 		syncs: SyncEvent[];
 		transfers: TransferEvent[];
+	};
+	cachedMeta?: {
+		token0: TokenMetadata;
+		token1: TokenMetadata;
+		currentReserves: { reserve0: string; reserve1: string; blockTimestampLast: number };
+		totalSupply: string;
+		latestBlock: number;
+		latestBlockTimestamp: number;
+		latestIsoDate?: string;
+		latestReadableDate?: string;
+		reservesByYearEnd: ViniswapHistoryResult["summary"]["reservesByYearEnd"];
 	};
 }
 
@@ -706,6 +719,40 @@ const enrichWithTimestamp = async <T extends BaseEvent>(
 	});
 };
 
+const buildPairResultFromCache = (cached: ViniswapPairHistoryCache): ViniswapHistoryResult => {
+	const meta = cached.cachedMeta;
+	const events = cached.events ?? { swaps: [], mints: [], burns: [], syncs: [], transfers: [] };
+	const noReserves = { reserve0: "0", reserve1: "0", blockTimestampLast: 0 };
+	const currentReserves = meta?.currentReserves ?? noReserves;
+	return {
+		pairAddress: cached.pairAddress,
+		fromBlock: cached.startBlock,
+		toBlock: cached.lastSyncedBlock,
+		token0: meta?.token0 ?? { address: "" },
+		token1: meta?.token1 ?? { address: "" },
+		currentReserves,
+		totalSupply: meta?.totalSupply ?? "0",
+		events,
+		summary: {
+			swapCount: events.swaps.length,
+			mintCount: events.mints.length,
+			burnCount: events.burns.length,
+			syncCount: events.syncs.length,
+			transferCount: events.transfers.length,
+			currentReserves: {
+				...currentReserves,
+				isoDate: formatIsoDate(currentReserves.blockTimestampLast),
+				readableDate: formatReadableDate(currentReserves.blockTimestampLast),
+			},
+			reservesByYearEnd: meta?.reservesByYearEnd ?? [],
+			latestBlock: meta?.latestBlock,
+			latestBlockTimestamp: meta?.latestBlockTimestamp,
+			latestIsoDate: meta?.latestIsoDate,
+			latestReadableDate: meta?.latestReadableDate,
+		},
+	};
+};
+
 export const fetchViniswapPairHistory = async (
 	pairAddress: string,
 	options: ViniswapHistoryOptions,
@@ -722,6 +769,26 @@ export const fetchViniswapPairHistory = async (
 
 	const normalizedAddress = getAddress(pairAddress);
 	const { provider, blockscout } = context;
+	const networkKey = normalizeNetworkKey(context.networkKey);
+	const cachePath = getViniswapPairCachePath(
+		networkKey,
+		normalizedAddress,
+		(options as ViniswapTokenHistoryOptions).cacheKey
+	);
+
+	const cached = await loadViniswapPairHistoryCache(cachePath);
+
+	const syncCooldownMs =
+		options.syncCooldownMs !== undefined && options.syncCooldownMs >= 0
+			? Math.trunc(options.syncCooldownMs)
+			: DEFAULT_SYNC_COOLDOWN_MS;
+
+	if (cached?.lastSyncedAt && syncCooldownMs > 0 && cached.cachedMeta) {
+		const age = Date.now() - cached.lastSyncedAt;
+		if (age < syncCooldownMs) {
+			return buildPairResultFromCache(cached);
+		}
+	}
 
 	const pairContract = new Contract(
 		normalizedAddress,
@@ -743,15 +810,6 @@ export const fetchViniswapPairHistory = async (
 	if (requestedStartBlock > requestedEndBlock) {
 		throw new Error("startBlock cannot be greater than endBlock");
 	}
-
-	const networkKey = normalizeNetworkKey(context.networkKey);
-	const cachePath = getViniswapPairCachePath(
-		networkKey,
-		normalizedAddress,
-		(options as ViniswapTokenHistoryOptions).cacheKey
-	);
-
-	const cached = await loadViniswapPairHistoryCache(cachePath);
 
 	let fromBlock = requestedStartBlock;
 	let existingEvents: ViniswapPairHistoryCache["events"] = {
@@ -1225,7 +1283,19 @@ export const fetchViniswapPairHistory = async (
 		startBlock: fromBlock,
 		lastSyncedBlock: scanToBlock,
 		lastSyncedTimestamp: latestBlockTimestamp,
+		lastSyncedAt: Date.now(),
 		events: allEvents,
+		cachedMeta: {
+			token0,
+			token1,
+			currentReserves: currentReservesSnapshot,
+			totalSupply: formatBigint(totalSupplyRaw),
+			latestBlock,
+			latestBlockTimestamp,
+			latestIsoDate: formatIsoDate(latestBlockTimestamp),
+			latestReadableDate: formatReadableDate(latestBlockTimestamp),
+			reservesByYearEnd,
+		},
 	};
 
 	await saveViniswapPairHistoryCache(cachePath, cacheToSave);
@@ -1265,7 +1335,59 @@ export const fetchViniswapPairHistory = async (
 	};
 };
 
-export const fetchViniswapTokenHistory = async (
+const buildResultFromCache = (cached: ViniswapTokenHistoryCache): ViniswapTokenHistoryResult => {
+	const events = cached.events ?? [];
+	const holders = cached.holders ?? [];
+	const tokenInfo = cached.cachedTokenInfo;
+	const firstEvent = events[0];
+	const lastEvent = events[events.length - 1];
+	const uniqueAddresses = new Set(
+		events.flatMap((e) => [e.from, e.to]).filter(Boolean)
+	).size;
+	return {
+		token: {
+			address: cached.tokenAddress,
+			metadata: {
+				address: cached.tokenAddress,
+				symbol: tokenInfo?.symbol,
+				name: tokenInfo?.name,
+				decimals: tokenInfo?.decimals,
+			},
+			decimals: tokenInfo?.decimals,
+			totalSupply: tokenInfo?.totalSupply,
+			circulatingSupply: tokenInfo?.circulatingSupply,
+			holdersCount: tokenInfo?.holdersCount ?? holders.length,
+			totalTransfers: tokenInfo?.totalTransfers ?? events.length,
+			price: tokenInfo?.price,
+			marketCap: tokenInfo?.marketCap,
+		},
+		range: {
+			fromBlock: cached.startBlock,
+			toBlock: cached.lastSyncedBlock,
+		},
+		summary: {
+			firstBlock: firstEvent?.blockNumber ?? cached.startBlock,
+			firstTimestamp: firstEvent?.timestamp,
+			firstIsoDate: firstEvent?.isoDate,
+			lastBlock: lastEvent?.blockNumber ?? cached.lastSyncedBlock,
+			lastTimestamp: lastEvent?.timestamp ?? cached.lastSyncedTimestamp,
+			lastIsoDate: lastEvent?.isoDate,
+			holderCount: tokenInfo?.holdersCount ?? holders.length,
+			uniqueAddresses,
+			transferCount: cached.totals?.transferCount ?? events.length,
+			redeemAmount: cached.totals?.redeemAmount ?? "0",
+			mintCount: cached.totals?.mintCount ?? 0,
+			mintAmount: cached.totals?.mintAmount ?? "0",
+			totalVolume: cached.totals?.totalVolume ?? "0",
+		},
+		holders,
+		events,
+	};
+};
+
+const inflightTokenHistory = new Map<string, Promise<ViniswapTokenHistoryResult>>();
+
+const fetchViniswapTokenHistoryImpl = async (
 	tokenAddress: string,
 	options: ViniswapTokenHistoryOptions,
 	context: ViniswapHistoryContext,
@@ -1317,6 +1439,10 @@ export const fetchViniswapTokenHistory = async (
 		options.tokenInfoCacheTtlMs !== undefined && options.tokenInfoCacheTtlMs >= 0
 			? Math.trunc(options.tokenInfoCacheTtlMs)
 			: DEFAULT_TOKEN_INFO_CACHE_TTL_MS;
+	const syncCooldownMs =
+		options.syncCooldownMs !== undefined && options.syncCooldownMs >= 0
+			? Math.trunc(options.syncCooldownMs)
+			: DEFAULT_SYNC_COOLDOWN_MS;
 
 	const networkKey = normalizeNetworkKey(context.networkKey);
 
@@ -1327,6 +1453,19 @@ export const fetchViniswapTokenHistory = async (
 	);
 
 	const cached = await loadTokenHistoryCache(cachePath);
+
+	// Si el caché es reciente, devolver directo sin ir a la blockchain
+	if (cached?.lastSyncedAt && syncCooldownMs > 0) {
+		const age = Date.now() - cached.lastSyncedAt;
+		if (age < syncCooldownMs) {
+			if (verbose) {
+				console.log(
+					`[ViniswapTokenHistory] Caché reciente (${Math.round(age / 1000)}s), devolviendo sin sync`
+				);
+			}
+			return buildResultFromCache(cached);
+		}
+	}
 
 	let cachedStartBlock = startBlock;
 	let existingEvents: TokenTransferEvent[] = [];
@@ -1500,9 +1639,20 @@ export const fetchViniswapTokenHistory = async (
 				price: fetched.price,
 				marketCap: fetched.marketCap,
 			};
-		}
-		if (verbose) {
-			console.log(`[ViniswapTokenHistory] Token info fetched from API`);
+			if (verbose) {
+				console.log(`[ViniswapTokenHistory] Token info fetched from API`);
+			}
+		} else if (cached?.cachedTokenInfo) {
+			tokenInfo = cached.cachedTokenInfo;
+			if (verbose) {
+				console.log(`[ViniswapTokenHistory] Token info fetch failed, using stale cache`);
+			}
+		} else {
+			// negative cache: marca el intento para no reintentar dentro del TTL
+			tokenInfo = { timestamp: now };
+			if (verbose) {
+				console.log(`[ViniswapTokenHistory] Token info unavailable, caching miss`);
+			}
 		}
 	} else {
 		tokenInfo = cached!.cachedTokenInfo;
@@ -1669,6 +1819,7 @@ export const fetchViniswapTokenHistory = async (
 		startBlock: cachedStartBlock,
 		lastSyncedBlock: scanToBlock,
 		lastSyncedTimestamp: summaryWithStats.lastTimestamp,
+		lastSyncedAt: now,
 		events: combinedEvents,
 		holders: resolvedHolders,
 		lastHolderSyncTimestamp: holderCacheStale
@@ -1687,6 +1838,26 @@ export const fetchViniswapTokenHistory = async (
 	await saveTokenHistoryCache(cachePath, cachePayload);
 
 	return result;
+};
+
+export const fetchViniswapTokenHistory = (
+	tokenAddress: string,
+	options: ViniswapTokenHistoryOptions,
+	context: ViniswapHistoryContext,
+	verbose = false
+): Promise<ViniswapTokenHistoryResult> => {
+	const networkKey = normalizeNetworkKey(context.networkKey);
+	const normalizedAddress = getAddress(tokenAddress);
+	const inflightKey = `${networkKey}:${normalizedAddress}:${options.cacheKey ?? ""}`;
+
+	const existing = inflightTokenHistory.get(inflightKey);
+	if (existing) return existing;
+
+	const promise = fetchViniswapTokenHistoryImpl(tokenAddress, options, context, verbose).finally(
+		() => inflightTokenHistory.delete(inflightKey)
+	);
+	inflightTokenHistory.set(inflightKey, promise);
+	return promise;
 };
 
 export type {

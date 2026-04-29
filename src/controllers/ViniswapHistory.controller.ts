@@ -297,6 +297,7 @@ export const getViniswapPairHistoryController = async (
 			maxRetries,
 			blockscoutPageSize,
 			blockscoutDelayMs,
+			syncCooldownMs,
 			network: rawNetwork,
 		} = req.body ?? {};
 
@@ -310,6 +311,7 @@ export const getViniswapPairHistoryController = async (
 				maxRetries: parseOptionalNumber(maxRetries),
 				blockscoutPageSize: parseOptionalNumber(blockscoutPageSize),
 				blockscoutDelayMs: parseOptionalNumber(blockscoutDelayMs),
+				syncCooldownMs: parseOptionalNumber(syncCooldownMs),
 			};
 		} catch (validationError) {
 			res.status(400).json({

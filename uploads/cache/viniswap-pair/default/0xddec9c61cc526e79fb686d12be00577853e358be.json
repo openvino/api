@@ -3,8 +3,9 @@
   "network": "default",
   "pairAddress": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
   "startBlock": 2171714,
-  "lastSyncedBlock": 36655965,
-  "lastSyncedTimestamp": 1760101277,
+  "lastSyncedBlock": 45320251,
+  "lastSyncedTimestamp": 1777429849,
+  "lastSyncedAt": 1777429871518,
   "events": {
     "swaps": [
       {
@@ -139,6 +140,25 @@
         "timestamp": 1742314063,
         "isoDate": "2025-03-18T16:07:43.000Z",
         "readableDate": "2025-03-18 16:07:43 UTC"
+      },
+      {
+        "blockNumber": 45315391,
+        "transactionHash": "0x7cdb0347e5c4eda4df8b6ef13bdb64cc89e5c78cf6582e27f9f2d5320e4d6ff6",
+        "logIndex": 21,
+        "sender": "0x5E9d86860Fc33504f8d9cfA86511a463Db9fa52f",
+        "to": "0x4787e065A97aAA9Fb59e3Bf14089EF6a47f75B38",
+        "amount0In": "1000000000000000000",
+        "amount1In": "0",
+        "amount0Out": "0",
+        "amount1Out": "1132685959265132",
+        "reservesAfter": {
+          "reserve0": "781999999999999984631",
+          "reserve1": "889073099684491059",
+          "blockTimestampLast": 1777420129
+        },
+        "timestamp": 1777420129,
+        "isoDate": "2026-04-28T23:48:49.000Z",
+        "readableDate": "2026-04-28 23:48:49 UTC"
       }
     ],
     "mints": [
@@ -424,6 +444,16 @@
         "timestamp": 1746867945,
         "isoDate": "2025-05-10T09:05:45.000Z",
         "readableDate": "2025-05-10 09:05:45 UTC"
+      },
+      {
+        "blockNumber": 45315391,
+        "transactionHash": "0x7cdb0347e5c4eda4df8b6ef13bdb64cc89e5c78cf6582e27f9f2d5320e4d6ff6",
+        "logIndex": 20,
+        "reserve0": "781999999999999984631",
+        "reserve1": "889073099684491059",
+        "timestamp": 1777420129,
+        "isoDate": "2026-04-28T23:48:49.000Z",
+        "readableDate": "2026-04-28 23:48:49 UTC"
       }
     ],
     "transfers": [
@@ -634,6 +664,72 @@
         "timestamp": 1746867945,
         "isoDate": "2025-05-10T09:05:45.000Z",
         "readableDate": "2025-05-10 09:05:45 UTC"
+      }
+    ]
+  },
+  "cachedMeta": {
+    "token0": {
+      "address": "0x2b1A955b2C8B49579d197eAaa7DcE7DBC7b4dA23",
+      "symbol": "MTB18",
+      "name": "MikeTangoBravo18",
+      "decimals": 18
+    },
+    "token1": {
+      "address": "0x4200000000000000000000000000000000000006",
+      "symbol": "WETH",
+      "name": "Wrapped Ether",
+      "decimals": 18
+    },
+    "currentReserves": {
+      "reserve0": "781999999999999984631",
+      "reserve1": "889073099684491059",
+      "blockTimestampLast": 1777420129
+    },
+    "totalSupply": "26351478088875063089",
+    "latestBlock": 45320251,
+    "latestBlockTimestamp": 1777429849,
+    "latestIsoDate": "2026-04-29T02:30:49.000Z",
+    "latestReadableDate": "2026-04-29 02:30:49 UTC",
+    "reservesByYearEnd": [
+      {
+        "year": 2024,
+        "blockNumber": 24450126,
+        "targetTimestamp": 1735689599,
+        "blockTimestamp": 1735689599,
+        "isoDate": "2024-12-31T23:59:59.000Z",
+        "readableDate": "2024-12-31 23:59:59 UTC",
+        "reserves": {
+          "reserve0": "52000000000000000352",
+          "reserve1": "87796024290598648",
+          "blockTimestampLast": 1732342629
+        }
+      },
+      {
+        "year": 2025,
+        "blockNumber": 40218126,
+        "targetTimestamp": 1767225599,
+        "blockTimestamp": 1767225599,
+        "isoDate": "2025-12-31T23:59:59.000Z",
+        "readableDate": "2025-12-31 23:59:59 UTC",
+        "reserves": {
+          "reserve0": "780999999999999984631",
+          "reserve1": "890205785643756191",
+          "blockTimestampLast": 1746894839
+        }
+      },
+      {
+        "year": 2026,
+        "blockNumber": 45320251,
+        "targetTimestamp": 1777429849,
+        "blockTimestamp": 1777429849,
+        "isoDate": "2026-04-29T02:30:49.000Z",
+        "readableDate": "2026-04-29 02:30:49 UTC",
+        "reserves": {
+          "reserve0": "781999999999999984631",
+          "reserve1": "889073099684491059",
+          "blockTimestampLast": 1777420129
+        },
+        "isCurrent": true
       }
     ]
   }
