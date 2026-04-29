@@ -80,6 +80,8 @@ export const getViniswapTokenHistoryController = async (
 			network: rawNetwork,
 			verbose,
 			holderPageLimit,
+			holderCacheTtlMs,
+			tokenInfoCacheTtlMs,
 		} = req.body ?? {};
 
 		let options: ViniswapTokenHistoryOptions;
@@ -95,6 +97,8 @@ export const getViniswapTokenHistoryController = async (
 				cacheKey:
 					typeof cacheKey === "string" && cacheKey.trim() ? cacheKey : undefined,
 				holderPageLimit: parseOptionalNumber(holderPageLimit),
+				holderCacheTtlMs: parseOptionalNumber(holderCacheTtlMs),
+				tokenInfoCacheTtlMs: parseOptionalNumber(tokenInfoCacheTtlMs),
 			};
 		} catch (validationError) {
 			res.status(400).json({

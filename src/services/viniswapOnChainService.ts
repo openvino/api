@@ -35,6 +35,7 @@ import {
 	ViniswapTokenHistoryCache,
 	ViniswapTokenHistoryResult,
 	TokenHolderSnapshot,
+	CachedTokenInfo,
 } from "../interfaces";
 import {
 	formatBigint,
@@ -49,6 +50,8 @@ const pairInterface = new Interface(VINISWAP_PAIR_ABI);
 const erc20Interface = new Interface(ERC20_ABI);
 
 const TOKEN_HISTORY_CACHE_VERSION = 3;
+const DEFAULT_HOLDER_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hora
+const DEFAULT_TOKEN_INFO_CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutos
 const TOKEN_HISTORY_CACHE_DIR = path.join(
 	process.cwd(),
 	"uploads",
@@ -1294,10 +1297,6 @@ export const fetchViniswapTokenHistory = async (
 		throw new Error("startBlock cannot be greater than endBlock");
 	}
 
-	const batchDelayMs =
-		options.batchDelayMs !== undefined && options.batchDelayMs >= 0
-			? Math.trunc(options.batchDelayMs)
-			: 250;
 	const maxRetries =
 		options.maxRetries !== undefined && options.maxRetries >= 0
 			? Math.trunc(options.maxRetries)
@@ -1310,6 +1309,14 @@ export const fetchViniswapTokenHistory = async (
 		options.blockscoutDelayMs !== undefined && options.blockscoutDelayMs >= 0
 			? Math.trunc(options.blockscoutDelayMs)
 			: 250;
+	const holderCacheTtlMs =
+		options.holderCacheTtlMs !== undefined && options.holderCacheTtlMs >= 0
+			? Math.trunc(options.holderCacheTtlMs)
+			: DEFAULT_HOLDER_CACHE_TTL_MS;
+	const tokenInfoCacheTtlMs =
+		options.tokenInfoCacheTtlMs !== undefined && options.tokenInfoCacheTtlMs >= 0
+			? Math.trunc(options.tokenInfoCacheTtlMs)
+			: DEFAULT_TOKEN_INFO_CACHE_TTL_MS;
 
 	const networkKey = normalizeNetworkKey(context.networkKey);
 
@@ -1461,55 +1468,104 @@ export const fetchViniswapTokenHistory = async (
 		scanToBlock
 	);
 
-	const tokenInfo = await fetchTokenInfoWithRetries(
-		normalizedAddress,
-		blockscout,
-		{ maxRetries, delayMs: blockscoutDelayMs }
-	).catch((error) => {
-		console.warn(
-			`[ViniswapTokenHistory] Failed to fetch token info ${normalizedAddress}`,
-			error instanceof Error ? error.message : error
-		);
-		return undefined;
-	});
+	const now = Date.now();
+
+	const tokenInfoCacheStale =
+		!cached?.cachedTokenInfo ||
+		now - cached.cachedTokenInfo.timestamp > tokenInfoCacheTtlMs;
+
+	let tokenInfo: CachedTokenInfo | undefined;
+	if (tokenInfoCacheStale) {
+		const fetched = await fetchTokenInfoWithRetries(
+			normalizedAddress,
+			blockscout,
+			{ maxRetries, delayMs: blockscoutDelayMs }
+		).catch((error) => {
+			console.warn(
+				`[ViniswapTokenHistory] Failed to fetch token info ${normalizedAddress}`,
+				error instanceof Error ? error.message : error
+			);
+			return undefined;
+		});
+		if (fetched) {
+			tokenInfo = {
+				timestamp: now,
+				name: fetched.name,
+				symbol: fetched.symbol,
+				decimals: fetched.decimals,
+				totalSupply: fetched.totalSupply,
+				circulatingSupply: fetched.circulatingSupply,
+				totalTransfers: fetched.totalTransfers,
+				holdersCount: fetched.holdersCount,
+				price: fetched.price,
+				marketCap: fetched.marketCap,
+			};
+		}
+		if (verbose) {
+			console.log(`[ViniswapTokenHistory] Token info fetched from API`);
+		}
+	} else {
+		tokenInfo = cached!.cachedTokenInfo;
+		if (verbose) {
+			console.log(`[ViniswapTokenHistory] Token info served from cache`);
+		}
+	}
+
+	const holderCacheStale =
+		!cached?.lastHolderSyncTimestamp ||
+		now - cached.lastHolderSyncTimestamp > holderCacheTtlMs;
 
 	let blockscoutHolders: TokenHolderSnapshot[] = [];
-	try {
-		const holdersFromApi = await fetchTokenHoldersFromBlockscout(
-			normalizedAddress,
-			{
-				pageSize: blockscoutPageSize,
-				delayMs: blockscoutDelayMs,
-				maxPages:
-					options.holderPageLimit !== undefined && options.holderPageLimit > 0
-						? Math.trunc(options.holderPageLimit)
-						: 50,
-				maxRetries,
-			},
-			blockscout
-		);
+	if (holderCacheStale) {
+		try {
+			const holdersFromApi = await fetchTokenHoldersFromBlockscout(
+				normalizedAddress,
+				{
+					pageSize: blockscoutPageSize,
+					delayMs: blockscoutDelayMs,
+					maxPages:
+						options.holderPageLimit !== undefined && options.holderPageLimit > 0
+							? Math.trunc(options.holderPageLimit)
+							: 50,
+					maxRetries,
+				},
+				blockscout
+			);
 
-		blockscoutHolders = holdersFromApi.map((holder) => ({
-			address: normalizeChecksumAddress(holder.address),
-			balance: holder.value,
-			percentage: holder.percentage,
-		}));
+			blockscoutHolders = holdersFromApi.map((holder) => ({
+				address: normalizeChecksumAddress(holder.address),
+				balance: holder.value,
+				percentage: holder.percentage,
+			}));
 
-		blockscoutHolders.sort((a, b) => {
-			try {
-				const diff = BigInt(b.balance ?? "0") - BigInt(a.balance ?? "0");
-				if (diff > BigInt(0)) return 1;
-				if (diff < BigInt(0)) return -1;
-			} catch {
-				// ignore parse errors
+			blockscoutHolders.sort((a, b) => {
+				try {
+					const diff = BigInt(b.balance ?? "0") - BigInt(a.balance ?? "0");
+					if (diff > BigInt(0)) return 1;
+					if (diff < BigInt(0)) return -1;
+				} catch {
+					// ignore parse errors
+				}
+				return a.address.localeCompare(b.address);
+			});
+			if (verbose) {
+				console.log(
+					`[ViniswapTokenHistory] Holders fetched from API (${blockscoutHolders.length})`
+				);
 			}
-			return a.address.localeCompare(b.address);
-		});
-	} catch (error) {
-		console.warn(
-			`[ViniswapTokenHistory] Failed to fetch holders ${normalizedAddress}`,
-			error instanceof Error ? error.message : error
-		);
+		} catch (error) {
+			console.warn(
+				`[ViniswapTokenHistory] Failed to fetch holders ${normalizedAddress}`,
+				error instanceof Error ? error.message : error
+			);
+		}
+	} else {
+		blockscoutHolders = cached!.holders ?? [];
+		if (verbose) {
+			console.log(
+				`[ViniswapTokenHistory] Holders served from cache (${blockscoutHolders.length})`
+			);
+		}
 	}
 
 	const resolvedHolders = blockscoutHolders.length
@@ -1615,6 +1671,10 @@ export const fetchViniswapTokenHistory = async (
 		lastSyncedTimestamp: summaryWithStats.lastTimestamp,
 		events: combinedEvents,
 		holders: resolvedHolders,
+		lastHolderSyncTimestamp: holderCacheStale
+			? now
+			: cached?.lastHolderSyncTimestamp,
+		cachedTokenInfo: tokenInfo ?? cached?.cachedTokenInfo,
 		totals: {
 			transferCount: summary.transferCount,
 			redeemAmount: summaryWithStats.redeemAmount,

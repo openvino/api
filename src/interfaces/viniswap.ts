@@ -73,6 +73,21 @@ export interface ViniswapTokenHistoryOptions extends ViniswapHistoryOptions {
 	cacheKey?: string;
 	holderPageLimit?: number;
 	blockBatchSize?: number;
+	holderCacheTtlMs?: number;
+	tokenInfoCacheTtlMs?: number;
+}
+
+export interface CachedTokenInfo {
+	timestamp: number;
+	name?: string;
+	symbol?: string;
+	decimals?: number;
+	totalSupply?: string;
+	circulatingSupply?: string;
+	totalTransfers?: number;
+	holdersCount?: number;
+	price?: { rate?: number; currency?: string; usd?: number };
+	marketCap?: number;
 }
 
 export interface ViniswapTokenHistoryCache {
@@ -84,6 +99,8 @@ export interface ViniswapTokenHistoryCache {
 	lastSyncedTimestamp?: number;
 	events: TokenTransferEvent[];
 	holders: TokenHolderSnapshot[];
+	lastHolderSyncTimestamp?: number;
+	cachedTokenInfo?: CachedTokenInfo;
 	totals: {
 		transferCount: number;
 		redeemAmount: string;
