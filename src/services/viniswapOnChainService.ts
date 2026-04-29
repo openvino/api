@@ -958,36 +958,53 @@ const fetchViniswapPairHistoryImpl = async (
 		return undefined;
 	};
 
-	const [token0Address, token1Address, reserves, totalSupplyRaw] =
-		await Promise.all([
-			withRetries(() => pairContract.token0(), {
+	// token0/token1 addresses and metadata are immutable — reuse from cache when available
+	const cachedToken0 = cached?.cachedMeta?.token0;
+	const cachedToken1 = cached?.cachedMeta?.token1;
+	const hasTokenAddresses = cachedToken0?.address && cachedToken1?.address;
+	const hasTokenMetadata =
+		hasTokenAddresses &&
+		cachedToken0.symbol !== undefined &&
+		cachedToken0.decimals !== undefined &&
+		cachedToken1.symbol !== undefined &&
+		cachedToken1.decimals !== undefined;
+
+	let token0Address: string;
+	let token1Address: string;
+
+	if (hasTokenAddresses) {
+		token0Address = cachedToken0.address;
+		token1Address = cachedToken1.address;
+	} else {
+		[token0Address, token1Address] = await Promise.all([
+			withRetries(() => pairContract.token0(), { ...retryOptions, name: "pair.token0" }),
+			withRetries(() => pairContract.token1(), { ...retryOptions, name: "pair.token1" }),
+		]);
+	}
+
+	const [reserves, totalSupplyRaw] = await Promise.all([
+		withRetries(() => pairContract.getReserves(), { ...retryOptions, name: "pair.getReserves" }),
+		withRetries(() => pairContract.totalSupply(), { ...retryOptions, name: "pair.totalSupply" }),
+	]);
+
+	let token0: TokenMetadata;
+	let token1: TokenMetadata;
+
+	if (hasTokenMetadata) {
+		token0 = cachedToken0;
+		token1 = cachedToken1;
+	} else {
+		[token0, token1] = await Promise.all([
+			withRetries(() => fetchTokenMetadata(token0Address, provider), {
 				...retryOptions,
-				name: "pair.token0",
+				name: `fetchTokenMetadata.${token0Address}`,
 			}),
-			withRetries(() => pairContract.token1(), {
+			withRetries(() => fetchTokenMetadata(token1Address, provider), {
 				...retryOptions,
-				name: "pair.token1",
-			}),
-			withRetries(() => pairContract.getReserves(), {
-				...retryOptions,
-				name: "pair.getReserves",
-			}),
-			withRetries(() => pairContract.totalSupply(), {
-				...retryOptions,
-				name: "pair.totalSupply",
+				name: `fetchTokenMetadata.${token1Address}`,
 			}),
 		]);
-
-	const [token0, token1] = await Promise.all([
-		withRetries(() => fetchTokenMetadata(token0Address, provider), {
-			...retryOptions,
-			name: `fetchTokenMetadata.${token0Address}`,
-		}),
-		withRetries(() => fetchTokenMetadata(token1Address, provider), {
-			...retryOptions,
-			name: `fetchTokenMetadata.${token1Address}`,
-		}),
-	]);
+	}
 
 	const currentReservesSnapshot = {
 		reserve0: formatBigint(reserves[0]),
