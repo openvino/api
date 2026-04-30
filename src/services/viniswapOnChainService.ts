@@ -375,6 +375,26 @@ const sortTokenEvents = (events: TokenTransferEvent[]): TokenTransferEvent[] =>
 		return a.blockNumber - b.blockNumber;
 	});
 
+const buildTokenEventDedupKey = (event: TokenTransferEvent): string => {
+	if (
+		event.eventCategory === "mint" ||
+		event.eventCategory === "redeem" ||
+		event.from?.toLowerCase?.() === ZERO_ADDRESS_LOWER ||
+		event.to?.toLowerCase?.() === ZERO_ADDRESS_LOWER
+	) {
+		return [
+			event.blockNumber,
+			event.transactionHash,
+			event.from ?? "",
+			event.to ?? "",
+			event.value ?? "0",
+			event.eventCategory ?? categorizeTransfer(event.from, event.to),
+		].join(":");
+	}
+
+	return `${event.blockNumber}:${event.logIndex ?? 0}:${event.transactionHash}`;
+};
+
 const normalizeChecksumAddress = (address: string): string => {
 	try {
 		return getAddress(address);
@@ -412,6 +432,39 @@ const updateBalance = (
 	} else {
 		balances.set(address, next);
 	}
+};
+
+const sumHolderBalances = (holders: TokenHolderSnapshot[]): bigint =>
+	holders.reduce((acc, holder) => {
+		if (!holder.balance) return acc;
+		try {
+			const value = BigInt(holder.balance);
+			return value > BigInt(0) ? acc + value : acc;
+		} catch {
+			return acc;
+		}
+	}, BigInt(0));
+
+const normalizeAndDedupTokenEvents = (
+	events: TokenTransferEvent[]
+): TokenTransferEvent[] => {
+	const deduped = new Map<string, TokenTransferEvent>();
+
+	for (const event of events) {
+		const normalizedEvent = {
+			...event,
+			from: event.from ? normalizeChecksumAddress(event.from) : event.from,
+			to: event.to ? normalizeChecksumAddress(event.to) : event.to,
+			eventCategory:
+				event.eventCategory ?? categorizeTransfer(event.from, event.to),
+		};
+		const key = buildTokenEventDedupKey(normalizedEvent);
+		if (!deduped.has(key)) {
+			deduped.set(key, normalizedEvent);
+		}
+	}
+
+	return sortTokenEvents(Array.from(deduped.values()));
 };
 
 const aggregateTokenTransfers = (
@@ -1436,8 +1489,15 @@ export const fetchViniswapPairHistory = (
 };
 
 const buildResultFromCache = (cached: ViniswapTokenHistoryCache): ViniswapTokenHistoryResult => {
-	const events = cached.events ?? [];
-	const holders = cached.holders ?? [];
+	const events = normalizeAndDedupTokenEvents(cached.events ?? []);
+	const cachedHolders = cached.holders ?? [];
+	const { holders: aggregatedHolders, summary: aggregatedSummary } =
+		aggregateTokenTransfers(events, cached.startBlock, cached.lastSyncedBlock);
+	const holders =
+		cachedHolders.length &&
+		sumHolderBalances(cachedHolders) === sumHolderBalances(aggregatedHolders)
+			? cachedHolders
+			: aggregatedHolders;
 	const tokenInfo = cached.cachedTokenInfo;
 	const firstEvent = events[0];
 	const lastEvent = events[events.length - 1];
@@ -1474,11 +1534,11 @@ const buildResultFromCache = (cached: ViniswapTokenHistoryCache): ViniswapTokenH
 			lastIsoDate: lastEvent?.isoDate,
 			holderCount: tokenInfo?.holdersCount ?? holders.length,
 			uniqueAddresses,
-			transferCount: cached.totals?.transferCount ?? events.length,
-			redeemAmount: cached.totals?.redeemAmount ?? "0",
-			mintCount: cached.totals?.mintCount ?? 0,
-			mintAmount: cached.totals?.mintAmount ?? "0",
-			totalVolume: cached.totals?.totalVolume ?? "0",
+			transferCount: cached.totals?.transferCount ?? aggregatedSummary.transferCount,
+			redeemAmount: cached.totals?.redeemAmount ?? aggregatedSummary.redeemAmount,
+			mintCount: cached.totals?.mintCount ?? aggregatedSummary.mintCount,
+			mintAmount: cached.totals?.mintAmount ?? aggregatedSummary.mintAmount,
+			totalVolume: cached.totals?.totalVolume ?? aggregatedSummary.totalVolume,
 		},
 		holders,
 		events,
@@ -1693,23 +1753,10 @@ const fetchViniswapTokenHistoryImpl = async (
 		}
 	}
 
-	const allEventsMap = new Map<string, TokenTransferEvent>();
-	for (const event of [...existingEvents, ...newEvents]) {
-		const key = `${event.blockNumber}:${event.logIndex ?? 0}:${
-			event.transactionHash
-		}`;
-		if (!allEventsMap.has(key)) {
-			allEventsMap.set(key, {
-				...event,
-				from: event.from ? normalizeChecksumAddress(event.from) : event.from,
-				to: event.to ? normalizeChecksumAddress(event.to) : event.to,
-				eventCategory:
-					event.eventCategory ?? categorizeTransfer(event.from, event.to),
-			});
-		}
-	}
-
-	const combinedEvents = sortTokenEvents(Array.from(allEventsMap.values()));
+	const combinedEvents = normalizeAndDedupTokenEvents([
+		...existingEvents,
+		...newEvents,
+	]);
 
 	const { holders: aggregatedHolders, summary } = aggregateTokenTransfers(
 		combinedEvents,
@@ -1828,10 +1875,6 @@ const fetchViniswapTokenHistoryImpl = async (
 		}
 	}
 
-	const resolvedHolders = blockscoutHolders.length
-		? blockscoutHolders
-		: aggregatedHolders;
-
 	const tokenContract = new Contract(normalizedAddress, ERC20_ABI, provider);
 	const [metadata, totalSupplyRaw] = await Promise.all([
 		fetchTokenMetadata(tokenAddress, provider),
@@ -1842,6 +1885,35 @@ const fetchViniswapTokenHistoryImpl = async (
 		metadata.decimals = tokenInfo.decimals;
 	}
 	const decimals = metadata.decimals;
+
+	const currentTotalSupply =
+		totalSupplyRaw !== undefined
+			? (() => {
+					try {
+						return BigInt(totalSupplyRaw);
+					} catch {
+						return undefined;
+					}
+			  })()
+			: undefined;
+
+	let resolvedHolders = blockscoutHolders.length
+		? blockscoutHolders
+		: aggregatedHolders;
+
+	if (
+		blockscoutHolders.length &&
+		currentTotalSupply !== undefined &&
+		sumHolderBalances(blockscoutHolders) !== currentTotalSupply &&
+		sumHolderBalances(aggregatedHolders) === currentTotalSupply
+	) {
+		resolvedHolders = aggregatedHolders;
+		if (verbose) {
+			console.log(
+				`[ViniswapTokenHistory] Cached/API holders mismatch totalSupply, using aggregated holders`
+			);
+		}
+	}
 
 	const mintedTotal = combinedEvents.reduce((acc: bigint, item) => {
 		if (item.eventCategory === "mint" && item.value) {
@@ -1867,23 +1939,10 @@ const fetchViniswapTokenHistoryImpl = async (
 	};
 
 	const resolvedTotalSupply = (() => {
-		if (totalSupplyRaw !== undefined) {
-			try {
-				return BigInt(totalSupplyRaw);
-			} catch {
-				/* ignore */
-			}
+		if (currentTotalSupply !== undefined) {
+			return currentTotalSupply;
 		}
-		const holderSum = resolvedHolders.reduce((acc, holder) => {
-			if (!holder.balance) return acc;
-			try {
-				const value = BigInt(holder.balance);
-				return value > BigInt(0) ? acc + value : acc;
-			} catch {
-				return acc;
-			}
-		}, BigInt(0));
-		return holderSum;
+		return sumHolderBalances(resolvedHolders);
 	})();
 
 	const computedRedeemAmount =

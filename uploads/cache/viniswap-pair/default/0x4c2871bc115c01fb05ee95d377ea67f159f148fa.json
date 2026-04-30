@@ -3,9 +3,9 @@
   "network": "default",
   "pairAddress": "0x4c2871bc115c01Fb05EE95d377EA67F159f148Fa",
   "startBlock": 2171714,
-  "lastSyncedBlock": 45383779,
-  "lastSyncedTimestamp": 1777556905,
-  "lastSyncedAt": 1777556926365,
+  "lastSyncedBlock": 45385436,
+  "lastSyncedTimestamp": 1777560219,
+  "lastSyncedAt": 1777560241433,
   "events": {
     "swaps": [
       {
@@ -1780,10 +1780,10 @@
       "blockTimestampLast": 1777419861
     },
     "totalSupply": "31124041141991139091",
-    "latestBlock": 45383779,
-    "latestBlockTimestamp": 1777556905,
-    "latestIsoDate": "2026-04-30T13:48:25.000Z",
-    "latestReadableDate": "2026-04-30 13:48:25 UTC",
+    "latestBlock": 45385436,
+    "latestBlockTimestamp": 1777560219,
+    "latestIsoDate": "2026-04-30T14:43:39.000Z",
+    "latestReadableDate": "2026-04-30 14:43:39 UTC",
     "reservesByYearEnd": [
       {
         "year": 2024,
@@ -1813,11 +1813,11 @@
       },
       {
         "year": 2026,
-        "blockNumber": 45383779,
-        "targetTimestamp": 1777556905,
-        "blockTimestamp": 1777556905,
-        "isoDate": "2026-04-30T13:48:25.000Z",
-        "readableDate": "2026-04-30 13:48:25 UTC",
+        "blockNumber": 45385436,
+        "targetTimestamp": 1777560219,
+        "blockTimestamp": 1777560219,
+        "isoDate": "2026-04-30T14:43:39.000Z",
+        "readableDate": "2026-04-30 14:43:39 UTC",
         "reserves": {
           "reserve0": "821677942610331919",
           "reserve1": "1189000000000000000000",

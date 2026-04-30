@@ -3,9 +3,9 @@
   "network": "base",
   "tokenAddress": "0x9a7DF7eD3c536c1940DD98786f3eEfb7810E2f8f",
   "startBlock": 2171714,
-  "lastSyncedBlock": 45383779,
+  "lastSyncedBlock": 45385436,
   "lastSyncedTimestamp": 1777419861,
-  "lastSyncedAt": 1777556907871,
+  "lastSyncedAt": 1777560221979,
   "events": [
     {
       "blockNumber": 21717147,
@@ -17,15 +17,6 @@
       "timestamp": 1730223641,
       "isoDate": "2024-10-29T17:40:41.000Z",
       "readableDate": "2024-10-29 17:40:41 UTC",
-      "eventCategory": "mint"
-    },
-    {
-      "blockNumber": 21717147,
-      "transactionHash": "0x49d498b6bc98bfd061bcf2f3bdbbe56582c3bdb9cd788c88608f8217c4feec3c",
-      "logIndex": 380,
-      "from": "0x0000000000000000000000000000000000000000",
-      "to": "0xcFE7E071641cFF57a40EDc50D2c43D5F6D68eE8d",
-      "value": "12121000000000000000000",
       "eventCategory": "mint"
     },
     {
@@ -473,15 +464,6 @@
       "eventCategory": "redeem"
     },
     {
-      "blockNumber": 29156424,
-      "transactionHash": "0xf75ed2c2904bd8ccf19575e256b1ba72b39dc49d3f239e2487eab253ac9bace4",
-      "logIndex": 719,
-      "from": "0x64cF0d9aeb25ae93F5895E864FF5dcBeBa55cb13",
-      "to": "0x0000000000000000000000000000000000000000",
-      "value": "1000000000000000000",
-      "eventCategory": "redeem"
-    },
-    {
       "blockNumber": 29908628,
       "transactionHash": "0x21282746d5b94838e4b871d46897dee9e6bb47702d226208c3481aa58e1c7e2d",
       "logIndex": 35,
@@ -722,15 +704,6 @@
       "eventCategory": "redeem"
     },
     {
-      "blockNumber": 31175518,
-      "transactionHash": "0x1416d44262adbbeee8f2d8a826051fc33ef5ea120819308fc3ca843ea247e768",
-      "logIndex": 372,
-      "from": "0xCE5cc893b7562034C6a05299a26be57bFCAE3c95",
-      "to": "0x0000000000000000000000000000000000000000",
-      "value": "60000000000000000000",
-      "eventCategory": "redeem"
-    },
-    {
       "blockNumber": 32387986,
       "transactionHash": "0x4ce04cbbab8dcadb9c449113f1c43dff371d3878b2f3814e271696272c668fd0",
       "logIndex": 11,
@@ -791,15 +764,6 @@
       "eventCategory": "redeem"
     },
     {
-      "blockNumber": 35427638,
-      "transactionHash": "0x02e49d30ba512124fd59273080fbe507051a7bf2b551f79668e18d5e33c92cbd",
-      "logIndex": 922,
-      "from": "0x649B63F6F3354141aa936E3Ce360A721c5dA990A",
-      "to": "0x0000000000000000000000000000000000000000",
-      "value": "1000000000000000000",
-      "eventCategory": "redeem"
-    },
-    {
       "blockNumber": 36570738,
       "transactionHash": "0xb3ddcc21d8ac0a51cb239532fec073300f4e16630b236066bc9f61519ecc3d5d",
       "logIndex": 254,
@@ -824,15 +788,6 @@
       "eventCategory": "redeem"
     },
     {
-      "blockNumber": 36595707,
-      "transactionHash": "0x651749317028bddcb6a73b04da3f8104c6afeff7d98d2be0ecd92d3ff9973e38",
-      "logIndex": 41,
-      "from": "0x649B63F6F3354141aa936E3Ce360A721c5dA990A",
-      "to": "0x0000000000000000000000000000000000000000",
-      "value": "1000000000000000000",
-      "eventCategory": "redeem"
-    },
-    {
       "blockNumber": 37147813,
       "transactionHash": "0x456e68c1112b7dcf3e50a0d05568fef054e17c79894c8071379afb695a54bdcc",
       "logIndex": 189,
@@ -842,15 +797,6 @@
       "timestamp": 1761084973,
       "isoDate": "2025-10-21T22:16:13.000Z",
       "readableDate": "2025-10-21 22:16:13 UTC",
-      "eventCategory": "redeem"
-    },
-    {
-      "blockNumber": 37147813,
-      "transactionHash": "0x456e68c1112b7dcf3e50a0d05568fef054e17c79894c8071379afb695a54bdcc",
-      "logIndex": 313,
-      "from": "0xbCe25877CECE25f7C10FCb15f0259e86Dd0f2821",
-      "to": "0x0000000000000000000000000000000000000000",
-      "value": "12000000000000000000",
       "eventCategory": "redeem"
     },
     {
@@ -926,15 +872,6 @@
       "eventCategory": "redeem"
     },
     {
-      "blockNumber": 37755767,
-      "transactionHash": "0xf31cf6f42b057568a1a8552096030acda3e41fa10995a781deefebe4c6091b2c",
-      "logIndex": 731,
-      "from": "0xf32f215b5a0679ec61bAeCAD182A388751866071",
-      "to": "0x0000000000000000000000000000000000000000",
-      "value": "36000000000000000000",
-      "eventCategory": "redeem"
-    },
-    {
       "blockNumber": 38193320,
       "transactionHash": "0x422b821e38e0941bddc0593748716ae245d2d74abc2dae724623fe3053fa68af",
       "logIndex": 231,
@@ -1007,15 +944,6 @@
       "eventCategory": "redeem"
     },
     {
-      "blockNumber": 39702876,
-      "transactionHash": "0x4d15abab70cf378b42369bb72103ecad37f5572aea60e5de9f5a31e36a930def",
-      "logIndex": 478,
-      "from": "0xbCe25877CECE25f7C10FCb15f0259e86Dd0f2821",
-      "to": "0x0000000000000000000000000000000000000000",
-      "value": "6000000000000000000",
-      "eventCategory": "redeem"
-    },
-    {
       "blockNumber": 39703330,
       "transactionHash": "0x4d11d273f2d6817a0ab6dd06caa1ae317c40c522ffcb62cb82177bf98773f669",
       "logIndex": 14,
@@ -1040,15 +968,6 @@
       "eventCategory": "redeem"
     },
     {
-      "blockNumber": 39703772,
-      "transactionHash": "0x85cd5279d05ffd01dab1b38a6ede2e482e243bc9e56ba5101069f510956c09e6",
-      "logIndex": 840,
-      "from": "0xbCe25877CECE25f7C10FCb15f0259e86Dd0f2821",
-      "to": "0x0000000000000000000000000000000000000000",
-      "value": "6000000000000000000",
-      "eventCategory": "redeem"
-    },
-    {
       "blockNumber": 41152519,
       "transactionHash": "0x7b7e0857fe0ca3fca09e398c1b42cb281caac54b78ed3da040a35118398e0ee2",
       "logIndex": 97,
@@ -1070,15 +989,6 @@
       "timestamp": 1769094495,
       "isoDate": "2026-01-22T15:08:15.000Z",
       "readableDate": "2026-01-22 15:08:15 UTC",
-      "eventCategory": "redeem"
-    },
-    {
-      "blockNumber": 41152574,
-      "transactionHash": "0x317007b06f87bd246a10ab63aef7a03dd074766db7fac9b770fca9c0f3c6cd10",
-      "logIndex": 498,
-      "from": "0x1Fe5844315ba92E86eB64c8317CDB2f11C8FE544",
-      "to": "0x0000000000000000000000000000000000000000",
-      "value": "18000000000000000000",
       "eventCategory": "redeem"
     },
     {
@@ -1144,10 +1054,6 @@
   ],
   "holders": [
     {
-      "address": "0xcFE7E071641cFF57a40EDc50D2c43D5F6D68eE8d",
-      "balance": "12121000000000000000000"
-    },
-    {
       "address": "0xeAC5064fB7655C1e6C14ca7Eb1398AE2905E8b0A",
       "balance": "9212000000000000000000"
     },
@@ -1157,7 +1063,7 @@
     },
     {
       "address": "0xbCe25877CECE25f7C10FCb15f0259e86Dd0f2821",
-      "balance": "388000000000000000000"
+      "balance": "412000000000000000000"
     },
     {
       "address": "0x2f842AdBC0b2FD6f0af24E9d38368cADdcF65bad",
@@ -1234,37 +1140,17 @@
     {
       "address": "0xC80161E51de56947c3Bc6ECC0e92603647dB0aC0",
       "balance": "400000000000000000"
-    },
-    {
-      "address": "0x64cF0d9aeb25ae93F5895E864FF5dcBeBa55cb13",
-      "balance": "-1000000000000000000"
-    },
-    {
-      "address": "0x649B63F6F3354141aa936E3Ce360A721c5dA990A",
-      "balance": "-2000000000000000000"
-    },
-    {
-      "address": "0x1Fe5844315ba92E86eB64c8317CDB2f11C8FE544",
-      "balance": "-18000000000000000000"
-    },
-    {
-      "address": "0xf32f215b5a0679ec61bAeCAD182A388751866071",
-      "balance": "-36000000000000000000"
-    },
-    {
-      "address": "0xCE5cc893b7562034C6a05299a26be57bFCAE3c95",
-      "balance": "-60000000000000000000"
     }
   ],
-  "lastHolderSyncTimestamp": 1777555004602,
+  "lastHolderSyncTimestamp": 1777559243964,
   "cachedTokenInfo": {
     "timestamp": 1777550504505
   },
   "totals": {
-    "transferCount": 97,
-    "redeemAmount": "12262000000000000000000",
-    "mintCount": 2,
-    "mintAmount": "24242000000000000000000",
-    "totalVolume": "41180000000000000000000"
+    "transferCount": 87,
+    "redeemAmount": "141000000000000000000",
+    "mintCount": 1,
+    "mintAmount": "12121000000000000000000",
+    "totalVolume": "28918000000000000000000"
   }
 }

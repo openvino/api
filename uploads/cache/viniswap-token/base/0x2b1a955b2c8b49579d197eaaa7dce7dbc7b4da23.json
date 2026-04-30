@@ -3,9 +3,9 @@
   "network": "base",
   "tokenAddress": "0x2b1A955b2C8B49579d197eAaa7DcE7DBC7b4dA23",
   "startBlock": 2171714,
-  "lastSyncedBlock": 45383521,
+  "lastSyncedBlock": 45385321,
   "lastSyncedTimestamp": 1777420129,
-  "lastSyncedAt": 1777556391114,
+  "lastSyncedAt": 1777559991140,
   "events": [
     {
       "blockNumber": 21717133,
@@ -17,15 +17,6 @@
       "timestamp": 1730223613,
       "isoDate": "2024-10-29T17:40:13.000Z",
       "readableDate": "2024-10-29 17:40:13 UTC",
-      "eventCategory": "mint"
-    },
-    {
-      "blockNumber": 21717133,
-      "transactionHash": "0x538f3324d88833923d27ebd8c9d2fc8745df9fad4a170baeee092d0cdb3c975d",
-      "logIndex": 396,
-      "from": "0x0000000000000000000000000000000000000000",
-      "to": "0xcFE7E071641cFF57a40EDc50D2c43D5F6D68eE8d",
-      "value": "16384000000000000000000",
       "eventCategory": "mint"
     },
     {
@@ -415,10 +406,6 @@
   ],
   "holders": [
     {
-      "address": "0xcFE7E071641cFF57a40EDc50D2c43D5F6D68eE8d",
-      "balance": "16384000000000000000000"
-    },
-    {
       "address": "0xeAC5064fB7655C1e6C14ca7Eb1398AE2905E8b0A",
       "balance": "15284999999999999999262"
     },
@@ -459,15 +446,15 @@
       "balance": "16459"
     }
   ],
-  "lastHolderSyncTimestamp": 1777556155679,
+  "lastHolderSyncTimestamp": 1777559991140,
   "cachedTokenInfo": {
     "timestamp": 1777551584609
   },
   "totals": {
-    "transferCount": 34,
-    "redeemAmount": "16384000000000000000000",
-    "mintCount": 2,
-    "mintAmount": "32768000000000000000000",
-    "totalVolume": "50640331666227839165821"
+    "transferCount": 33,
+    "redeemAmount": "0",
+    "mintCount": 1,
+    "mintAmount": "16384000000000000000000",
+    "totalVolume": "34256331666227839165821"
   }
 }
