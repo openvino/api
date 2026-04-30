@@ -29,6 +29,8 @@ interface BlockscoutApiResponse {
 interface FetchLogsParams {
 	address: string;
 	topic0: string;
+	topic1?: string;
+	topic2?: string;
 	fromBlock: number;
 	toBlock: number;
 	pageSize: number;
@@ -178,6 +180,8 @@ export const fetchLogsFromBlockscout = async (
 			action: "getLogs",
 			address: params.address,
 			topic0: params.topic0,
+			...(params.topic1 !== undefined && { topic1: params.topic1, topic0_1_opr: "and" }),
+			...(params.topic2 !== undefined && { topic2: params.topic2, topic0_2_opr: "and" }),
 			fromBlock: params.fromBlock,
 			toBlock: params.toBlock,
 			page,

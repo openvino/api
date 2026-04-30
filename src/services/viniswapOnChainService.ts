@@ -206,13 +206,74 @@ const MINT_TOPIC = getEventTopic("Mint");
 const BURN_TOPIC = getEventTopic("Burn");
 const SYNC_TOPIC = getEventTopic("Sync");
 const TRANSFER_TOPIC = getEventTopic("Transfer");
-const ERC20_TRANSFER_TOPIC = (() => {
+
+const ERC20_TRANSFER_TOPIC_HASH = (() => {
 	const fragment = erc20Interface.getEvent("Transfer");
-	if (!fragment) {
-		throw new Error("Transfer event not found in ERC20 ABI");
-	}
+	if (!fragment) throw new Error("Transfer event not found in ERC20 ABI");
 	return fragment.topicHash;
 })();
+const ZERO_ADDRESS_TOPIC = "0x0000000000000000000000000000000000000000000000000000000000000000";
+
+const parseAddressFromTopic = (topic: string): string =>
+	"0x" + topic.slice(26);
+
+const PROVIDER_LOG_BATCH_SIZE = 2_000_000;
+
+const fetchERC20ZeroAddressEvents = async (
+	tokenAddress: string,
+	fromBlock: number,
+	toBlock: number,
+	provider: JsonRpcProvider,
+	options: { delayMs: number; maxRetries: number }
+): Promise<TokenTransferEvent[]> => {
+	const parseLog = (log: Log, category: "mint" | "redeem"): TokenTransferEvent | undefined => {
+		if (log.topics.length < 3) return undefined;
+		try {
+			const from = normalizeChecksumAddress(parseAddressFromTopic(log.topics[1]));
+			const to = normalizeChecksumAddress(parseAddressFromTopic(log.topics[2]));
+			const value = BigInt(log.data).toString();
+			return {
+				blockNumber: log.blockNumber,
+				transactionHash: log.transactionHash,
+				logIndex: log.index,
+				from,
+				to,
+				value,
+				eventCategory: category,
+			};
+		} catch {
+			return undefined;
+		}
+	};
+
+	const events: TokenTransferEvent[] = [];
+
+	for (let batchFrom = fromBlock; batchFrom <= toBlock; batchFrom += PROVIDER_LOG_BATCH_SIZE) {
+		const batchTo = Math.min(batchFrom + PROVIDER_LOG_BATCH_SIZE - 1, toBlock);
+		const [mintLogs, burnLogs] = await Promise.all([
+			withRetries(
+				() => provider.getLogs({ address: tokenAddress, topics: [ERC20_TRANSFER_TOPIC_HASH, ZERO_ADDRESS_TOPIC], fromBlock: batchFrom, toBlock: batchTo }),
+				{ maxRetries: options.maxRetries, delayMs: options.delayMs, name: `fetchMintLogs:${batchFrom}` }
+			).catch(() => [] as Log[]),
+			withRetries(
+				() => provider.getLogs({ address: tokenAddress, topics: [ERC20_TRANSFER_TOPIC_HASH, null, ZERO_ADDRESS_TOPIC], fromBlock: batchFrom, toBlock: batchTo }),
+				{ maxRetries: options.maxRetries, delayMs: options.delayMs, name: `fetchBurnLogs:${batchFrom}` }
+			).catch(() => [] as Log[]),
+		]);
+		for (const log of mintLogs) {
+			const ev = parseLog(log, "mint");
+			if (ev) events.push(ev);
+		}
+		for (const log of burnLogs) {
+			const ev = parseLog(log, "redeem");
+			if (ev) events.push(ev);
+		}
+		if (batchTo < toBlock) await sleep(options.delayMs);
+	}
+
+	return events;
+};
+const ERC20_TRANSFER_TOPIC = ERC20_TRANSFER_TOPIC_HASH;
 
 const fetchTokenMetadata = async (
 	tokenAddress: string,
@@ -1583,6 +1644,14 @@ const fetchViniswapTokenHistoryImpl = async (
 			blockscout
 		);
 
+		const zeroAddressEvents = await fetchERC20ZeroAddressEvents(
+			normalizedAddress,
+			scanFromBlock,
+			scanToBlock,
+			provider,
+			{ delayMs: blockscoutDelayMs, maxRetries }
+		);
+
 		newEvents = transfers.map((transfer, index) => {
 			const timestamp = transfer.timeStamp ?? 0;
 			const from = transfer.from
@@ -1604,6 +1673,8 @@ const fetchViniswapTokenHistoryImpl = async (
 				eventCategory: categorizeTransfer(from, to),
 			};
 		});
+
+		newEvents.push(...zeroAddressEvents);
 
 		if (verbose) {
 			for (const transfer of newEvents) {
