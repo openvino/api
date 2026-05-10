@@ -35,6 +35,7 @@ import {
 	ViniswapTokenHistoryCache,
 	ViniswapTokenHistoryResult,
 	TokenHolderSnapshot,
+	CachedTokenInfo,
 } from "../interfaces";
 import {
 	formatBigint,
@@ -49,11 +50,20 @@ const pairInterface = new Interface(VINISWAP_PAIR_ABI);
 const erc20Interface = new Interface(ERC20_ABI);
 
 const TOKEN_HISTORY_CACHE_VERSION = 3;
+const DEFAULT_HOLDER_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hora
+const DEFAULT_TOKEN_INFO_CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutos
+const DEFAULT_SYNC_COOLDOWN_MS = 2 * 60 * 1000; // 2 minutos
 const TOKEN_HISTORY_CACHE_DIR = path.join(
 	process.cwd(),
 	"uploads",
 	"cache",
 	"viniswap-token"
+);
+const PAIR_HISTORY_CACHE_DIR = path.join(
+	process.cwd(),
+	"uploads",
+	"cache",
+	"viniswap-pair"
 );
 
 const sanitizeCacheSegment = (value: string): string => {
@@ -74,6 +84,18 @@ const getTokenCachePath = (
 		? `${sanitizeCacheSegment(cacheKey)}.json`
 		: `${tokenAddress.toLowerCase()}.json`;
 	return path.join(TOKEN_HISTORY_CACHE_DIR, networkSegment, fileName);
+};
+
+const getViniswapPairCachePath = (
+	network: string,
+	pairAddress: string,
+	cacheKey?: string
+): string => {
+	const networkSegment = sanitizeCacheSegment(network || "default");
+	const fileName = cacheKey
+		? `${sanitizeCacheSegment(cacheKey)}.json`
+		: `${pairAddress.toLowerCase()}.json`;
+	return path.join(PAIR_HISTORY_CACHE_DIR, networkSegment, fileName);
 };
 
 const loadTokenHistoryCache = async (
@@ -100,7 +122,7 @@ const loadTokenHistoryCache = async (
 
 const saveTokenHistoryCache = async (
 	cachePath: string,
-	cache: ViniswapTokenHistoryCache
+	cache: ViniswapTokenHistoryCache | ViniswapPairHistoryCache
 ): Promise<void> => {
 	try {
 		await fs.mkdir(path.dirname(cachePath), { recursive: true });
@@ -112,6 +134,58 @@ const saveTokenHistoryCache = async (
 		);
 	}
 };
+
+interface ViniswapPairHistoryCache {
+	version: number;
+	network: string;
+	pairAddress: string;
+	startBlock: number;
+	lastSyncedBlock: number;
+	lastSyncedTimestamp?: number;
+	lastSyncedAt?: number;
+	events: {
+		swaps: SwapEvent[];
+		mints: MintEvent[];
+		burns: BurnEvent[];
+		syncs: SyncEvent[];
+		transfers: TransferEvent[];
+	};
+	cachedMeta?: {
+		token0: TokenMetadata;
+		token1: TokenMetadata;
+		currentReserves: { reserve0: string; reserve1: string; blockTimestampLast: number };
+		totalSupply: string;
+		latestBlock: number;
+		latestBlockTimestamp: number;
+		latestIsoDate?: string;
+		latestReadableDate?: string;
+		reservesByYearEnd: ViniswapHistoryResult["summary"]["reservesByYearEnd"];
+	};
+}
+
+const loadViniswapPairHistoryCache = async (
+	cachePath: string
+): Promise<ViniswapPairHistoryCache | undefined> => {
+	try {
+		const raw = await fs.readFile(cachePath, "utf8");
+		const parsed = JSON.parse(raw) as ViniswapPairHistoryCache;
+		if (parsed.version !== TOKEN_HISTORY_CACHE_VERSION) {
+			return undefined;
+		}
+		return parsed;
+	} catch (error) {
+		if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+			return undefined;
+		}
+		console.warn(
+			`[ViniswapPairHistory] Failed to read cache at ${cachePath}`,
+			error instanceof Error ? error.message : error
+		);
+		return undefined;
+	}
+};
+
+const saveViniswapPairHistoryCache = saveTokenHistoryCache;
 
 export interface ViniswapHistoryContext {
 	provider: JsonRpcProvider;
@@ -132,13 +206,74 @@ const MINT_TOPIC = getEventTopic("Mint");
 const BURN_TOPIC = getEventTopic("Burn");
 const SYNC_TOPIC = getEventTopic("Sync");
 const TRANSFER_TOPIC = getEventTopic("Transfer");
-const ERC20_TRANSFER_TOPIC = (() => {
+
+const ERC20_TRANSFER_TOPIC_HASH = (() => {
 	const fragment = erc20Interface.getEvent("Transfer");
-	if (!fragment) {
-		throw new Error("Transfer event not found in ERC20 ABI");
-	}
+	if (!fragment) throw new Error("Transfer event not found in ERC20 ABI");
 	return fragment.topicHash;
 })();
+const ZERO_ADDRESS_TOPIC = "0x0000000000000000000000000000000000000000000000000000000000000000";
+
+const parseAddressFromTopic = (topic: string): string =>
+	"0x" + topic.slice(26);
+
+const PROVIDER_LOG_BATCH_SIZE = 2_000_000;
+
+const fetchERC20ZeroAddressEvents = async (
+	tokenAddress: string,
+	fromBlock: number,
+	toBlock: number,
+	provider: JsonRpcProvider,
+	options: { delayMs: number; maxRetries: number }
+): Promise<TokenTransferEvent[]> => {
+	const parseLog = (log: Log, category: "mint" | "redeem"): TokenTransferEvent | undefined => {
+		if (log.topics.length < 3) return undefined;
+		try {
+			const from = normalizeChecksumAddress(parseAddressFromTopic(log.topics[1]));
+			const to = normalizeChecksumAddress(parseAddressFromTopic(log.topics[2]));
+			const value = BigInt(log.data).toString();
+			return {
+				blockNumber: log.blockNumber,
+				transactionHash: log.transactionHash,
+				logIndex: log.index,
+				from,
+				to,
+				value,
+				eventCategory: category,
+			};
+		} catch {
+			return undefined;
+		}
+	};
+
+	const events: TokenTransferEvent[] = [];
+
+	for (let batchFrom = fromBlock; batchFrom <= toBlock; batchFrom += PROVIDER_LOG_BATCH_SIZE) {
+		const batchTo = Math.min(batchFrom + PROVIDER_LOG_BATCH_SIZE - 1, toBlock);
+		const [mintLogs, burnLogs] = await Promise.all([
+			withRetries(
+				() => provider.getLogs({ address: tokenAddress, topics: [ERC20_TRANSFER_TOPIC_HASH, ZERO_ADDRESS_TOPIC], fromBlock: batchFrom, toBlock: batchTo }),
+				{ maxRetries: options.maxRetries, delayMs: options.delayMs, name: `fetchMintLogs:${batchFrom}` }
+			).catch(() => [] as Log[]),
+			withRetries(
+				() => provider.getLogs({ address: tokenAddress, topics: [ERC20_TRANSFER_TOPIC_HASH, null, ZERO_ADDRESS_TOPIC], fromBlock: batchFrom, toBlock: batchTo }),
+				{ maxRetries: options.maxRetries, delayMs: options.delayMs, name: `fetchBurnLogs:${batchFrom}` }
+			).catch(() => [] as Log[]),
+		]);
+		for (const log of mintLogs) {
+			const ev = parseLog(log, "mint");
+			if (ev) events.push(ev);
+		}
+		for (const log of burnLogs) {
+			const ev = parseLog(log, "redeem");
+			if (ev) events.push(ev);
+		}
+		if (batchTo < toBlock) await sleep(options.delayMs);
+	}
+
+	return events;
+};
+const ERC20_TRANSFER_TOPIC = ERC20_TRANSFER_TOPIC_HASH;
 
 const fetchTokenMetadata = async (
 	tokenAddress: string,
@@ -184,8 +319,42 @@ const shouldRetryRequest = (error: unknown): boolean => {
 	}
 
 	const serialized = JSON.stringify({ message, shortMessage, value, info });
+	const lowerCaseError = serialized.toLowerCase();
 
-	return serialized.toLowerCase().includes("too many requests");
+	return (
+		lowerCaseError.includes("too many requests") ||
+		lowerCaseError.includes("header not found") ||
+		lowerCaseError.includes("missing trie node") ||
+		lowerCaseError.includes("rate limit")
+	);
+};
+
+const withRetries = async <T>(
+	action: () => Promise<T>,
+	options: { maxRetries: number; delayMs: number; name?: string }
+): Promise<T> => {
+	let attempt = 0;
+	for (;;) {
+		try {
+			return await action();
+		} catch (error) {
+			attempt += 1;
+			if (attempt > options.maxRetries || !shouldRetryRequest(error)) {
+				throw error;
+			}
+			const backoff = options.delayMs * attempt;
+			console.warn(
+				`[ViniswapOnChainService] Retrying ${
+					options.name ?? "operation"
+				} after error (attempt ${attempt}/${
+					options.maxRetries
+				}) in ${backoff}ms. Error: ${
+					error instanceof Error ? error.message : String(error)
+				}`
+			);
+			await sleep(backoff);
+		}
+	}
 };
 
 const formatReservesSnapshot = (
@@ -205,6 +374,26 @@ const sortTokenEvents = (events: TokenTransferEvent[]): TokenTransferEvent[] =>
 		}
 		return a.blockNumber - b.blockNumber;
 	});
+
+const buildTokenEventDedupKey = (event: TokenTransferEvent): string => {
+	if (
+		event.eventCategory === "mint" ||
+		event.eventCategory === "redeem" ||
+		event.from?.toLowerCase?.() === ZERO_ADDRESS_LOWER ||
+		event.to?.toLowerCase?.() === ZERO_ADDRESS_LOWER
+	) {
+		return [
+			event.blockNumber,
+			event.transactionHash,
+			event.from ?? "",
+			event.to ?? "",
+			event.value ?? "0",
+			event.eventCategory ?? categorizeTransfer(event.from, event.to),
+		].join(":");
+	}
+
+	return `${event.blockNumber}:${event.logIndex ?? 0}:${event.transactionHash}`;
+};
 
 const normalizeChecksumAddress = (address: string): string => {
 	try {
@@ -243,6 +432,39 @@ const updateBalance = (
 	} else {
 		balances.set(address, next);
 	}
+};
+
+const sumHolderBalances = (holders: TokenHolderSnapshot[]): bigint =>
+	holders.reduce((acc, holder) => {
+		if (!holder.balance) return acc;
+		try {
+			const value = BigInt(holder.balance);
+			return value > BigInt(0) ? acc + value : acc;
+		} catch {
+			return acc;
+		}
+	}, BigInt(0));
+
+const normalizeAndDedupTokenEvents = (
+	events: TokenTransferEvent[]
+): TokenTransferEvent[] => {
+	const deduped = new Map<string, TokenTransferEvent>();
+
+	for (const event of events) {
+		const normalizedEvent = {
+			...event,
+			from: event.from ? normalizeChecksumAddress(event.from) : event.from,
+			to: event.to ? normalizeChecksumAddress(event.to) : event.to,
+			eventCategory:
+				event.eventCategory ?? categorizeTransfer(event.from, event.to),
+		};
+		const key = buildTokenEventDedupKey(normalizedEvent);
+		if (!deduped.has(key)) {
+			deduped.set(key, normalizedEvent);
+		}
+	}
+
+	return sortTokenEvents(Array.from(deduped.values()));
 };
 
 const aggregateTokenTransfers = (
@@ -611,7 +833,41 @@ const enrichWithTimestamp = async <T extends BaseEvent>(
 	});
 };
 
-export const fetchViniswapPairHistory = async (
+const buildPairResultFromCache = (cached: ViniswapPairHistoryCache): ViniswapHistoryResult => {
+	const meta = cached.cachedMeta;
+	const events = cached.events ?? { swaps: [], mints: [], burns: [], syncs: [], transfers: [] };
+	const noReserves = { reserve0: "0", reserve1: "0", blockTimestampLast: 0 };
+	const currentReserves = meta?.currentReserves ?? noReserves;
+	return {
+		pairAddress: cached.pairAddress,
+		fromBlock: cached.startBlock,
+		toBlock: cached.lastSyncedBlock,
+		token0: meta?.token0 ?? { address: "" },
+		token1: meta?.token1 ?? { address: "" },
+		currentReserves,
+		totalSupply: meta?.totalSupply ?? "0",
+		events,
+		summary: {
+			swapCount: events.swaps.length,
+			mintCount: events.mints.length,
+			burnCount: events.burns.length,
+			syncCount: events.syncs.length,
+			transferCount: events.transfers.length,
+			currentReserves: {
+				...currentReserves,
+				isoDate: formatIsoDate(currentReserves.blockTimestampLast),
+				readableDate: formatReadableDate(currentReserves.blockTimestampLast),
+			},
+			reservesByYearEnd: meta?.reservesByYearEnd ?? [],
+			latestBlock: meta?.latestBlock,
+			latestBlockTimestamp: meta?.latestBlockTimestamp,
+			latestIsoDate: meta?.latestIsoDate,
+			latestReadableDate: meta?.latestReadableDate,
+		},
+	};
+};
+
+const fetchViniswapPairHistoryImpl = async (
 	pairAddress: string,
 	options: ViniswapHistoryOptions,
 	callbacks: ViniswapHistoryCallbacks = {},
@@ -627,6 +883,26 @@ export const fetchViniswapPairHistory = async (
 
 	const normalizedAddress = getAddress(pairAddress);
 	const { provider, blockscout } = context;
+	const networkKey = normalizeNetworkKey(context.networkKey);
+	const cachePath = getViniswapPairCachePath(
+		networkKey,
+		normalizedAddress,
+		(options as ViniswapTokenHistoryOptions).cacheKey
+	);
+
+	const cached = await loadViniswapPairHistoryCache(cachePath);
+
+	const syncCooldownMs =
+		options.syncCooldownMs !== undefined && options.syncCooldownMs >= 0
+			? Math.trunc(options.syncCooldownMs)
+			: DEFAULT_SYNC_COOLDOWN_MS;
+
+	if (cached?.lastSyncedAt && syncCooldownMs > 0 && cached.cachedMeta) {
+		const age = Date.now() - cached.lastSyncedAt;
+		if (age < syncCooldownMs) {
+			return buildPairResultFromCache(cached);
+		}
+	}
 
 	const pairContract = new Contract(
 		normalizedAddress,
@@ -637,23 +913,38 @@ export const fetchViniswapPairHistory = async (
 	const latestBlock = await provider.getBlockNumber();
 	const latestBlockTimestamp =
 		(await getBlockTimestamp(latestBlock, context, {
-			blockscoutMaxRetries: 5,
-			blockscoutDelayMs: 500,
-			providerMaxRetries: 5,
 			providerDelayMs: 500,
 		})) ?? Math.floor(Date.now() / 1000);
 
-	const fromBlock = Math.max(0, Math.trunc(options.startBlock));
-	const toBlock = options.endBlock ? Math.trunc(options.endBlock) : latestBlock;
+	const requestedStartBlock = Math.max(0, Math.trunc(options.startBlock));
+	const requestedEndBlock = options.endBlock
+		? Math.trunc(options.endBlock)
+		: latestBlock;
 
-	if (fromBlock > toBlock) {
+	if (requestedStartBlock > requestedEndBlock) {
 		throw new Error("startBlock cannot be greater than endBlock");
 	}
 
-	const batchDelayMs =
-		options.batchDelayMs !== undefined && options.batchDelayMs >= 0
-			? Math.trunc(options.batchDelayMs)
-			: 250;
+	let fromBlock = requestedStartBlock;
+	let existingEvents: ViniswapPairHistoryCache["events"] = {
+		swaps: [],
+		mints: [],
+		burns: [],
+		syncs: [],
+		transfers: [],
+	};
+	let lastSyncedBlock = fromBlock - 1;
+
+	if (cached) {
+		fromBlock = Math.min(fromBlock, cached.startBlock);
+		existingEvents = cached.events ?? existingEvents;
+		lastSyncedBlock = cached.lastSyncedBlock ?? fromBlock - 1;
+	}
+
+	const scanFromBlock = Math.max(fromBlock, lastSyncedBlock + 1);
+	const scanToBlock = requestedEndBlock;
+
+	const batchDelayMs = options.batchDelayMs ?? 250;
 	const maxRetries =
 		options.maxRetries !== undefined && options.maxRetries >= 0
 			? Math.trunc(options.maxRetries)
@@ -664,16 +955,15 @@ export const fetchViniswapPairHistory = async (
 		);
 	}
 
-	const blockRangeSize = toBlock - fromBlock + 1;
+	const retryOptions = {
+		maxRetries,
+		delayMs: batchDelayMs,
+	};
+
+	const blockRangeSize = scanToBlock - scanFromBlock + 1;
 	const batchSize = blockRangeSize;
-	const blockscoutPageSize =
-		options.blockscoutPageSize && options.blockscoutPageSize > 0
-			? Math.trunc(options.blockscoutPageSize)
-			: 100;
-	const blockscoutDelayMs =
-		options.blockscoutDelayMs !== undefined && options.blockscoutDelayMs >= 0
-			? Math.trunc(options.blockscoutDelayMs)
-			: 250;
+	const blockscoutPageSize = options.blockscoutPageSize ?? 100;
+	const blockscoutDelayMs = options.blockscoutDelayMs ?? 250;
 
 	const paginationOptions = {
 		batchDelayMs,
@@ -694,7 +984,14 @@ export const fetchViniswapPairHistory = async (
 
 		const tryFetch = async (bn: number): Promise<ReserveSnapshot | null> => {
 			try {
-				const reservesTuple = await pairContract.getReserves({ blockTag: bn });
+				const reservesTuple = await withRetries(
+					() => pairContract.getReserves({ blockTag: bn }),
+					{
+						...retryOptions,
+						maxRetries: 3, // Use a smaller number of retries for this specific case
+						name: `pair.getReserves:${bn}`,
+					}
+				);
 				const [reserve0Raw, reserve1Raw, blockTimestampRaw] =
 					reservesTuple as unknown as [bigint, bigint, bigint];
 				return {
@@ -703,16 +1000,7 @@ export const fetchViniswapPairHistory = async (
 					blockTimestampLast: toNumber(blockTimestampRaw),
 				};
 			} catch (error) {
-				const msg = (
-					error instanceof Error ? error.message : String(error)
-				).toLowerCase();
-				const transient =
-					msg.includes("header not found") ||
-					msg.includes("missing trie node") ||
-					msg.includes("timeout") ||
-					msg.includes("too many requests") ||
-					msg.includes("rate limit");
-				if (!transient) return null;
+				// If retries fail, return null to maintain original logic
 				return null;
 			}
 		};
@@ -784,18 +1072,53 @@ export const fetchViniswapPairHistory = async (
 		return undefined;
 	};
 
-	const [token0Address, token1Address, reserves, totalSupplyRaw] =
-		await Promise.all([
-			pairContract.token0(),
-			pairContract.token1(),
-			pairContract.getReserves(),
-			pairContract.totalSupply(),
-		]);
+	// token0/token1 addresses and metadata are immutable — reuse from cache when available
+	const cachedToken0 = cached?.cachedMeta?.token0;
+	const cachedToken1 = cached?.cachedMeta?.token1;
+	const hasTokenAddresses = cachedToken0?.address && cachedToken1?.address;
+	const hasTokenMetadata =
+		hasTokenAddresses &&
+		cachedToken0.symbol !== undefined &&
+		cachedToken0.decimals !== undefined &&
+		cachedToken1.symbol !== undefined &&
+		cachedToken1.decimals !== undefined;
 
-	const [token0, token1] = await Promise.all([
-		fetchTokenMetadata(token0Address, provider),
-		fetchTokenMetadata(token1Address, provider),
+	let token0Address: string;
+	let token1Address: string;
+
+	if (hasTokenAddresses) {
+		token0Address = cachedToken0.address;
+		token1Address = cachedToken1.address;
+	} else {
+		[token0Address, token1Address] = await Promise.all([
+			withRetries(() => pairContract.token0(), { ...retryOptions, name: "pair.token0" }),
+			withRetries(() => pairContract.token1(), { ...retryOptions, name: "pair.token1" }),
+		]);
+	}
+
+	const [reserves, totalSupplyRaw] = await Promise.all([
+		withRetries(() => pairContract.getReserves(), { ...retryOptions, name: "pair.getReserves" }),
+		withRetries(() => pairContract.totalSupply(), { ...retryOptions, name: "pair.totalSupply" }),
 	]);
+
+	let token0: TokenMetadata;
+	let token1: TokenMetadata;
+
+	if (hasTokenMetadata) {
+		token0 = cachedToken0;
+		token1 = cachedToken1;
+	} else {
+		[token0, token1] = await Promise.all([
+			withRetries(() => fetchTokenMetadata(token0Address, provider), {
+				...retryOptions,
+				name: `fetchTokenMetadata.${token0Address}`,
+			}),
+			withRetries(() => fetchTokenMetadata(token1Address, provider), {
+				...retryOptions,
+				name: `fetchTokenMetadata.${token1Address}`,
+			}),
+		]);
+	}
 
 	const currentReservesSnapshot = {
 		reserve0: formatBigint(reserves[0]),
@@ -811,11 +1134,11 @@ export const fetchViniswapPairHistory = async (
 		),
 	};
 
-	const swaps = await paginateBlocks<SwapEvent>(
+	const newSwaps = await paginateBlocks<SwapEvent>(
 		normalizedAddress,
 		SWAP_TOPIC,
-		fromBlock,
-		toBlock,
+		scanFromBlock,
+		scanToBlock,
 		batchSize,
 		async (log) => {
 			const parsed = pairInterface.parseLog(log);
@@ -850,11 +1173,11 @@ export const fetchViniswapPairHistory = async (
 		getReservesSnapshot
 	);
 
-	const mints = await paginateBlocks<MintEvent>(
+	const newMints = await paginateBlocks<MintEvent>(
 		normalizedAddress,
 		MINT_TOPIC,
-		fromBlock,
-		toBlock,
+		scanFromBlock,
+		scanToBlock,
 		batchSize,
 		async (log) => {
 			const parsed = pairInterface.parseLog(log);
@@ -883,11 +1206,11 @@ export const fetchViniswapPairHistory = async (
 		getReservesSnapshot
 	);
 
-	const burns = await paginateBlocks<BurnEvent>(
+	const newBurns = await paginateBlocks<BurnEvent>(
 		normalizedAddress,
 		BURN_TOPIC,
-		fromBlock,
-		toBlock,
+		scanFromBlock,
+		scanToBlock,
 		batchSize,
 		async (log) => {
 			const parsed = pairInterface.parseLog(log);
@@ -918,11 +1241,11 @@ export const fetchViniswapPairHistory = async (
 		getReservesSnapshot
 	);
 
-	const transfers = await paginateBlocks<TransferEvent>(
+	const newTransfers = await paginateBlocks<TransferEvent>(
 		normalizedAddress,
 		TRANSFER_TOPIC,
-		fromBlock,
-		toBlock,
+		scanFromBlock,
+		scanToBlock,
 		batchSize,
 		async (log) => {
 			const parsed = pairInterface.parseLog(log);
@@ -951,11 +1274,11 @@ export const fetchViniswapPairHistory = async (
 		getReservesSnapshot
 	);
 
-	const syncs = await paginateBlocks<SyncEvent>(
+	const newSyncs = await paginateBlocks<SyncEvent>(
 		normalizedAddress,
 		SYNC_TOPIC,
-		fromBlock,
-		toBlock,
+		scanFromBlock,
+		scanToBlock,
 		batchSize,
 		async (log) => {
 			const parsed = pairInterface.parseLog(log);
@@ -981,21 +1304,39 @@ export const fetchViniswapPairHistory = async (
 		{ provider, blockscout }
 	);
 
+	const allEvents = {
+		swaps: [...existingEvents.swaps, ...newSwaps],
+		mints: [...existingEvents.mints, ...newMints],
+		burns: [...existingEvents.burns, ...newBurns],
+		syncs: [...existingEvents.syncs, ...newSyncs],
+		transfers: [...existingEvents.transfers, ...newTransfers],
+	};
+
+	// Deduplicate and sort
+	for (const key of Object.keys(allEvents) as Array<keyof typeof allEvents>) {
+		const map = new Map(
+			allEvents[key].map((e) => [`${e.blockNumber}-${e.logIndex}`, e])
+		);
+		allEvents[key] = Array.from(map.values()).sort(
+			(a, b) => a.blockNumber - b.blockNumber || a.logIndex - b.logIndex
+		) as any;
+	}
+
 	await Promise.all([
-		enrichWithTimestamp(swaps, context),
-		enrichWithTimestamp(mints, context),
-		enrichWithTimestamp(burns, context),
-		enrichWithTimestamp(syncs, context),
-		enrichWithTimestamp(transfers, context),
+		enrichWithTimestamp(allEvents.swaps, context),
+		enrichWithTimestamp(allEvents.mints, context),
+		enrichWithTimestamp(allEvents.burns, context),
+		enrichWithTimestamp(allEvents.syncs, context),
+		enrichWithTimestamp(allEvents.transfers, context),
 	]);
 
 	const earliestEventTimestamp = (() => {
 		const candidates = [
-			swaps[0]?.timestamp,
-			mints[0]?.timestamp,
-			burns[0]?.timestamp,
-			syncs[0]?.timestamp,
-			transfers[0]?.timestamp,
+			allEvents.swaps[0]?.timestamp,
+			allEvents.mints[0]?.timestamp,
+			allEvents.burns[0]?.timestamp,
+			allEvents.syncs[0]?.timestamp,
+			allEvents.transfers[0]?.timestamp,
 			currentReservesSummary.blockTimestampLast,
 		].filter(
 			(value): value is number => typeof value === "number" && value > 0
@@ -1066,30 +1407,54 @@ export const fetchViniswapPairHistory = async (
 		isCurrent: true,
 	});
 
+	const cacheToSave: ViniswapPairHistoryCache = {
+		version: TOKEN_HISTORY_CACHE_VERSION,
+		network: networkKey,
+		pairAddress: normalizedAddress,
+		startBlock: fromBlock,
+		lastSyncedBlock: scanToBlock,
+		lastSyncedTimestamp: latestBlockTimestamp,
+		lastSyncedAt: Date.now(),
+		events: allEvents,
+		cachedMeta: {
+			token0,
+			token1,
+			currentReserves: currentReservesSnapshot,
+			totalSupply: formatBigint(totalSupplyRaw),
+			latestBlock,
+			latestBlockTimestamp,
+			latestIsoDate: formatIsoDate(latestBlockTimestamp),
+			latestReadableDate: formatReadableDate(latestBlockTimestamp),
+			reservesByYearEnd,
+		},
+	};
+
+	await saveViniswapPairHistoryCache(cachePath, cacheToSave);
+
 	const latestIsoDate = formatIsoDate(latestBlockTimestamp);
 	const latestReadableDate = formatReadableDate(latestBlockTimestamp);
 
 	return {
 		pairAddress: normalizedAddress,
 		fromBlock,
-		toBlock,
+		toBlock: scanToBlock,
 		token0,
 		token1,
 		currentReserves: currentReservesSnapshot,
 		totalSupply: formatBigint(totalSupplyRaw),
 		events: {
-			swaps,
-			mints,
-			burns,
-			syncs,
-			transfers,
+			swaps: allEvents.swaps,
+			mints: allEvents.mints,
+			burns: allEvents.burns,
+			syncs: allEvents.syncs,
+			transfers: allEvents.transfers,
 		},
 		summary: {
-			swapCount: swaps.length,
-			mintCount: mints.length,
-			burnCount: burns.length,
-			syncCount: syncs.length,
-			transferCount: transfers.length,
+			swapCount: allEvents.swaps.length,
+			mintCount: allEvents.mints.length,
+			burnCount: allEvents.burns.length,
+			syncCount: allEvents.syncs.length,
+			transferCount: allEvents.transfers.length,
 			currentReserves: currentReservesSummary,
 			reservesByYearEnd,
 
@@ -1101,7 +1466,88 @@ export const fetchViniswapPairHistory = async (
 	};
 };
 
-export const fetchViniswapTokenHistory = async (
+const inflightPairHistory = new Map<string, Promise<ViniswapHistoryResult>>();
+
+export const fetchViniswapPairHistory = (
+	pairAddress: string,
+	options: ViniswapHistoryOptions,
+	callbacks: ViniswapHistoryCallbacks = {},
+	context: ViniswapHistoryContext
+): Promise<ViniswapHistoryResult> => {
+	const networkKey = normalizeNetworkKey(context.networkKey);
+	const normalizedAddress = getAddress(pairAddress);
+	const inflightKey = `${networkKey}:${normalizedAddress}`;
+
+	const existing = inflightPairHistory.get(inflightKey);
+	if (existing) return existing;
+
+	const promise = fetchViniswapPairHistoryImpl(pairAddress, options, callbacks, context).finally(
+		() => inflightPairHistory.delete(inflightKey)
+	);
+	inflightPairHistory.set(inflightKey, promise);
+	return promise;
+};
+
+const buildResultFromCache = (cached: ViniswapTokenHistoryCache): ViniswapTokenHistoryResult => {
+	const events = normalizeAndDedupTokenEvents(cached.events ?? []);
+	const cachedHolders = cached.holders ?? [];
+	const { holders: aggregatedHolders, summary: aggregatedSummary } =
+		aggregateTokenTransfers(events, cached.startBlock, cached.lastSyncedBlock);
+	const holders =
+		cachedHolders.length &&
+		sumHolderBalances(cachedHolders) === sumHolderBalances(aggregatedHolders)
+			? cachedHolders
+			: aggregatedHolders;
+	const tokenInfo = cached.cachedTokenInfo;
+	const firstEvent = events[0];
+	const lastEvent = events[events.length - 1];
+	const uniqueAddresses = new Set(
+		events.flatMap((e) => [e.from, e.to]).filter(Boolean)
+	).size;
+	return {
+		token: {
+			address: cached.tokenAddress,
+			metadata: {
+				address: cached.tokenAddress,
+				symbol: tokenInfo?.symbol,
+				name: tokenInfo?.name,
+				decimals: tokenInfo?.decimals,
+			},
+			decimals: tokenInfo?.decimals,
+			totalSupply: tokenInfo?.totalSupply,
+			circulatingSupply: tokenInfo?.circulatingSupply,
+			holdersCount: tokenInfo?.holdersCount ?? holders.length,
+			totalTransfers: tokenInfo?.totalTransfers ?? events.length,
+			price: tokenInfo?.price,
+			marketCap: tokenInfo?.marketCap,
+		},
+		range: {
+			fromBlock: cached.startBlock,
+			toBlock: cached.lastSyncedBlock,
+		},
+		summary: {
+			firstBlock: firstEvent?.blockNumber ?? cached.startBlock,
+			firstTimestamp: firstEvent?.timestamp,
+			firstIsoDate: firstEvent?.isoDate,
+			lastBlock: lastEvent?.blockNumber ?? cached.lastSyncedBlock,
+			lastTimestamp: lastEvent?.timestamp ?? cached.lastSyncedTimestamp,
+			lastIsoDate: lastEvent?.isoDate,
+			holderCount: tokenInfo?.holdersCount ?? holders.length,
+			uniqueAddresses,
+			transferCount: cached.totals?.transferCount ?? aggregatedSummary.transferCount,
+			redeemAmount: cached.totals?.redeemAmount ?? aggregatedSummary.redeemAmount,
+			mintCount: cached.totals?.mintCount ?? aggregatedSummary.mintCount,
+			mintAmount: cached.totals?.mintAmount ?? aggregatedSummary.mintAmount,
+			totalVolume: cached.totals?.totalVolume ?? aggregatedSummary.totalVolume,
+		},
+		holders,
+		events,
+	};
+};
+
+const inflightTokenHistory = new Map<string, Promise<ViniswapTokenHistoryResult>>();
+
+const fetchViniswapTokenHistoryImpl = async (
 	tokenAddress: string,
 	options: ViniswapTokenHistoryOptions,
 	context: ViniswapHistoryContext,
@@ -1133,10 +1579,6 @@ export const fetchViniswapTokenHistory = async (
 		throw new Error("startBlock cannot be greater than endBlock");
 	}
 
-	const batchDelayMs =
-		options.batchDelayMs !== undefined && options.batchDelayMs >= 0
-			? Math.trunc(options.batchDelayMs)
-			: 250;
 	const maxRetries =
 		options.maxRetries !== undefined && options.maxRetries >= 0
 			? Math.trunc(options.maxRetries)
@@ -1149,6 +1591,18 @@ export const fetchViniswapTokenHistory = async (
 		options.blockscoutDelayMs !== undefined && options.blockscoutDelayMs >= 0
 			? Math.trunc(options.blockscoutDelayMs)
 			: 250;
+	const holderCacheTtlMs =
+		options.holderCacheTtlMs !== undefined && options.holderCacheTtlMs >= 0
+			? Math.trunc(options.holderCacheTtlMs)
+			: DEFAULT_HOLDER_CACHE_TTL_MS;
+	const tokenInfoCacheTtlMs =
+		options.tokenInfoCacheTtlMs !== undefined && options.tokenInfoCacheTtlMs >= 0
+			? Math.trunc(options.tokenInfoCacheTtlMs)
+			: DEFAULT_TOKEN_INFO_CACHE_TTL_MS;
+	const syncCooldownMs =
+		options.syncCooldownMs !== undefined && options.syncCooldownMs >= 0
+			? Math.trunc(options.syncCooldownMs)
+			: DEFAULT_SYNC_COOLDOWN_MS;
 
 	const networkKey = normalizeNetworkKey(context.networkKey);
 
@@ -1159,6 +1613,19 @@ export const fetchViniswapTokenHistory = async (
 	);
 
 	const cached = await loadTokenHistoryCache(cachePath);
+
+	// Si el caché es reciente, devolver directo sin ir a la blockchain
+	if (cached?.lastSyncedAt && syncCooldownMs > 0) {
+		const age = Date.now() - cached.lastSyncedAt;
+		if (age < syncCooldownMs) {
+			if (verbose) {
+				console.log(
+					`[ViniswapTokenHistory] Caché reciente (${Math.round(age / 1000)}s), devolviendo sin sync`
+				);
+			}
+			return buildResultFromCache(cached);
+		}
+	}
 
 	let cachedStartBlock = startBlock;
 	let existingEvents: TokenTransferEvent[] = [];
@@ -1237,6 +1704,14 @@ export const fetchViniswapTokenHistory = async (
 			blockscout
 		);
 
+		const zeroAddressEvents = await fetchERC20ZeroAddressEvents(
+			normalizedAddress,
+			scanFromBlock,
+			scanToBlock,
+			provider,
+			{ delayMs: blockscoutDelayMs, maxRetries }
+		);
+
 		newEvents = transfers.map((transfer, index) => {
 			const timestamp = transfer.timeStamp ?? 0;
 			const from = transfer.from
@@ -1259,6 +1734,8 @@ export const fetchViniswapTokenHistory = async (
 			};
 		});
 
+		newEvents.push(...zeroAddressEvents);
+
 		if (verbose) {
 			for (const transfer of newEvents) {
 				const tsPart =
@@ -1276,23 +1753,10 @@ export const fetchViniswapTokenHistory = async (
 		}
 	}
 
-	const allEventsMap = new Map<string, TokenTransferEvent>();
-	for (const event of [...existingEvents, ...newEvents]) {
-		const key = `${event.blockNumber}:${event.logIndex ?? 0}:${
-			event.transactionHash
-		}`;
-		if (!allEventsMap.has(key)) {
-			allEventsMap.set(key, {
-				...event,
-				from: event.from ? normalizeChecksumAddress(event.from) : event.from,
-				to: event.to ? normalizeChecksumAddress(event.to) : event.to,
-				eventCategory:
-					event.eventCategory ?? categorizeTransfer(event.from, event.to),
-			});
-		}
-	}
-
-	const combinedEvents = sortTokenEvents(Array.from(allEventsMap.values()));
+	const combinedEvents = normalizeAndDedupTokenEvents([
+		...existingEvents,
+		...newEvents,
+	]);
 
 	const { holders: aggregatedHolders, summary } = aggregateTokenTransfers(
 		combinedEvents,
@@ -1300,60 +1764,116 @@ export const fetchViniswapTokenHistory = async (
 		scanToBlock
 	);
 
-	const tokenInfo = await fetchTokenInfoWithRetries(
-		normalizedAddress,
-		blockscout,
-		{ maxRetries, delayMs: blockscoutDelayMs }
-	).catch((error) => {
-		console.warn(
-			`[ViniswapTokenHistory] Failed to fetch token info ${normalizedAddress}`,
-			error instanceof Error ? error.message : error
-		);
-		return undefined;
-	});
+	const now = Date.now();
 
-	let blockscoutHolders: TokenHolderSnapshot[] = [];
-	try {
-		const holdersFromApi = await fetchTokenHoldersFromBlockscout(
+	const tokenInfoCacheStale =
+		!cached?.cachedTokenInfo ||
+		now - cached.cachedTokenInfo.timestamp > tokenInfoCacheTtlMs;
+
+	let tokenInfo: CachedTokenInfo | undefined;
+	if (tokenInfoCacheStale) {
+		const fetched = await fetchTokenInfoWithRetries(
 			normalizedAddress,
-			{
-				pageSize: blockscoutPageSize,
-				delayMs: blockscoutDelayMs,
-				maxPages:
-					options.holderPageLimit !== undefined && options.holderPageLimit > 0
-						? Math.trunc(options.holderPageLimit)
-						: 50,
-				maxRetries,
-			},
-			blockscout
-		);
-
-		blockscoutHolders = holdersFromApi.map((holder) => ({
-			address: normalizeChecksumAddress(holder.address),
-			balance: holder.value,
-			percentage: holder.percentage,
-		}));
-
-		blockscoutHolders.sort((a, b) => {
-			try {
-				const diff = BigInt(b.balance ?? "0") - BigInt(a.balance ?? "0");
-				if (diff > BigInt(0)) return 1;
-				if (diff < BigInt(0)) return -1;
-			} catch {
-				// ignore parse errors
-			}
-			return a.address.localeCompare(b.address);
+			blockscout,
+			{ maxRetries, delayMs: blockscoutDelayMs }
+		).catch((error) => {
+			console.warn(
+				`[ViniswapTokenHistory] Failed to fetch token info ${normalizedAddress}`,
+				error instanceof Error ? error.message : error
+			);
+			return undefined;
 		});
-	} catch (error) {
-		console.warn(
-			`[ViniswapTokenHistory] Failed to fetch holders ${normalizedAddress}`,
-			error instanceof Error ? error.message : error
-		);
+		if (fetched) {
+			tokenInfo = {
+				timestamp: now,
+				name: fetched.name,
+				symbol: fetched.symbol,
+				decimals: fetched.decimals,
+				totalSupply: fetched.totalSupply,
+				circulatingSupply: fetched.circulatingSupply,
+				totalTransfers: fetched.totalTransfers,
+				holdersCount: fetched.holdersCount,
+				price: fetched.price,
+				marketCap: fetched.marketCap,
+			};
+			if (verbose) {
+				console.log(`[ViniswapTokenHistory] Token info fetched from API`);
+			}
+		} else if (cached?.cachedTokenInfo) {
+			tokenInfo = cached.cachedTokenInfo;
+			if (verbose) {
+				console.log(`[ViniswapTokenHistory] Token info fetch failed, using stale cache`);
+			}
+		} else {
+			// negative cache: marca el intento para no reintentar dentro del TTL
+			tokenInfo = { timestamp: now };
+			if (verbose) {
+				console.log(`[ViniswapTokenHistory] Token info unavailable, caching miss`);
+			}
+		}
+	} else {
+		tokenInfo = cached!.cachedTokenInfo;
+		if (verbose) {
+			console.log(`[ViniswapTokenHistory] Token info served from cache`);
+		}
 	}
 
-	const resolvedHolders = blockscoutHolders.length
-		? blockscoutHolders
-		: aggregatedHolders;
+	const holderCacheStale =
+		!cached?.lastHolderSyncTimestamp ||
+		now - cached.lastHolderSyncTimestamp > holderCacheTtlMs;
+
+	let blockscoutHolders: TokenHolderSnapshot[] = [];
+	if (holderCacheStale) {
+		try {
+			const holdersFromApi = await fetchTokenHoldersFromBlockscout(
+				normalizedAddress,
+				{
+					pageSize: blockscoutPageSize,
+					delayMs: blockscoutDelayMs,
+					maxPages:
+						options.holderPageLimit !== undefined && options.holderPageLimit > 0
+							? Math.trunc(options.holderPageLimit)
+							: 50,
+					maxRetries,
+				},
+				blockscout
+			);
+
+			blockscoutHolders = holdersFromApi.map((holder) => ({
+				address: normalizeChecksumAddress(holder.address),
+				balance: holder.value,
+				percentage: holder.percentage,
+			}));
+
+			blockscoutHolders.sort((a, b) => {
+				try {
+					const diff = BigInt(b.balance ?? "0") - BigInt(a.balance ?? "0");
+					if (diff > BigInt(0)) return 1;
+					if (diff < BigInt(0)) return -1;
+				} catch {
+					// ignore parse errors
+				}
+				return a.address.localeCompare(b.address);
+			});
+			if (verbose) {
+				console.log(
+					`[ViniswapTokenHistory] Holders fetched from API (${blockscoutHolders.length})`
+				);
+			}
+		} catch (error) {
+			console.warn(
+				`[ViniswapTokenHistory] Failed to fetch holders ${normalizedAddress}`,
+				error instanceof Error ? error.message : error
+			);
+		}
+	} else {
+		blockscoutHolders = cached!.holders ?? [];
+		if (verbose) {
+			console.log(
+				`[ViniswapTokenHistory] Holders served from cache (${blockscoutHolders.length})`
+			);
+		}
+	}
 
 	const tokenContract = new Contract(normalizedAddress, ERC20_ABI, provider);
 	const [metadata, totalSupplyRaw] = await Promise.all([
@@ -1365,6 +1885,35 @@ export const fetchViniswapTokenHistory = async (
 		metadata.decimals = tokenInfo.decimals;
 	}
 	const decimals = metadata.decimals;
+
+	const currentTotalSupply =
+		totalSupplyRaw !== undefined
+			? (() => {
+					try {
+						return BigInt(totalSupplyRaw);
+					} catch {
+						return undefined;
+					}
+			  })()
+			: undefined;
+
+	let resolvedHolders = blockscoutHolders.length
+		? blockscoutHolders
+		: aggregatedHolders;
+
+	if (
+		blockscoutHolders.length &&
+		currentTotalSupply !== undefined &&
+		sumHolderBalances(blockscoutHolders) !== currentTotalSupply &&
+		sumHolderBalances(aggregatedHolders) === currentTotalSupply
+	) {
+		resolvedHolders = aggregatedHolders;
+		if (verbose) {
+			console.log(
+				`[ViniswapTokenHistory] Cached/API holders mismatch totalSupply, using aggregated holders`
+			);
+		}
+	}
 
 	const mintedTotal = combinedEvents.reduce((acc: bigint, item) => {
 		if (item.eventCategory === "mint" && item.value) {
@@ -1390,23 +1939,10 @@ export const fetchViniswapTokenHistory = async (
 	};
 
 	const resolvedTotalSupply = (() => {
-		if (totalSupplyRaw !== undefined) {
-			try {
-				return BigInt(totalSupplyRaw);
-			} catch {
-				/* ignore */
-			}
+		if (currentTotalSupply !== undefined) {
+			return currentTotalSupply;
 		}
-		const holderSum = resolvedHolders.reduce((acc, holder) => {
-			if (!holder.balance) return acc;
-			try {
-				const value = BigInt(holder.balance);
-				return value > BigInt(0) ? acc + value : acc;
-			} catch {
-				return acc;
-			}
-		}, BigInt(0));
-		return holderSum;
+		return sumHolderBalances(resolvedHolders);
 	})();
 
 	const computedRedeemAmount =
@@ -1452,8 +1988,13 @@ export const fetchViniswapTokenHistory = async (
 		startBlock: cachedStartBlock,
 		lastSyncedBlock: scanToBlock,
 		lastSyncedTimestamp: summaryWithStats.lastTimestamp,
+		lastSyncedAt: now,
 		events: combinedEvents,
 		holders: resolvedHolders,
+		lastHolderSyncTimestamp: holderCacheStale
+			? now
+			: cached?.lastHolderSyncTimestamp,
+		cachedTokenInfo: tokenInfo ?? cached?.cachedTokenInfo,
 		totals: {
 			transferCount: summary.transferCount,
 			redeemAmount: summaryWithStats.redeemAmount,
@@ -1466,6 +2007,26 @@ export const fetchViniswapTokenHistory = async (
 	await saveTokenHistoryCache(cachePath, cachePayload);
 
 	return result;
+};
+
+export const fetchViniswapTokenHistory = (
+	tokenAddress: string,
+	options: ViniswapTokenHistoryOptions,
+	context: ViniswapHistoryContext,
+	verbose = false
+): Promise<ViniswapTokenHistoryResult> => {
+	const networkKey = normalizeNetworkKey(context.networkKey);
+	const normalizedAddress = getAddress(tokenAddress);
+	const inflightKey = `${networkKey}:${normalizedAddress}:${options.cacheKey ?? ""}`;
+
+	const existing = inflightTokenHistory.get(inflightKey);
+	if (existing) return existing;
+
+	const promise = fetchViniswapTokenHistoryImpl(tokenAddress, options, context, verbose).finally(
+		() => inflightTokenHistory.delete(inflightKey)
+	);
+	inflightTokenHistory.set(inflightKey, promise);
+	return promise;
 };
 
 export type {

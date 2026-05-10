@@ -1,0 +1,460 @@
+{
+  "version": 3,
+  "network": "base",
+  "tokenAddress": "0x2b1A955b2C8B49579d197eAaa7DcE7DBC7b4dA23",
+  "startBlock": 2171714,
+  "lastSyncedBlock": 45385321,
+  "lastSyncedTimestamp": 1777420129,
+  "lastSyncedAt": 1777559991140,
+  "events": [
+    {
+      "blockNumber": 21717133,
+      "transactionHash": "0x538f3324d88833923d27ebd8c9d2fc8745df9fad4a170baeee092d0cdb3c975d",
+      "logIndex": 94,
+      "from": "0x0000000000000000000000000000000000000000",
+      "to": "0xcFE7E071641cFF57a40EDc50D2c43D5F6D68eE8d",
+      "value": "16384000000000000000000",
+      "timestamp": 1730223613,
+      "isoDate": "2024-10-29T17:40:13.000Z",
+      "readableDate": "2024-10-29 17:40:13 UTC",
+      "eventCategory": "mint"
+    },
+    {
+      "blockNumber": 21722744,
+      "transactionHash": "0xa85863692c6d726dc16a06da393e46d0ff80b0946978706407c02f888606dcad",
+      "logIndex": 51,
+      "from": "0xcFE7E071641cFF57a40EDc50D2c43D5F6D68eE8d",
+      "to": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
+      "value": "1000000000000000000",
+      "timestamp": 1730234835,
+      "isoDate": "2024-10-29T20:47:15.000Z",
+      "readableDate": "2024-10-29 20:47:15 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 21723954,
+      "transactionHash": "0xcd1ea15b9275d25eb300381586ee0584b07a8a2d4999d71a409f33b5f1c96359",
+      "logIndex": 103,
+      "from": "0xcFE7E071641cFF57a40EDc50D2c43D5F6D68eE8d",
+      "to": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
+      "value": "10000000000000000000",
+      "timestamp": 1730237255,
+      "isoDate": "2024-10-29T21:27:35.000Z",
+      "readableDate": "2024-10-29 21:27:35 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 22139892,
+      "transactionHash": "0xecad8a7627f1a676851c6e8b1d997ec46dd92bb1eea7340623fea8489cfbb058",
+      "logIndex": 114,
+      "from": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
+      "to": "0x4787e065A97aAA9Fb59e3Bf14089EF6a47f75B38",
+      "value": "1000000000000000000",
+      "timestamp": 1731069131,
+      "isoDate": "2024-11-08T12:32:11.000Z",
+      "readableDate": "2024-11-08 12:32:11 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 22141083,
+      "transactionHash": "0x75571440c25679319e29d4907ad2a4edadde74d916025afdd96f873ce07bf4cc",
+      "logIndex": 112,
+      "from": "0x4787e065A97aAA9Fb59e3Bf14089EF6a47f75B38",
+      "to": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
+      "value": "1000000000000000000",
+      "timestamp": 1731071513,
+      "isoDate": "2024-11-08T13:11:53.000Z",
+      "readableDate": "2024-11-08 13:11:53 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 22147617,
+      "transactionHash": "0xd5b8d5eb977920bd86c949c5df7712833e200749379ad1088e26910b177676e8",
+      "logIndex": 137,
+      "from": "0xcFE7E071641cFF57a40EDc50D2c43D5F6D68eE8d",
+      "to": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
+      "value": "1000000000000000000",
+      "timestamp": 1731084581,
+      "isoDate": "2024-11-08T16:49:41.000Z",
+      "readableDate": "2024-11-08 16:49:41 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 22147793,
+      "transactionHash": "0xce97db8940430b43cf42baf89026746fd96b41c8f27c7bb7e7dd575ba5a04305",
+      "logIndex": 121,
+      "from": "0xcFE7E071641cFF57a40EDc50D2c43D5F6D68eE8d",
+      "to": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
+      "value": "1000000000000000000",
+      "timestamp": 1731084933,
+      "isoDate": "2024-11-08T16:55:33.000Z",
+      "readableDate": "2024-11-08 16:55:33 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 22147953,
+      "transactionHash": "0x34ac8d4cf406172aac094d0813a7b37b7c31682f9dbf094b55f0bf380a9053f9",
+      "logIndex": 96,
+      "from": "0xcFE7E071641cFF57a40EDc50D2c43D5F6D68eE8d",
+      "to": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
+      "value": "40000000000000000000",
+      "timestamp": 1731085253,
+      "isoDate": "2024-11-08T17:00:53.000Z",
+      "readableDate": "2024-11-08 17:00:53 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 22776396,
+      "transactionHash": "0xfdc364c732870c9eb9e3ff19d486cb6f9def6d9c25e6909d833a1846107469de",
+      "logIndex": 7,
+      "from": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
+      "to": "0x4787e065A97aAA9Fb59e3Bf14089EF6a47f75B38",
+      "value": "1000000000000000000",
+      "timestamp": 1732342139,
+      "isoDate": "2024-11-23T06:08:59.000Z",
+      "readableDate": "2024-11-23 06:08:59 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 22776597,
+      "transactionHash": "0x78cda6831e672e7f84e5ec06bd09fef6ca6085df5d54a4b395f0627e4805022b",
+      "logIndex": 6,
+      "from": "0x4787e065A97aAA9Fb59e3Bf14089EF6a47f75B38",
+      "to": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
+      "value": "1000000000000000000",
+      "timestamp": 1732342541,
+      "isoDate": "2024-11-23T06:15:41.000Z",
+      "readableDate": "2024-11-23 06:15:41 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 22776641,
+      "transactionHash": "0x893ce37b952637144f11addc30bf1852618a98c834ea833deabc3eecc9cfe9d6",
+      "logIndex": 14,
+      "from": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
+      "to": "0x4787e065A97aAA9Fb59e3Bf14089EF6a47f75B38",
+      "value": "999999999999999648",
+      "timestamp": 1732342629,
+      "isoDate": "2024-11-23T06:17:09.000Z",
+      "readableDate": "2024-11-23 06:17:09 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 22883648,
+      "transactionHash": "0x57813fe646ba5aaf8112b7ed3a2b066ef3ed1f6657181153a3b7c57ad9b84556",
+      "logIndex": 82,
+      "from": "0xcFE7E071641cFF57a40EDc50D2c43D5F6D68eE8d",
+      "to": "0x05D749B513159213057123284b7704E2b15aD2D6",
+      "value": "11000000000000000000",
+      "timestamp": 1732556643,
+      "isoDate": "2024-11-25T17:44:03.000Z",
+      "readableDate": "2024-11-25 17:44:03 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 23609268,
+      "transactionHash": "0x9f0c833a95bb2d141376cde607197ecd54aa828b5abda3407f8e546ef5379362",
+      "logIndex": 43,
+      "from": "0xcFE7E071641cFF57a40EDc50D2c43D5F6D68eE8d",
+      "to": "0xC3004Ad43721A57FCBA69e660430f8135A94ad20",
+      "value": "3000000000000000000",
+      "timestamp": 1734007883,
+      "isoDate": "2024-12-12T12:51:23.000Z",
+      "readableDate": "2024-12-12 12:51:23 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 25912882,
+      "transactionHash": "0x4e78204722be3b36ad534038459f7b27e236c1d5a2cfb60eac7870a432ae1924",
+      "logIndex": 64,
+      "from": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
+      "to": "0x4787e065A97aAA9Fb59e3Bf14089EF6a47f75B38",
+      "value": "1000000000000000000",
+      "timestamp": 1738615111,
+      "isoDate": "2025-02-03T20:38:31.000Z",
+      "readableDate": "2025-02-03 20:38:31 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 25989316,
+      "transactionHash": "0x361e20b953655ce4c9e09bae04a747ac28e373d00a46ebdccc26cfb5bc6a5bad",
+      "logIndex": 91,
+      "from": "0x4787e065A97aAA9Fb59e3Bf14089EF6a47f75B38",
+      "to": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
+      "value": "1000000000000000000",
+      "timestamp": 1738767979,
+      "isoDate": "2025-02-05T15:06:19.000Z",
+      "readableDate": "2025-02-05 15:06:19 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 25989330,
+      "transactionHash": "0x7f9b3461bedc93537f5273e4357093498ee212cee25f81079dba8bdd5713935d",
+      "logIndex": 101,
+      "from": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
+      "to": "0x4787e065A97aAA9Fb59e3Bf14089EF6a47f75B38",
+      "value": "1000000000000000000",
+      "timestamp": 1738768007,
+      "isoDate": "2025-02-05T15:06:47.000Z",
+      "readableDate": "2025-02-05 15:06:47 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 27762358,
+      "transactionHash": "0x26da6ebc48f2e3e6c2e53e0847a381da5dcaa0c1fff3fdcd219976889efbf4a3",
+      "logIndex": 79,
+      "from": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
+      "to": "0xa0DEf900cA816156ecd3D083b86983b88908B97A",
+      "value": "1000000000000000000",
+      "timestamp": 1742314063,
+      "isoDate": "2025-03-18T16:07:43.000Z",
+      "readableDate": "2025-03-18 16:07:43 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 29921872,
+      "transactionHash": "0xfbf32259ea7b1bd69eb11a150e6489b76a164c863f3d0048b4402802ef771480",
+      "logIndex": 31,
+      "from": "0xcFE7E071641cFF57a40EDc50D2c43D5F6D68eE8d",
+      "to": "0xeAC5064fB7655C1e6C14ca7Eb1398AE2905E8b0A",
+      "value": "1000000000000000000",
+      "timestamp": 1746633091,
+      "isoDate": "2025-05-07T15:51:31.000Z",
+      "readableDate": "2025-05-07 15:51:31 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 29922193,
+      "transactionHash": "0x005fe6c08c53d406c7e2f37b08dcb98deddc9cfbc9398f6021e6ae2c17760a7b",
+      "logIndex": 27,
+      "from": "0xeAC5064fB7655C1e6C14ca7Eb1398AE2905E8b0A",
+      "to": "0xcFE7E071641cFF57a40EDc50D2c43D5F6D68eE8d",
+      "value": "1000000000000000000",
+      "timestamp": 1746633733,
+      "isoDate": "2025-05-07T16:02:13.000Z",
+      "readableDate": "2025-05-07 16:02:13 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 29923623,
+      "transactionHash": "0x4f6eba9ee915375ee69bb3e61192db6391230e072e560dee85fc4c580ff4f4f3",
+      "logIndex": 10,
+      "from": "0xcFE7E071641cFF57a40EDc50D2c43D5F6D68eE8d",
+      "to": "0xeAC5064fB7655C1e6C14ca7Eb1398AE2905E8b0A",
+      "value": "16000000000000000000000",
+      "timestamp": 1746636593,
+      "isoDate": "2025-05-07T16:49:53.000Z",
+      "readableDate": "2025-05-07 16:49:53 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 29923928,
+      "transactionHash": "0x8738e8a56ca86e5f88592af4df6026d0bf48502f3d2eea17b6e5f4edaf9e5200",
+      "logIndex": 30,
+      "from": "0xcFE7E071641cFF57a40EDc50D2c43D5F6D68eE8d",
+      "to": "0x34bC045416c8D2Ae1cFDD8789eF8C10E2A079Ca8",
+      "value": "317000000000000000000",
+      "timestamp": 1746637203,
+      "isoDate": "2025-05-07T17:00:03.000Z",
+      "readableDate": "2025-05-07 17:00:03 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 30009971,
+      "transactionHash": "0x0b3075b73fd895eb8941b753380074ddcb7c20e9e8a25431daad8fc6e560d9a0",
+      "logIndex": 24,
+      "from": "0xeAC5064fB7655C1e6C14ca7Eb1398AE2905E8b0A",
+      "to": "0x8b8724BDDF2b6694F562A203472Cb9404C11EE8C",
+      "value": "10000000000000000000",
+      "timestamp": 1746809289,
+      "isoDate": "2025-05-09T16:48:09.000Z",
+      "readableDate": "2025-05-09 16:48:09 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 30010198,
+      "transactionHash": "0xc8e3f111460d7f5ba2aec7c0418910ee9d352e32b3ed484b55c4d3bc8cfef8c1",
+      "logIndex": 31,
+      "from": "0x8b8724BDDF2b6694F562A203472Cb9404C11EE8C",
+      "to": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
+      "value": "10000000000000000000",
+      "timestamp": 1746809743,
+      "isoDate": "2025-05-09T16:55:43.000Z",
+      "readableDate": "2025-05-09 16:55:43 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 30013447,
+      "transactionHash": "0x14be705cd1dff9026d63b7cfa1f7a3c309acdf2542b26f83d2344e6e499c50b3",
+      "logIndex": 27,
+      "from": "0x34bC045416c8D2Ae1cFDD8789eF8C10E2A079Ca8",
+      "to": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
+      "value": "16000000000000000000",
+      "timestamp": 1746816241,
+      "isoDate": "2025-05-09T18:44:01.000Z",
+      "readableDate": "2025-05-09 18:44:01 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 30015231,
+      "transactionHash": "0x83432a451a5aef6473a5cd570483ad62b2716f36ca7742f93c6ddc11f8118d06",
+      "logIndex": 16,
+      "from": "0xeAC5064fB7655C1e6C14ca7Eb1398AE2905E8b0A",
+      "to": "0x8b8724BDDF2b6694F562A203472Cb9404C11EE8C",
+      "value": "705000000000000000000",
+      "timestamp": 1746819809,
+      "isoDate": "2025-05-09T19:43:29.000Z",
+      "readableDate": "2025-05-09 19:43:29 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 30039299,
+      "transactionHash": "0x5010ff3ea68c9caee0a0f873c87e7de83cc3727b0efa9971bf34f03eab7f45bb",
+      "logIndex": 43,
+      "from": "0xeAC5064fB7655C1e6C14ca7Eb1398AE2905E8b0A",
+      "to": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
+      "value": "3000000000000000000",
+      "timestamp": 1746867945,
+      "isoDate": "2025-05-10T09:05:45.000Z",
+      "readableDate": "2025-05-10 09:05:45 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 30052008,
+      "transactionHash": "0x87e6d11eaa7335c637e6dba73e3d9230fd9d98b91fea1c767a685311d3517e1d",
+      "logIndex": 22,
+      "from": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
+      "to": "0xeAC5064fB7655C1e6C14ca7Eb1398AE2905E8b0A",
+      "value": "1829999999999999609",
+      "timestamp": 1746893363,
+      "isoDate": "2025-05-10T16:09:23.000Z",
+      "readableDate": "2025-05-10 16:09:23 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 30052060,
+      "transactionHash": "0xe2b8b2315792d7aa1e489b5934feec74f7b8b8a56d8e7fe3a80bb9fb38bdb0c4",
+      "logIndex": 58,
+      "from": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
+      "to": "0xeAC5064fB7655C1e6C14ca7Eb1398AE2905E8b0A",
+      "value": "1169999999999999653",
+      "timestamp": 1746893467,
+      "isoDate": "2025-05-10T16:11:07.000Z",
+      "readableDate": "2025-05-10 16:11:07 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 30052685,
+      "transactionHash": "0x0e62d7611d0e0ee5e5cbda36b7c4fff4dbca0a0576da370dd2fbcc5076a0b921",
+      "logIndex": 37,
+      "from": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
+      "to": "0x8b8724BDDF2b6694F562A203472Cb9404C11EE8C",
+      "value": "3165833113919591685",
+      "timestamp": 1746894717,
+      "isoDate": "2025-05-10T16:31:57.000Z",
+      "readableDate": "2025-05-10 16:31:57 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 30052746,
+      "transactionHash": "0xe01c611d2a595c99a11939a8fef551bb76bab91fc897546555acd08957489791",
+      "logIndex": 32,
+      "from": "0x8b8724BDDF2b6694F562A203472Cb9404C11EE8C",
+      "to": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
+      "value": "708165833113919575226",
+      "timestamp": 1746894839,
+      "isoDate": "2025-05-10T16:33:59.000Z",
+      "readableDate": "2025-05-10 16:33:59 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 32393001,
+      "transactionHash": "0x2e96e8e7de7544e3971df0deef5437cf9b8f3a5c9e9e97b7c88d640412fdcc76",
+      "logIndex": 49,
+      "from": "0x34bC045416c8D2Ae1cFDD8789eF8C10E2A079Ca8",
+      "to": "0xf54516b8E279D103b1A1f8551D97F817DBfB4ebB",
+      "value": "6000000000000000000",
+      "timestamp": 1751575349,
+      "isoDate": "2025-07-03T20:42:29.000Z",
+      "readableDate": "2025-07-03 20:42:29 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 41632794,
+      "transactionHash": "0x9d284ca609ccb2edcd21ae10fa10b0ee9d9ec0d3cd4fb1cb070207a825418576",
+      "logIndex": 14,
+      "from": "0x34bC045416c8D2Ae1cFDD8789eF8C10E2A079Ca8",
+      "to": "0x45e26cE1f1846b447d5234384Ef6ab1B872C89d7",
+      "value": "12000000000000000000",
+      "timestamp": 1770054935,
+      "isoDate": "2026-02-02T17:55:35.000Z",
+      "readableDate": "2026-02-02 17:55:35 UTC",
+      "eventCategory": "transfer"
+    },
+    {
+      "blockNumber": 45315391,
+      "transactionHash": "0x7cdb0347e5c4eda4df8b6ef13bdb64cc89e5c78cf6582e27f9f2d5320e4d6ff6",
+      "logIndex": 4,
+      "from": "0x4787e065A97aAA9Fb59e3Bf14089EF6a47f75B38",
+      "to": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
+      "value": "1000000000000000000",
+      "timestamp": 1777420129,
+      "isoDate": "2026-04-28T23:48:49.000Z",
+      "readableDate": "2026-04-28 23:48:49 UTC",
+      "eventCategory": "transfer"
+    }
+  ],
+  "holders": [
+    {
+      "address": "0xeAC5064fB7655C1e6C14ca7Eb1398AE2905E8b0A",
+      "balance": "15284999999999999999262"
+    },
+    {
+      "address": "0xdDeC9C61cC526e79fb686d12be00577853E358Be",
+      "balance": "781999999999999984631"
+    },
+    {
+      "address": "0x34bC045416c8D2Ae1cFDD8789eF8C10E2A079Ca8",
+      "balance": "283000000000000000000"
+    },
+    {
+      "address": "0x45e26cE1f1846b447d5234384Ef6ab1B872C89d7",
+      "balance": "12000000000000000000"
+    },
+    {
+      "address": "0x05D749B513159213057123284b7704E2b15aD2D6",
+      "balance": "11000000000000000000"
+    },
+    {
+      "address": "0xf54516b8E279D103b1A1f8551D97F817DBfB4ebB",
+      "balance": "6000000000000000000"
+    },
+    {
+      "address": "0xC3004Ad43721A57FCBA69e660430f8135A94ad20",
+      "balance": "3000000000000000000"
+    },
+    {
+      "address": "0xa0DEf900cA816156ecd3D083b86983b88908B97A",
+      "balance": "1000000000000000000"
+    },
+    {
+      "address": "0x4787e065A97aAA9Fb59e3Bf14089EF6a47f75B38",
+      "balance": "999999999999999648"
+    },
+    {
+      "address": "0x8b8724BDDF2b6694F562A203472Cb9404C11EE8C",
+      "balance": "16459"
+    }
+  ],
+  "lastHolderSyncTimestamp": 1777559991140,
+  "cachedTokenInfo": {
+    "timestamp": 1777551584609
+  },
+  "totals": {
+    "transferCount": 33,
+    "redeemAmount": "0",
+    "mintCount": 1,
+    "mintAmount": "16384000000000000000000",
+    "totalVolume": "34256331666227839165821"
+  }
+}
