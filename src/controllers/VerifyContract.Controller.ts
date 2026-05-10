@@ -7,7 +7,7 @@ export const verifyContract = async (
 	req: Request,
 	res: Response
 ): Promise<void> => {
-	console.log("verifyContract");
+	// console.log("verifyContract");
 
 	try {
 		const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
@@ -47,7 +47,7 @@ export const verifyContract = async (
 
 		let apiBase: string;
 		let apiKey: string;
-		console.log(network);
+		// console.log(network);
 		switch (network) {
 			case "mainnet":
 				apiBase = "https://api.etherscan.io/api";

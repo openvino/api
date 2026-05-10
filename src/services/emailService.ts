@@ -1,30 +1,52 @@
-import nodemailer from 'nodemailer'
-import dotenv from 'dotenv'
+import nodemailer, { Transporter } from "nodemailer";
+import dotenv from "dotenv";
+dotenv.config();
 
-dotenv.config()
+const transportMode = (process.env.EMAIL_TRANSPORT || "smtp").toLowerCase();
 
-// Configuración correcta con TypeScript
-const transporter = nodemailer.createTransport({
-    host:"127.0.0.1",
-    port: 1025,
-    secure: false, // true para 465, false para 587
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
+const buildSmtpTransport = (): Transporter => {
+  const port = Number(process.env.EMAIL_PORT || 1025);
+  const secure = (process.env.EMAIL_SECURE || "false").toLowerCase() === "true";
 
+  return nodemailer.createTransport({
+    host: process.env.EMAIL_HOST || "127.0.0.1",
+    port,
+    secure,
+    auth:
+      process.env.EMAIL_USER && process.env.EMAIL_PASS
+        ? {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+          }
+        : undefined,
     tls: {
-        rejectUnauthorized: false
-    }
-});
+      rejectUnauthorized:
+        (process.env.EMAIL_TLS_REJECT_UNAUTHORIZED || "false").toLowerCase() ===
+        "true",
+    },
+  });
+};
 
-export const sendEmailService = async (to: string, subject: string, text: string, html: string) => {
-    const email = await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to,
-        subject,
-        text,
-        html
-    })
-    console.log('Email sent: ' + email.messageId);
-}
+const buildSendmailTransport = (): Transporter =>
+  nodemailer.createTransport({
+    sendmail: true,
+    newline: "unix",
+    path: process.env.SENDMAIL_PATH || "/usr/sbin/sendmail",
+  });
+
+const transporter =
+  transportMode === "sendmail" ? buildSendmailTransport() : buildSmtpTransport();
+
+export const sendEmailService = async (
+  to: string,
+  subject: string,
+  html: string
+) => {
+  const email = await transporter.sendMail({
+    from: '"OpenVino" <redeem@openvino.org>',
+    to,
+    subject,
+    html,
+  });
+  console.log("Email sent: " + email.messageId);
+};

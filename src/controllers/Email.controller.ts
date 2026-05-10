@@ -1,17 +1,27 @@
-
 import { Request, Response } from "express";
 import { sendEmailService } from "../services/emailService";
 
-
-
 export const sendEmail = async (req: Request, res: Response): Promise<void> => {
-    const { to, subject, text, html } = req.body;
-    try {
-        const email = sendEmailService(to, subject, text, html);
+  const { to, subject, html, wineryEmail, wineryHtml } = req.body;
 
-        console.log('Email sent: ' + email);
 
-    } catch (error) {
-        console.error("Error sending email:", error);
-    }
-}
+
+  if (!to || !subject || !html || !wineryEmail || !wineryHtml) {
+    res.status(400).json({ error: "Missing required fields" });
+    return;
+  }
+
+  try {
+    // user email
+    await sendEmailService(to, subject, html);
+    console.log("Email sent:", to, subject);
+
+    // winery email
+    await sendEmailService(wineryEmail, subject, wineryHtml);
+
+    res.status(200).json({ message: "Email sent successfully" });
+  } catch (error) {
+    console.error("Error sending email:", error);
+    res.status(500).json({ error: "Error sending email", message: error });
+  }
+};
